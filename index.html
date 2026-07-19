@@ -1,1685 +1,243 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport"
-        content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no" />
-  <meta name="theme-color" content="#20382c" />
-  <meta name="background-color" content="#0f1714" />
-  <meta name="mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-  <meta name="apple-mobile-web-app-title" content="Readi World" />
-  <meta name="format-detection" content="telephone=no" />
-  <link rel="manifest" href="./manifest.json" />
-  <title>Readi World v0.0.3</title>
-
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
+  <meta name="theme-color" content="#20382c">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <link rel="manifest" href="./manifest.json">
+  <title>Readi World v0.0.4</title>
   <style>
-    :root {
-      color-scheme: dark;
-      --panel: rgba(30, 51, 39, 0.92);
-      --panel-2: rgba(41, 66, 50, 0.9);
-      --border: rgba(255, 255, 255, 0.18);
-      --text: #fffdf5;
-      --muted: #d7dfd4;
-      --accent: #d9a842;
-      --accent-soft: rgba(217, 168, 66, 0.18);
-      --danger: #d26b5a;
-    }
-
-    * {
-      box-sizing: border-box;
-      -webkit-tap-highlight-color: transparent;
-    }
-
-    html,
-    body {
-      margin: 0;
-      width: 100%;
-      height: 100%;
-      overflow: hidden;
-      background: #0f1714;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      touch-action: none;
-      overscroll-behavior: none;
-    }
-
-    body {
-      padding: 0;
-    }
-
-    #app {
-      position: relative;
-      width: 100%;
-      height: 100%;
-      min-height: 100dvh;
-      overflow: hidden;
-      background: #20382c;
-    }
-
-    canvas {
-      display: block;
-      width: 100%;
-      height: 100%;
-    }
-
-    .hud {
-      position: absolute;
-      inset: 0;
-      pointer-events: none;
-      color: var(--text);
-    }
-
-    .top-hud {
-      position: absolute;
-      top: calc(10px + env(safe-area-inset-top));
-      left: calc(10px + env(safe-area-inset-left));
-      right: calc(10px + env(safe-area-inset-right));
-      display: grid;
-      grid-template-columns: auto minmax(0, 1fr) auto;
-      gap: 8px;
-      align-items: stretch;
-      pointer-events: auto;
-    }
-
-    .hud-card {
-      background: var(--panel);
-      border: 1px solid var(--border);
-      border-radius: 22px;
-      box-shadow: 0 10px 22px rgba(0,0,0,.18);
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
-    }
-
-    .profile-card {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      padding: 8px 10px;
-      min-width: 0;
-    }
-
-    .avatar {
-      width: 46px;
-      height: 46px;
-      border-radius: 50%;
-      display: grid;
-      place-items: center;
-      background: #c18d55;
-      border: 2px solid #efcf7c;
-      font-size: 26px;
-      flex: 0 0 auto;
-    }
-
-    .profile-meta {
-      min-width: 0;
-    }
-
-    .profile-name {
-      font-size: 14px;
-      font-weight: 700;
-      white-space: nowrap;
-    }
-
-    .level-row {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      margin-top: 4px;
-    }
-
-    .level {
-      font-size: 12px;
-      color: var(--muted);
-    }
-
-    .xp-track {
-      width: 52px;
-      height: 7px;
-      background: rgba(255,255,255,.13);
-      border-radius: 999px;
-      overflow: hidden;
-    }
-
-    .xp-fill {
-      width: 42%;
-      height: 100%;
-      background: #e2bb55;
-      border-radius: 999px;
-    }
-
-    .center-card {
-      display: grid;
-      grid-template-columns: 1fr auto;
-      align-items: center;
-      min-width: 0;
-      padding: 8px 10px;
-      gap: 8px;
-    }
-
-    .resources {
-      display: flex;
-      align-items: center;
-      gap: 7px;
-      min-width: 0;
-      overflow: hidden;
-    }
-
-    .resource {
-      display: flex;
-      align-items: center;
-      gap: 4px;
-      padding: 6px 8px;
-      border-radius: 999px;
-      border: 1px solid rgba(255,255,255,.12);
-      background: rgba(255,255,255,.055);
-      font-size: 13px;
-      white-space: nowrap;
-    }
-
-    .time-block {
-      text-align: right;
-      padding-left: 4px;
-      min-width: 104px;
-    }
-
-    .phase-line {
-      font-size: 14px;
-      font-weight: 700;
-      white-space: nowrap;
-    }
-
-    .clock-line {
-      margin-top: 2px;
-      font-size: 11px;
-      color: var(--muted);
-      white-space: nowrap;
-    }
-
-    .menu-button {
-      width: 58px;
-      border: 1px solid var(--border);
-      border-radius: 20px;
-      background: var(--panel);
-      color: var(--text);
-      font: inherit;
-      font-size: 24px;
-      box-shadow: 0 10px 22px rgba(0,0,0,.18);
-      pointer-events: auto;
-    }
-
-    .menu-button:active {
-      transform: scale(.97);
-    }
-
-    #context-prompt {
-      position: absolute;
-      left: 50%;
-      top: calc(112px + env(safe-area-inset-top));
-      transform: translateX(-50%);
-      max-width: min(82vw, 360px);
-      padding: 10px 15px;
-      background: rgba(35, 54, 41, .94);
-      border: 1px solid rgba(255,255,255,.18);
-      border-radius: 999px;
-      color: var(--text);
-      font-weight: 700;
-      text-align: center;
-      opacity: 0;
-      transition: opacity .15s ease, transform .15s ease;
-      pointer-events: auto;
-      box-shadow: 0 10px 20px rgba(0,0,0,.2);
-    }
-
-    #context-prompt.visible {
-      opacity: 1;
-      transform: translateX(-50%) translateY(0);
-    }
-
-    #toast {
-      position: absolute;
-      left: 50%;
-      bottom: calc(132px + env(safe-area-inset-bottom));
-      transform: translateX(-50%);
-      padding: 9px 13px;
-      background: rgba(27, 45, 35, .92);
-      border: 1px solid rgba(255,255,255,.16);
-      border-radius: 999px;
-      color: var(--text);
-      font-weight: 700;
-      opacity: 0;
-      transition: opacity .18s ease;
-      white-space: nowrap;
-    }
-
-    #toast.visible {
-      opacity: 1;
-    }
-
-    #floating-joystick {
-      position: absolute;
-      width: 118px;
-      height: 118px;
-      border-radius: 50%;
-      display: none;
-      pointer-events: none;
-      background: rgba(25, 42, 33, .42);
-      border: 1px solid rgba(255,255,255,.18);
-      box-shadow: inset 0 0 0 1px rgba(0,0,0,.15);
-    }
-
-    #floating-joystick.visible {
-      display: block;
-    }
-
-    #joystick-knob {
-      position: absolute;
-      width: 52px;
-      height: 52px;
-      left: 33px;
-      top: 33px;
-      border-radius: 50%;
-      background: rgba(245, 245, 233, .82);
-      border: 1px solid rgba(255,255,255,.45);
-      box-shadow: 0 5px 14px rgba(0,0,0,.22);
-    }
-
-    #menu-panel {
-      position: absolute;
-      top: calc(84px + env(safe-area-inset-top));
-      right: calc(10px + env(safe-area-inset-right));
-      width: min(88vw, 340px);
-      padding: 14px;
-      display: none;
-      pointer-events: auto;
-      background: var(--panel);
-      border: 1px solid var(--border);
-      border-radius: 22px;
-      box-shadow: 0 16px 30px rgba(0,0,0,.28);
-    }
-
-    #menu-panel.open {
-      display: block;
-      animation: panelIn .16s ease;
-    }
-
-    @keyframes panelIn {
-      from { opacity: 0; transform: translateY(-6px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    #menu-panel h2 {
-      margin: 0 0 10px;
-      font-size: 17px;
-    }
-
-    .menu-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 8px;
-    }
-
-    .menu-item {
-      min-height: 72px;
-      padding: 10px;
-      border: 1px solid rgba(255,255,255,.13);
-      border-radius: 14px;
-      background: rgba(255,255,255,.055);
-      color: var(--text);
-      font: inherit;
-      text-align: left;
-    }
-
-    .menu-item strong {
-      display: block;
-      font-size: 14px;
-    }
-
-    .menu-item small {
-      display: block;
-      color: var(--muted);
-      margin-top: 4px;
-      font-size: 11px;
-      line-height: 1.3;
-    }
-
-    #debug-panel {
-      position: absolute;
-      left: calc(10px + env(safe-area-inset-left));
-      bottom: calc(10px + env(safe-area-inset-bottom));
-      width: 230px;
-      padding: 12px;
-      display: none;
-      pointer-events: auto;
-      background: rgba(20, 33, 27, .94);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      font-size: 12px;
-      color: var(--text);
-    }
-
-    #debug-panel.open {
-      display: block;
-    }
-
-    #debug-panel label {
-      display: flex;
-      justify-content: space-between;
-      gap: 10px;
-      margin-top: 7px;
-    }
-
-    #debug-panel button {
-      width: 100%;
-      margin-top: 8px;
-      padding: 8px 10px;
-      border-radius: 10px;
-      border: 1px solid rgba(255,255,255,.14);
-      background: rgba(255,255,255,.06);
-      color: var(--text);
-      font: inherit;
-    }
-
-    @media (max-width: 430px) {
-      .avatar {
-        width: 42px;
-        height: 42px;
-        font-size: 23px;
-      }
-
-      .profile-name {
-        display: none;
-      }
-
-      .resource {
-        padding: 5px 7px;
-      }
-
-      .time-block {
-        min-width: 92px;
-      }
-
-      .menu-button {
-        width: 52px;
-      }
-    }
+    *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+    html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#102019;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;touch-action:none}
+    #app{position:relative;width:100%;height:100%;min-height:100dvh;background:#789f68}
+    canvas{display:block;width:100%;height:100%}
+    .top{position:absolute;top:calc(10px + env(safe-area-inset-top));left:calc(10px + env(safe-area-inset-left));right:calc(10px + env(safe-area-inset-right));display:grid;grid-template-columns:auto 1fr auto;gap:8px;color:#fff;pointer-events:none}
+    .card,.menu{background:rgba(30,51,39,.92);border:1px solid rgba(255,255,255,.18);border-radius:20px;box-shadow:0 10px 22px rgba(0,0,0,.2);backdrop-filter:blur(8px)}
+    .profile{display:flex;align-items:center;gap:8px;padding:8px 10px}.avatar{width:42px;height:42px;border-radius:50%;display:grid;place-items:center;background:#b97d48;border:2px solid #efcf7c;font-size:22px}.meta{font-size:12px}.meta strong{display:block;font-size:14px}
+    .center{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:center;padding:8px 10px}.resources{display:flex;gap:6px;overflow:hidden}.res{white-space:nowrap;padding:5px 7px;border-radius:999px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);font-size:13px}.time{text-align:right;white-space:nowrap}.time strong{display:block;font-size:14px}.time span{font-size:11px;color:#d6ded5}
+    .menu{width:54px;color:#fff;font-size:22px;pointer-events:auto}
+    #prompt{position:absolute;top:calc(108px + env(safe-area-inset-top));left:50%;transform:translateX(-50%);padding:10px 15px;border-radius:999px;border:1px solid rgba(255,255,255,.16);background:rgba(30,51,39,.92);color:#fff;font-weight:700;opacity:0;pointer-events:auto;transition:.15s}
+    #prompt.show{opacity:1}
+    #toast{position:absolute;bottom:calc(120px + env(safe-area-inset-bottom));left:50%;transform:translateX(-50%);padding:9px 13px;border-radius:999px;background:rgba(30,51,39,.94);color:#fff;font-weight:700;opacity:0;transition:.18s}
+    #toast.show{opacity:1}
+    #joy{position:absolute;width:118px;height:118px;border-radius:50%;background:rgba(30,51,39,.4);border:1px solid rgba(255,255,255,.18);display:none;pointer-events:none}
+    #joy.show{display:block}#knob{position:absolute;left:33px;top:33px;width:52px;height:52px;border-radius:50%;background:rgba(255,255,255,.78)}
+    #panel{position:absolute;top:calc(82px + env(safe-area-inset-top));right:calc(10px + env(safe-area-inset-right));width:min(88vw,330px);padding:14px;display:none;background:rgba(30,51,39,.96);border:1px solid rgba(255,255,255,.18);border-radius:20px;color:#fff}
+    #panel.open{display:block}.grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}.item{min-height:68px;border-radius:14px;border:1px solid rgba(255,255,255,.13);background:rgba(255,255,255,.06);color:#fff;text-align:left;padding:10px}
+    #loading{position:absolute;inset:0;display:grid;place-items:center;background:#102019;color:#fff;font-size:18px;z-index:20}
+    #loading.hidden{display:none}
   </style>
 </head>
-
 <body>
-  <main id="app">
-    <canvas id="game" aria-label="Readi World game"></canvas>
-
-    <section class="hud">
-      <div class="top-hud">
-        <div class="hud-card profile-card">
-          <div class="avatar">🧑🏻</div>
-          <div class="profile-meta">
-            <div class="profile-name">Player</div>
-            <div class="level-row">
-              <span class="level">Lv. 3</span>
-              <span class="xp-track"><span class="xp-fill"></span></span>
-            </div>
-          </div>
-        </div>
-
-        <div class="hud-card center-card">
-          <div class="resources">
-            <span class="resource">🪵 <strong id="wood-count">0</strong></span>
-            <span class="resource">🪨 <strong id="stone-count">0</strong></span>
-            <span class="resource">🪙 <strong id="coin-count">25</strong></span>
-          </div>
-          <div class="time-block">
-            <div class="phase-line" id="phase-name">☀️ Morning</div>
-            <div class="clock-line" id="clock-label">Day 1 · 08:30</div>
-          </div>
-        </div>
-
-        <button id="menu-button" class="menu-button" type="button" aria-label="Open menu">☰</button>
-      </div>
-
-      <button id="context-prompt" type="button">Enter Home</button>
-      <div id="toast"></div>
-    </section>
-
-    <div id="floating-joystick" aria-hidden="true">
-      <div id="joystick-knob"></div>
+<main id="app">
+  <canvas id="game"></canvas>
+  <div id="loading">Loading Readi World…</div>
+  <div class="top">
+    <div class="card profile"><div class="avatar">🧑🏻</div><div class="meta"><strong>Player</strong>Lv. 3</div></div>
+    <div class="card center">
+      <div class="resources"><span class="res">🪵 <b id="wood">0</b></span><span class="res">🪨 <b id="stone">0</b></span><span class="res">🪙 <b id="coin">25</b></span></div>
+      <div class="time"><strong id="phase">☀️ Morning</strong><span id="clock">Day 1 · 08:30</span></div>
     </div>
-
-    <aside id="menu-panel">
-      <h2>Village Menu</h2>
-      <div class="menu-grid">
-        <button class="menu-item" type="button" data-action="inventory">
-          <strong>Inventory</strong>
-          <small>Automatic resource storage</small>
-        </button>
-        <button class="menu-item" type="button" data-action="village">
-          <strong>Village</strong>
-          <small>Upgrades and development</small>
-        </button>
-        <button class="menu-item" type="button" data-action="settings">
-          <strong>Settings</strong>
-          <small>Controls, audio and accessibility</small>
-        </button>
-        <button class="menu-item" type="button" data-action="debug">
-          <strong>Debug</strong>
-          <small>Grid, collision and clear zones</small>
-        </button>
-        <button class="menu-item" type="button" data-action="save">
-          <strong>Save now</strong>
-          <small>Create a local snapshot</small>
-        </button>
-        <button class="menu-item" type="button" data-action="comingSoon">
-          <strong>Coming Soon</strong>
-          <small>Future areas and systems</small>
-        </button>
-      </div>
-    </aside>
-
-    <aside id="debug-panel">
-      <strong>Debug Tools</strong>
-      <div id="debug-stats" style="margin-top:8px;color:#c8d0c7"></div>
-      <label>Grid <input id="toggle-grid" type="checkbox"></label>
-      <label>Collision <input id="toggle-collision" type="checkbox"></label>
-      <label>Clear zones <input id="toggle-clear-zones" type="checkbox"></label>
-      <label>Interaction range <input id="toggle-interactions" type="checkbox"></label>
-      <button id="regenerate" type="button">Regenerate decorations</button>
-      <button id="reset-save" type="button">Reset save</button>
-    </aside>
-  </main>
-
-  <script>
-    "use strict";
-
-    const CONFIG = {
-      version: "0.0.3",
-      saveVersion: 2,
-      saveKey: "readiWorldSave_v003",
-      legacySaveKeys: ["readiWorldSave_v001", "readiWorldSave_v002"],
-      backupKey: "readiWorldBackup_v003",
-      logicalWidth: 720,
-      logicalHeight: 1280,
-      worldWidth: 1344,
-      worldHeight: 1920,
-      tileSize: 48,
-      playerSpeed: 220,
-      playerRadius: 18,
-      interactionRange: 78,
-      autoHarvestRange: 60,
-      autoHarvestDuration: 900,
-      autoInteractionCooldown: 1200,
-      dayCycleMs: 4 * 60 * 60 * 1000,
-      phaseDurationMs: 60 * 60 * 1000,
-      autosaveMs: 10000,
-      maxPixelRatio: 2
-    };
-
-    const canvas = document.getElementById("game");
-    const ctx = canvas.getContext("2d", { alpha: false });
-
-    const ui = {
-      wood: document.getElementById("wood-count"),
-      stone: document.getElementById("stone-count"),
-      coin: document.getElementById("coin-count"),
-      phaseName: document.getElementById("phase-name"),
-      clockLabel: document.getElementById("clock-label"),
-      menuButton: document.getElementById("menu-button"),
-      menuPanel: document.getElementById("menu-panel"),
-      contextPrompt: document.getElementById("context-prompt"),
-      toast: document.getElementById("toast"),
-      joystick: document.getElementById("floating-joystick"),
-      joystickKnob: document.getElementById("joystick-knob"),
-      debugPanel: document.getElementById("debug-panel"),
-      debugStats: document.getElementById("debug-stats"),
-      grid: document.getElementById("toggle-grid"),
-      collision: document.getElementById("toggle-collision"),
-      clearZones: document.getElementById("toggle-clear-zones"),
-      interactions: document.getElementById("toggle-interactions")
-    };
-
-    const PHASES = [
-      { id: "morning", name: "Morning", icon: "☀️", overlay: "rgba(255, 221, 157, .08)" },
-      { id: "afternoon", name: "Afternoon", icon: "🌤️", overlay: "rgba(255,255,255,0)" },
-      { id: "evening", name: "Evening", icon: "🌇", overlay: "rgba(220, 113, 65, .16)" },
-      { id: "night", name: "Night", icon: "🌙", overlay: "rgba(18, 35, 61, .38)" }
-    ];
-
-    const state = {
-      seed: 481516,
-      gameTimeAnchor: Date.now(),
-      lastTimestamp: performance.now(),
-      lastSavedAt: Date.now(),
-      paused: false,
-      player: {
-        x: 672,
-        y: 970,
-        radius: CONFIG.playerRadius,
-        direction: "down",
-        moving: false,
-        state: "idle",
-        stateUntil: 0
-      },
-      camera: { x: 0, y: 0 },
-      input: {
-        moveX: 0,
-        moveY: 0,
-        keys: new Set(),
-        pointerId: null,
-        joystickStartX: 0,
-        joystickStartY: 0
-      },
-      resources: { wood: 0, stone: 0, coin: 25 },
-      objects: [],
-      nearbyObject: null,
-      autoTarget: null,
-      interactionCooldownUntil: 0,
-      harvesting: null,
-      debug: {
-        grid: false,
-        collision: false,
-        clearZones: false,
-        interactions: false
-      },
-      fps: 60,
-      frameCounter: 0,
-      fpsTimer: 0,
-      toastTimer: null,
-      loadedObjectStates: new Map()
-    };
-
-    function clamp(value, min, max) {
-      return Math.max(min, Math.min(max, value));
-    }
-
-    function lerp(a, b, t) {
-      return a + (b - a) * t;
-    }
-
-    function distance(a, b) {
-      return Math.hypot(a.x - b.x, a.y - b.y);
-    }
-
-    function seededRandom(seed) {
-      let value = seed >>> 0;
-      return function next() {
-        value += 0x6D2B79F5;
-        let t = value;
-        t = Math.imul(t ^ (t >>> 15), t | 1);
-        t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
-        return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
-      };
-    }
-
-    function showToast(message, duration = 1500) {
-      ui.toast.textContent = message;
-      ui.toast.classList.add("visible");
-      clearTimeout(state.toastTimer);
-      state.toastTimer = setTimeout(() => ui.toast.classList.remove("visible"), duration);
-    }
-
-    function emitAudio(name, payload = {}) {
-      console.debug("[AudioEvent]", name, payload);
-    }
-
-    function createObject(config) {
-      const object = {
-        id: config.id,
-        type: config.type,
-        subtype: config.subtype || config.type,
-        x: config.x,
-        y: config.y,
-        width: config.width || 48,
-        height: config.height || 48,
-        collisionRadius: config.collisionRadius || 0,
-        clearRadius: config.clearRadius || 0,
-        persistent: Boolean(config.persistent),
-        state: config.state || "active",
-        layer: config.layer || 1,
-        color: config.color || "#777",
-        label: config.label || "",
-        respawnAt: config.respawnAt || null,
-        interaction: config.interaction || null,
-        audioProfile: config.audioProfile || null
-      };
-
-      const saved = state.loadedObjectStates.get(object.id);
-      if (saved) {
-        object.state = saved.state || object.state;
-        object.respawnAt = saved.respawnAt || null;
-      }
-
-      return object;
-    }
-
-    function getImportantZones() {
-      return state.objects
-        .filter(object => object.clearRadius > 0)
-        .map(object => ({
-          x: object.x,
-          y: object.y,
-          radius: object.clearRadius
-        }));
-    }
-
-    function isInsideClearZone(x, y, extra = 0) {
-      return getImportantZones().some(zone => {
-        return Math.hypot(x - zone.x, y - zone.y) < zone.radius + extra;
-      });
-    }
-
-    function generateWorld() {
-      state.objects = [];
-
-      state.objects.push(
-        createObject({
-          id: "building.forester_hut",
-          type: "building",
-          subtype: "forester_hut",
-          x: 420,
-          y: 430,
-          width: 210,
-          height: 150,
-          collisionRadius: 68,
-          clearRadius: 155,
-          persistent: true,
-          layer: 2,
-          color: "#8b6038",
-          label: "Forester's Hut",
-          interaction: { type: "building", label: "Visit Forester's Hut", trigger: "proximity" }
-        }),
-        createObject({
-          id: "building.mine",
-          type: "building",
-          subtype: "mine",
-          x: 930,
-          y: 430,
-          width: 190,
-          height: 125,
-          collisionRadius: 66,
-          clearRadius: 150,
-          persistent: true,
-          layer: 2,
-          color: "#666a69",
-          label: "Mine",
-          interaction: { type: "building", label: "Inspect Mine", trigger: "proximity" }
-        }),
-        createObject({
-          id: "building.home",
-          type: "building",
-          subtype: "home",
-          x: 820,
-          y: 930,
-          width: 230,
-          height: 165,
-          collisionRadius: 78,
-          clearRadius: 180,
-          persistent: true,
-          layer: 2,
-          color: "#b97d48",
-          label: "Home",
-          interaction: { type: "building", label: "Enter Home", trigger: "proximity" }
-        }),
-        createObject({
-          id: "building.farm",
-          type: "building",
-          subtype: "farm",
-          x: 355,
-          y: 1250,
-          width: 220,
-          height: 150,
-          collisionRadius: 72,
-          clearRadius: 170,
-          persistent: true,
-          layer: 2,
-          color: "#ad8d54",
-          label: "Farm",
-          interaction: { type: "building", label: "Visit Farm", trigger: "proximity" }
-        }),
-        createObject({
-          id: "building.well",
-          type: "building",
-          subtype: "well",
-          x: 860,
-          y: 1390,
-          width: 105,
-          height: 95,
-          collisionRadius: 38,
-          clearRadius: 95,
-          persistent: true,
-          layer: 2,
-          color: "#887151",
-          label: "Village Well",
-          interaction: { type: "building", label: "Use Village Well", trigger: "proximity" }
-        }),
-        createObject({
-          id: "gate.harbor",
-          type: "gate",
-          subtype: "harbor",
-          x: 970,
-          y: 1710,
-          width: 170,
-          height: 115,
-          collisionRadius: 56,
-          clearRadius: 145,
-          persistent: true,
-          layer: 2,
-          color: "#756b60",
-          label: "Harbor",
-          interaction: { type: "building", label: "Inspect Harbor", trigger: "proximity" }
-        })
-      );
-
-      const rand = seededRandom(state.seed);
-
-      for (let i = 0; i < 42; i++) {
-        let placed = false;
-        for (let attempt = 0; attempt < 30 && !placed; attempt++) {
-          const x = 80 + rand() * (CONFIG.worldWidth - 160);
-          const y = 100 + rand() * (CONFIG.worldHeight - 220);
-
-          if (isInsideClearZone(x, y, 30)) continue;
-          if (Math.abs(x - 655) < 95 && y > 250 && y < 1780) continue;
-
-          state.objects.push(createObject({
-            id: `tree.oak.${i}`,
-            type: "resource",
-            subtype: "tree",
-            x,
-            y,
-            width: 82,
-            height: 118,
-            collisionRadius: 24,
-            persistent: true,
-            layer: 3,
-            color: i % 3 === 0 ? "#4c7c43" : "#5b8b50",
-            interaction: {
-              type: "harvest",
-              resource: "wood",
-              amount: 3,
-              trigger: "automatic",
-              duration: CONFIG.autoHarvestDuration
-            }
-          }));
-          placed = true;
-        }
-      }
-
-      for (let i = 0; i < 24; i++) {
-        let placed = false;
-        for (let attempt = 0; attempt < 25 && !placed; attempt++) {
-          const x = 80 + rand() * (CONFIG.worldWidth - 160);
-          const y = 100 + rand() * (CONFIG.worldHeight - 220);
-          if (isInsideClearZone(x, y, 20)) continue;
-          if (Math.abs(x - 655) < 80 && y > 250 && y < 1780) continue;
-
-          state.objects.push(createObject({
-            id: `stone.decor.${i}`,
-            type: "decoration",
-            subtype: "stone",
-            x,
-            y,
-            width: 34,
-            height: 22,
-            layer: 1,
-            color: "#7d8179"
-          }));
-          placed = true;
-        }
-      }
-
-      updateRespawns();
-    }
-
-    function updateRespawns() {
-      const now = Date.now();
-      for (const object of state.objects) {
-        if (object.state === "harvested" && object.respawnAt && now >= object.respawnAt) {
-          object.state = "active";
-          object.respawnAt = null;
-        }
-      }
-    }
-
-    function createSaveData() {
-      return {
-        saveVersion: CONFIG.saveVersion,
-        gameVersion: CONFIG.version,
-        savedAt: Date.now(),
-        seed: state.seed,
-        gameTimeAnchor: state.gameTimeAnchor,
-        player: {
-          x: Math.round(state.player.x),
-          y: Math.round(state.player.y),
-          direction: state.player.direction
-        },
-        resources: { ...state.resources },
-        settings: {
-          floatingJoystick: true,
-          portrait: true
-        },
-        objectStates: state.objects
-          .filter(object => object.persistent)
-          .map(object => ({
-            id: object.id,
-            state: object.state,
-            respawnAt: object.respawnAt || null
-          }))
-      };
-    }
-
-    function saveGame(showMessage = false) {
-      try {
-        const previous = localStorage.getItem(CONFIG.saveKey);
-        if (previous) localStorage.setItem(CONFIG.backupKey, previous);
-        localStorage.setItem(CONFIG.saveKey, JSON.stringify(createSaveData()));
-        state.lastSavedAt = Date.now();
-        if (showMessage) showToast("Game saved.");
-      } catch (error) {
-        console.error("Save failed:", error);
-        showToast("Save failed.");
-      }
-    }
-
-    function migrateLegacySave(data) {
-      if (!data || typeof data !== "object") return null;
-
-      return {
-        saveVersion: CONFIG.saveVersion,
-        gameVersion: CONFIG.version,
-        savedAt: Date.now(),
-        seed: Number(data.seed) || state.seed,
-        gameTimeAnchor: Number(data.gameTimeAnchor) || Number(data.startedAt) || Date.now(),
-        player: {
-          x: Number(data.player?.x) || 672,
-          y: Number(data.player?.y) || 970,
-          direction: data.player?.direction || "down"
-        },
-        resources: {
-          wood: Number(data.resources?.wood) || 0,
-          stone: Number(data.resources?.stone) || 0,
-          coin: Number(data.resources?.coin) || 25
-        },
-        objectStates: Array.isArray(data.objectStates) ? data.objectStates : []
-      };
-    }
-
-    function applySaveData(data) {
-      const migrated = migrateLegacySave(data);
-      if (!migrated) return false;
-
-      state.seed = migrated.seed;
-      state.gameTimeAnchor = migrated.gameTimeAnchor;
-      state.player.x = clamp(migrated.player.x, 60, CONFIG.worldWidth - 60);
-      state.player.y = clamp(migrated.player.y, 60, CONFIG.worldHeight - 60);
-      state.player.direction = migrated.player.direction;
-      state.resources = { ...migrated.resources };
-      state.loadedObjectStates = new Map(
-        migrated.objectStates.map(item => [item.id, item])
-      );
-      return true;
-    }
-
-    function loadGame() {
-      const keys = [CONFIG.saveKey, ...CONFIG.legacySaveKeys];
-
-      for (const key of keys) {
-        try {
-          const raw = localStorage.getItem(key);
-          if (!raw) continue;
-          if (applySaveData(JSON.parse(raw))) return true;
-        } catch (error) {
-          console.warn("Could not load save:", key, error);
-        }
-      }
-
-      try {
-        const rawBackup = localStorage.getItem(CONFIG.backupKey);
-        if (rawBackup && applySaveData(JSON.parse(rawBackup))) {
-          showToast("Recovered backup save.");
-          return true;
-        }
-      } catch (error) {
-        console.warn("Backup load failed:", error);
-      }
-
-      return false;
-    }
-
-    function resizeCanvas() {
-      const rect = canvas.getBoundingClientRect();
-      const ratio = Math.min(window.devicePixelRatio || 1, CONFIG.maxPixelRatio);
-      canvas.width = Math.max(1, Math.round(rect.width * ratio));
-      canvas.height = Math.max(1, Math.round(rect.height * ratio));
-    }
-
-    function beginLogicalCanvas() {
-      const scaleX = canvas.width / CONFIG.logicalWidth;
-      const scaleY = canvas.height / CONFIG.logicalHeight;
-      const scale = Math.min(scaleX, scaleY);
-      const offsetX = (canvas.width - CONFIG.logicalWidth * scale) / 2;
-      const offsetY = (canvas.height - CONFIG.logicalHeight * scale) / 2;
-      ctx.setTransform(scale, 0, 0, scale, offsetX, offsetY);
-    }
-
-    function getCanvasLogicalPoint(clientX, clientY) {
-      const rect = canvas.getBoundingClientRect();
-      return {
-        x: ((clientX - rect.left) / rect.width) * CONFIG.logicalWidth,
-        y: ((clientY - rect.top) / rect.height) * CONFIG.logicalHeight
-      };
-    }
-
-    function isUiTarget(target) {
-      return Boolean(target.closest("button, aside, .top-hud, #context-prompt"));
-    }
-
-    function beginJoystick(event) {
-      if (isUiTarget(event.target)) return;
-      const point = getCanvasLogicalPoint(event.clientX, event.clientY);
-      if (point.y < CONFIG.logicalHeight * 0.45) return;
-
-      state.input.pointerId = event.pointerId;
-      state.input.joystickStartX = event.clientX;
-      state.input.joystickStartY = event.clientY;
-
-      ui.joystick.style.left = `${event.clientX - 59}px`;
-      ui.joystick.style.top = `${event.clientY - 59}px`;
-      ui.joystick.classList.add("visible");
-      ui.joystickKnob.style.transform = "translate(0,0)";
-
-      canvas.setPointerCapture?.(event.pointerId);
-      ui.menuPanel.classList.remove("open");
-      updateJoystick(event);
-    }
-
-    function updateJoystick(event) {
-      if (event.pointerId !== state.input.pointerId) return;
-
-      let dx = event.clientX - state.input.joystickStartX;
-      let dy = event.clientY - state.input.joystickStartY;
-      const radius = 40;
-      const length = Math.hypot(dx, dy);
-
-      if (length > radius) {
-        dx = (dx / length) * radius;
-        dy = (dy / length) * radius;
-      }
-
-      state.input.moveX = dx / radius;
-      state.input.moveY = dy / radius;
-      ui.joystickKnob.style.transform = `translate(${dx}px, ${dy}px)`;
-    }
-
-    function endJoystick(event) {
-      if (event.pointerId !== state.input.pointerId) return;
-      state.input.pointerId = null;
-      state.input.moveX = 0;
-      state.input.moveY = 0;
-      ui.joystick.classList.remove("visible");
-      ui.joystickKnob.style.transform = "translate(0,0)";
-    }
-
-    canvas.addEventListener("pointerdown", beginJoystick);
-    canvas.addEventListener("pointermove", updateJoystick);
-    canvas.addEventListener("pointerup", endJoystick);
-    canvas.addEventListener("pointercancel", endJoystick);
-
-    window.addEventListener("keydown", event => {
-      state.input.keys.add(event.key.toLowerCase());
-    });
-
-    window.addEventListener("keyup", event => {
-      state.input.keys.delete(event.key.toLowerCase());
-    });
-
-    function isBlocked(x, y) {
-      const margin = 34;
-      if (
-        x < margin ||
-        y < margin ||
-        x > CONFIG.worldWidth - margin ||
-        y > CONFIG.worldHeight - margin
-      ) return true;
-
-      for (const object of state.objects) {
-        if (object.state !== "active" || object.collisionRadius <= 0) continue;
-        if (Math.hypot(x - object.x, y - object.y) < state.player.radius + object.collisionRadius) {
-          return true;
-        }
-      }
-
-      return false;
-    }
-
-    function updatePlayer(dt) {
-      if (state.harvesting) {
-        state.player.state = "chopping";
-        return;
-      }
-
-      let moveX = state.input.moveX;
-      let moveY = state.input.moveY;
-
-      if (state.input.keys.has("a") || state.input.keys.has("arrowleft")) moveX -= 1;
-      if (state.input.keys.has("d") || state.input.keys.has("arrowright")) moveX += 1;
-      if (state.input.keys.has("w") || state.input.keys.has("arrowup")) moveY -= 1;
-      if (state.input.keys.has("s") || state.input.keys.has("arrowdown")) moveY += 1;
-
-      const length = Math.hypot(moveX, moveY);
-      state.player.moving = length > .05;
-      state.player.state = state.player.moving ? "walking" : "idle";
-
-      if (length > 1) {
-        moveX /= length;
-        moveY /= length;
-      }
-
-      if (state.player.moving) {
-        if (Math.abs(moveX) > Math.abs(moveY)) {
-          state.player.direction = moveX > 0 ? "right" : "left";
-        } else {
-          state.player.direction = moveY > 0 ? "down" : "up";
-        }
-
-        const nextX = state.player.x + moveX * CONFIG.playerSpeed * dt;
-        const nextY = state.player.y + moveY * CONFIG.playerSpeed * dt;
-
-        if (!isBlocked(nextX, state.player.y)) state.player.x = nextX;
-        if (!isBlocked(state.player.x, nextY)) state.player.y = nextY;
-      }
-    }
-
-    function updateCamera(dt) {
-      const targetX = clamp(
-        state.player.x - CONFIG.logicalWidth / 2,
-        0,
-        CONFIG.worldWidth - CONFIG.logicalWidth
-      );
-
-      const targetY = clamp(
-        state.player.y - CONFIG.logicalHeight / 2,
-        0,
-        CONFIG.worldHeight - CONFIG.logicalHeight
-      );
-
-      const smoothing = 1 - Math.pow(.001, dt);
-      state.camera.x = lerp(state.camera.x, targetX, smoothing);
-      state.camera.y = lerp(state.camera.y, targetY, smoothing);
-    }
-
-    function findContextObject() {
-      let closest = null;
-      let closestDistance = Infinity;
-
-      for (const object of state.objects) {
-        if (object.state !== "active" || !object.interaction) continue;
-        if (object.interaction.type !== "building") continue;
-
-        const d = distance(state.player, object);
-        const allowed = CONFIG.interactionRange + object.collisionRadius;
-        if (d < allowed && d < closestDistance) {
-          closest = object;
-          closestDistance = d;
-        }
-      }
-
-      state.nearbyObject = closest;
-      ui.contextPrompt.textContent = closest?.interaction?.label || "";
-      ui.contextPrompt.classList.toggle("visible", Boolean(closest));
-    }
-
-    function beginHarvest(object) {
-      if (state.harvesting || object.state !== "active") return;
-
-      state.harvesting = {
-        object,
-        startedAt: performance.now(),
-        duration: object.interaction.duration || CONFIG.autoHarvestDuration
-      };
-
-      state.player.state = "chopping";
-      emitAudio("tree.chop.start", { id: object.id });
-    }
-
-    function completeHarvest() {
-      const target = state.harvesting?.object;
-      if (!target) return;
-
-      const resource = target.interaction.resource;
-      const amount = target.interaction.amount || 1;
-
-      target.state = "harvested";
-      target.respawnAt = Date.now() + 5 * 60 * 1000;
-      state.resources[resource] = (state.resources[resource] || 0) + amount;
-
-      showToast(`+${amount} ${resource[0].toUpperCase() + resource.slice(1)}`);
-      emitAudio("resource.collected", { resource, amount });
-      state.harvesting = null;
-      saveGame();
-    }
-
-    function updateAutomaticInteractions() {
-      if (state.harvesting) return;
-
-      let closest = null;
-      let closestDistance = Infinity;
-
-      for (const object of state.objects) {
-        if (object.state !== "active") continue;
-        if (object.interaction?.trigger !== "automatic") continue;
-
-        const d = distance(state.player, object);
-        if (d < CONFIG.autoHarvestRange + object.collisionRadius && d < closestDistance) {
-          closest = object;
-          closestDistance = d;
-        }
-      }
-
-      if (closest) beginHarvest(closest);
-    }
-
-    function updateHarvesting(now) {
-      if (!state.harvesting) return;
-      if (now - state.harvesting.startedAt >= state.harvesting.duration) {
-        completeHarvest();
-      }
-    }
-
-    function triggerContextInteraction() {
-      const object = state.nearbyObject;
-      if (!object) return;
-
-      const now = Date.now();
-      if (now < state.interactionCooldownUntil) return;
-      state.interactionCooldownUntil = now + CONFIG.autoInteractionCooldown;
-
-      emitAudio("building.enter", { id: object.id });
-
-      const messages = {
-        home: "Home interior is Coming Soon.",
-        farm: "Farm systems are Coming Soon.",
-        mine: "Mine Stage 01 is Coming Soon.",
-        harbor: "Harbor development is Coming Soon.",
-        forester_hut: "The forester will arrive later.",
-        well: "Fresh water restores your calm."
-      };
-
-      showToast(messages[object.subtype] || `${object.label} is Coming Soon.`);
-    }
-
-    ui.contextPrompt.addEventListener("click", triggerContextInteraction);
-
-    function getTimeState() {
-      const elapsed = Date.now() - state.gameTimeAnchor;
-      const cycleTime = ((elapsed % CONFIG.dayCycleMs) + CONFIG.dayCycleMs) % CONFIG.dayCycleMs;
-      const day = Math.floor(elapsed / CONFIG.dayCycleMs) + 1;
-      const phaseIndex = Math.floor(cycleTime / CONFIG.phaseDurationMs);
-      const phase = PHASES[phaseIndex];
-
-      const phaseMinutes = Math.floor((cycleTime % CONFIG.phaseDurationMs) / CONFIG.phaseDurationMs * 360);
-      const baseHour = [6, 12, 18, 22][phaseIndex];
-      const hour = (baseHour + Math.floor(phaseMinutes / 60)) % 24;
-      const minute = phaseMinutes % 60;
-
-      return { day, phase, hour, minute };
-    }
-
-    function updateTimeUI() {
-      const time = getTimeState();
-      ui.phaseName.textContent = `${time.phase.icon} ${time.phase.name}`;
-      ui.clockLabel.textContent =
-        `Day ${time.day} · ${String(time.hour).padStart(2, "0")}:${String(time.minute).padStart(2, "0")}`;
-    }
-
-    function drawGround() {
-      ctx.fillStyle = "#7daa69";
-      ctx.fillRect(0, 0, CONFIG.logicalWidth, CONFIG.logicalHeight);
-
-      const camX = state.camera.x;
-      const camY = state.camera.y;
-
-      // Soft grass variation.
-      const grad = ctx.createLinearGradient(0, 0, 0, CONFIG.logicalHeight);
-      grad.addColorStop(0, "rgba(255,255,255,.05)");
-      grad.addColorStop(1, "rgba(30,70,45,.07)");
-      ctx.fillStyle = grad;
-      ctx.fillRect(0, 0, CONFIG.logicalWidth, CONFIG.logicalHeight);
-
-      // Water district.
-      ctx.fillStyle = "#68a9b6";
-      ctx.fillRect(1010 - camX, 1480 - camY, 334, 440);
-
-      // Main winding paths.
-      ctx.strokeStyle = "#cfb67e";
-      ctx.lineCap = "round";
-      ctx.lineJoin = "round";
-      ctx.lineWidth = 58;
-
-      ctx.beginPath();
-      ctx.moveTo(500 - camX, 250 - camY);
-      ctx.lineTo(640 - camX, 650 - camY);
-      ctx.lineTo(680 - camX, 1080 - camY);
-      ctx.lineTo(520 - camX, 1370 - camY);
-      ctx.lineTo(920 - camX, 1710 - camY);
-      ctx.stroke();
-
-      ctx.beginPath();
-      ctx.moveTo(640 - camX, 650 - camY);
-      ctx.lineTo(930 - camX, 430 - camY);
-      ctx.stroke();
-
-      ctx.beginPath();
-      ctx.moveTo(680 - camX, 1080 - camY);
-      ctx.lineTo(820 - camX, 930 - camY);
-      ctx.stroke();
-
-      ctx.beginPath();
-      ctx.moveTo(520 - camX, 1370 - camY);
-      ctx.lineTo(355 - camX, 1250 - camY);
-      ctx.stroke();
-
-      // Farm plots.
-      ctx.fillStyle = "#8b6545";
-      for (let row = 0; row < 4; row++) {
-        for (let col = 0; col < 5; col++) {
-          ctx.fillRect(
-            220 + col * 42 - camX,
-            1340 + row * 34 - camY,
-            32,
-            22
-          );
-        }
-      }
-    }
-
-    function drawGrid() {
-      if (!state.debug.grid) return;
-
-      ctx.save();
-      ctx.strokeStyle = "rgba(255,255,255,.14)";
-      ctx.lineWidth = 1;
-
-      const startX = -(state.camera.x % CONFIG.tileSize);
-      const startY = -(state.camera.y % CONFIG.tileSize);
-
-      for (let x = startX; x < CONFIG.logicalWidth; x += CONFIG.tileSize) {
-        ctx.beginPath();
-        ctx.moveTo(x, 0);
-        ctx.lineTo(x, CONFIG.logicalHeight);
-        ctx.stroke();
-      }
-
-      for (let y = startY; y < CONFIG.logicalHeight; y += CONFIG.tileSize) {
-        ctx.beginPath();
-        ctx.moveTo(0, y);
-        ctx.lineTo(CONFIG.logicalWidth, y);
-        ctx.stroke();
-      }
-
-      ctx.restore();
-    }
-
-    function drawBuilding(object, x, y) {
-      ctx.save();
-
-      // Shadow.
-      ctx.fillStyle = "rgba(0,0,0,.2)";
-      ctx.beginPath();
-      ctx.ellipse(x, y + 8, object.width * .42, 18, 0, 0, Math.PI * 2);
-      ctx.fill();
-
-      // Base.
-      ctx.fillStyle = object.color;
-      ctx.fillRect(x - object.width / 2, y - object.height, object.width, object.height);
-
-      // Roof.
-      ctx.fillStyle = object.subtype === "mine" ? "#4f5654" : "#8d4f33";
-      ctx.beginPath();
-      ctx.moveTo(x - object.width * .58, y - object.height + 20);
-      ctx.lineTo(x, y - object.height - 48);
-      ctx.lineTo(x + object.width * .58, y - object.height + 20);
-      ctx.closePath();
-      ctx.fill();
-
-      // Door.
-      ctx.fillStyle = "#4f3528";
-      ctx.fillRect(x - 18, y - 54, 36, 54);
-
-      // Windows.
-      ctx.fillStyle = "#9fd4d6";
-      ctx.fillRect(x - object.width * .32, y - 82, 28, 25);
-      ctx.fillRect(x + object.width * .18, y - 82, 28, 25);
-
-      // Soft highlight.
-      ctx.fillStyle = "rgba(255,255,255,.10)";
-      ctx.fillRect(x - object.width / 2 + 12, y - object.height + 12, object.width - 24, 10);
-
-      ctx.restore();
-    }
-
-    function drawTree(object, x, y) {
-      ctx.save();
-
-      ctx.fillStyle = "rgba(0,0,0,.18)";
-      ctx.beginPath();
-      ctx.ellipse(x, y + 4, 28, 11, 0, 0, Math.PI * 2);
-      ctx.fill();
-
-      ctx.fillStyle = "#77513b";
-      ctx.fillRect(x - 10, y - 52, 20, 52);
-
-      ctx.fillStyle = object.color;
-      ctx.beginPath();
-      ctx.arc(x, y - 92, 37, 0, Math.PI * 2);
-      ctx.arc(x - 26, y - 75, 29, 0, Math.PI * 2);
-      ctx.arc(x + 28, y - 74, 31, 0, Math.PI * 2);
-      ctx.fill();
-
-      ctx.fillStyle = "rgba(255,255,255,.08)";
-      ctx.beginPath();
-      ctx.arc(x - 12, y - 101, 15, 0, Math.PI * 2);
-      ctx.fill();
-
-      ctx.restore();
-    }
-
-    function drawStone(object, x, y) {
-      ctx.save();
-      ctx.fillStyle = "rgba(0,0,0,.14)";
-      ctx.beginPath();
-      ctx.ellipse(x, y + 4, 18, 8, 0, 0, Math.PI * 2);
-      ctx.fill();
-
-      ctx.fillStyle = object.color;
-      ctx.beginPath();
-      ctx.moveTo(x - 17, y);
-      ctx.lineTo(x - 8, y - 15);
-      ctx.lineTo(x + 10, y - 13);
-      ctx.lineTo(x + 18, y);
-      ctx.lineTo(x + 8, y + 7);
-      ctx.lineTo(x - 11, y + 6);
-      ctx.closePath();
-      ctx.fill();
-      ctx.restore();
-    }
-
-    function drawObject(object) {
-      if (object.state !== "active") return;
-
-      const x = object.x - state.camera.x;
-      const y = object.y - state.camera.y;
-
-      if (x < -240 || y < -240 || x > CONFIG.logicalWidth + 240 || y > CONFIG.logicalHeight + 240) {
-        return;
-      }
-
-      if (object.type === "building" || object.type === "gate") drawBuilding(object, x, y);
-      if (object.subtype === "tree") drawTree(object, x, y);
-      if (object.subtype === "stone") drawStone(object, x, y);
-
-      if (state.debug.collision && object.collisionRadius > 0) {
-        ctx.save();
-        ctx.strokeStyle = "#ffe16a";
-        ctx.lineWidth = 2;
-        ctx.beginPath();
-        ctx.arc(x, y, object.collisionRadius, 0, Math.PI * 2);
-        ctx.stroke();
-        ctx.restore();
-      }
-
-      if (state.debug.clearZones && object.clearRadius > 0) {
-        ctx.save();
-        ctx.strokeStyle = "rgba(100,220,255,.8)";
-        ctx.setLineDash([8, 6]);
-        ctx.beginPath();
-        ctx.arc(x, y, object.clearRadius, 0, Math.PI * 2);
-        ctx.stroke();
-        ctx.restore();
-      }
-
-      if (state.debug.interactions && object.interaction) {
-        ctx.save();
-        ctx.strokeStyle = "rgba(255,140,190,.8)";
-        ctx.setLineDash([6, 5]);
-        ctx.beginPath();
-        ctx.arc(
-          x,
-          y,
-          object.interaction.type === "harvest"
-            ? CONFIG.autoHarvestRange + object.collisionRadius
-            : CONFIG.interactionRange + object.collisionRadius,
-          0,
-          Math.PI * 2
-        );
-        ctx.stroke();
-        ctx.restore();
-      }
-    }
-
-    function drawPlayer() {
-      const x = state.player.x - state.camera.x;
-      const y = state.player.y - state.camera.y;
-      const bob = state.player.state === "walking"
-        ? Math.sin(performance.now() / 90) * 2
-        : 0;
-
-      ctx.save();
-
-      ctx.fillStyle = "rgba(0,0,0,.2)";
-      ctx.beginPath();
-      ctx.ellipse(x, y + 5, 23, 10, 0, 0, Math.PI * 2);
-      ctx.fill();
-
-      // Pants.
-      ctx.fillStyle = "#4a5c6d";
-      ctx.fillRect(x - 12, y - 8 + bob, 10, 18);
-      ctx.fillRect(x + 2, y - 8 + bob, 10, 18);
-
-      // Shirt.
-      ctx.fillStyle = "#3f7880";
-      ctx.fillRect(x - 15, y - 35 + bob, 30, 30);
-
-      // Head.
-      ctx.fillStyle = "#d9a36f";
-      ctx.beginPath();
-      ctx.arc(x, y - 50 + bob, 17, 0, Math.PI * 2);
-      ctx.fill();
-
-      // Hair.
-      ctx.fillStyle = "#4b3326";
-      ctx.beginPath();
-      ctx.arc(x, y - 55 + bob, 17, Math.PI, Math.PI * 2);
-      ctx.fill();
-
-      if (state.player.state === "chopping") {
-        const swing = Math.sin(performance.now() / 85) * .6;
-        ctx.save();
-        ctx.translate(x + 12, y - 20);
-        ctx.rotate(swing);
-        ctx.strokeStyle = "#78583f";
-        ctx.lineWidth = 4;
-        ctx.beginPath();
-        ctx.moveTo(0, 0);
-        ctx.lineTo(22, -22);
-        ctx.stroke();
-        ctx.fillStyle = "#aeb7b3";
-        ctx.fillRect(17, -29, 14, 9);
-        ctx.restore();
-      }
-
-      ctx.restore();
-    }
-
-    function drawLighting() {
-      const time = getTimeState();
-      ctx.fillStyle = time.phase.overlay;
-      ctx.fillRect(0, 0, CONFIG.logicalWidth, CONFIG.logicalHeight);
-
-      if (time.phase.id === "night") {
-        const x = state.player.x - state.camera.x;
-        const y = state.player.y - state.camera.y;
-        const gradient = ctx.createRadialGradient(x, y - 20, 40, x, y - 20, 260);
-        gradient.addColorStop(0, "rgba(255,220,150,.18)");
-        gradient.addColorStop(1, "rgba(255,220,150,0)");
-        ctx.fillStyle = gradient;
-        ctx.fillRect(0, 0, CONFIG.logicalWidth, CONFIG.logicalHeight);
-      }
-    }
-
-    function render() {
-      beginLogicalCanvas();
-      drawGround();
-      drawGrid();
-
-      const visible = state.objects
-        .filter(object => object.state === "active")
-        .sort((a, b) => {
-          if (a.layer !== b.layer) return a.layer - b.layer;
-          return a.y - b.y;
-        });
-
-      for (const object of visible) {
-        if (object.y < state.player.y) drawObject(object);
-      }
-
-      drawPlayer();
-
-      for (const object of visible) {
-        if (object.y >= state.player.y) drawObject(object);
-      }
-
-      drawLighting();
-    }
-
-    function update(dt, now) {
-      updateRespawns();
-      updatePlayer(dt);
-      updateCamera(dt);
-      findContextObject();
-      updateAutomaticInteractions();
-      updateHarvesting(now);
-      updateTimeUI();
-
-      ui.wood.textContent = state.resources.wood;
-      ui.stone.textContent = state.resources.stone;
-      ui.coin.textContent = state.resources.coin;
-
-      state.frameCounter += 1;
-      state.fpsTimer += dt;
-
-      if (state.fpsTimer >= .5) {
-        state.fps = Math.round(state.frameCounter / state.fpsTimer);
-        state.frameCounter = 0;
-        state.fpsTimer = 0;
-      }
-
-      ui.debugStats.innerHTML = [
-        `FPS: ${state.fps}`,
-        `Seed: ${state.seed}`,
-        `Player: ${Math.round(state.player.x)}, ${Math.round(state.player.y)}`,
-        `Objects: ${state.objects.length}`,
-        `State: ${state.player.state}`
-      ].join("<br>");
-    }
-
-    function loop(timestamp) {
-      if (state.paused) {
-        state.lastTimestamp = timestamp;
-        requestAnimationFrame(loop);
-        return;
-      }
-
-      const dt = Math.min(.05, (timestamp - state.lastTimestamp) / 1000);
-      state.lastTimestamp = timestamp;
-
-      update(dt, timestamp);
-      render();
-      requestAnimationFrame(loop);
-    }
-
-    ui.menuButton.addEventListener("click", event => {
-      event.stopPropagation();
-      ui.menuPanel.classList.toggle("open");
-      emitAudio("ui.menu.open");
-    });
-
-    document.addEventListener("pointerdown", event => {
-      if (!ui.menuPanel.classList.contains("open")) return;
-      if (ui.menuPanel.contains(event.target) || ui.menuButton.contains(event.target)) return;
-      ui.menuPanel.classList.remove("open");
-    });
-
-    ui.menuPanel.addEventListener("click", event => {
-      const button = event.target.closest("[data-action]");
-      if (!button) return;
-
-      const action = button.dataset.action;
-
-      if (action === "save") saveGame(true);
-      if (action === "inventory") showToast("Resources are stored automatically.");
-      if (action === "village") showToast("Village upgrades are Coming Soon.");
-      if (action === "settings") showToast("Settings are Coming Soon.");
-      if (action === "comingSoon") showToast("More areas are Coming Soon.");
-      if (action === "debug") ui.debugPanel.classList.toggle("open");
-    });
-
-    ui.grid.addEventListener("change", () => state.debug.grid = ui.grid.checked);
-    ui.collision.addEventListener("change", () => state.debug.collision = ui.collision.checked);
-    ui.clearZones.addEventListener("change", () => state.debug.clearZones = ui.clearZones.checked);
-    ui.interactions.addEventListener("change", () => state.debug.interactions = ui.interactions.checked);
-
-    document.getElementById("regenerate").addEventListener("click", () => {
-      state.seed += 1;
-      state.loadedObjectStates.clear();
-      generateWorld();
-      showToast(`World regenerated · Seed ${state.seed}`);
-      saveGame();
-    });
-
-    document.getElementById("reset-save").addEventListener("click", () => {
-      localStorage.removeItem(CONFIG.saveKey);
-      localStorage.removeItem(CONFIG.backupKey);
-      location.reload();
-    });
-
-    window.addEventListener("resize", resizeCanvas);
-    window.addEventListener("orientationchange", resizeCanvas);
-
-    document.addEventListener("visibilitychange", () => {
-      state.paused = document.hidden;
-      if (document.hidden) saveGame();
-    });
-
-    window.addEventListener("pagehide", () => saveGame());
-    setInterval(() => saveGame(), CONFIG.autosaveMs);
-
-    function boot() {
-      const loaded = loadGame();
-      generateWorld();
-      resizeCanvas();
-
-      state.camera.x = clamp(
-        state.player.x - CONFIG.logicalWidth / 2,
-        0,
-        CONFIG.worldWidth - CONFIG.logicalWidth
-      );
-
-      state.camera.y = clamp(
-        state.player.y - CONFIG.logicalHeight / 2,
-        0,
-        CONFIG.worldHeight - CONFIG.logicalHeight
-      );
-
-      showToast(
-        loaded
-          ? "Welcome back to Readi World."
-          : "Welcome to Readi World v0.0.3."
-      );
-
-      requestAnimationFrame(loop);
-    }
-
-    boot();
-  </script>
+    <button class="menu" id="menu">☰</button>
+  </div>
+  <button id="prompt">Enter Home</button>
+  <div id="toast"></div>
+  <div id="joy"><div id="knob"></div></div>
+  <aside id="panel">
+    <div class="grid">
+      <button class="item" data-a="save">Save now</button>
+      <button class="item" data-a="inventory">Inventory</button>
+      <button class="item" data-a="village">Village</button>
+      <button class="item" data-a="settings">Settings</button>
+    </div>
+  </aside>
+</main>
+
+<script>
+"use strict";
+
+const CONFIG={
+  logicalWidth:720,logicalHeight:1280,maxPixelRatio:2,
+  speed:220,interactionRange:90,harvestRange:68,
+  dayCycleMs:4*60*60*1000,phaseDurationMs:60*60*1000,
+  saveKey:"readiWorld_v004"
+};
+
+const PATHS={
+  layout:"./data/village_layout.json",
+  registry:"./data/sprite_registry.json",
+  buildings:"./assets/buildings/village_buildings.png"
+};
+
+const canvas=document.getElementById("game");
+const ctx=canvas.getContext("2d",{alpha:false});
+const ui={
+  loading:document.getElementById("loading"),wood:document.getElementById("wood"),
+  stone:document.getElementById("stone"),coin:document.getElementById("coin"),
+  phase:document.getElementById("phase"),clock:document.getElementById("clock"),
+  menu:document.getElementById("menu"),panel:document.getElementById("panel"),
+  prompt:document.getElementById("prompt"),toast:document.getElementById("toast"),
+  joy:document.getElementById("joy"),knob:document.getElementById("knob")
+};
+
+const phases=[
+  {name:"Morning",icon:"☀️",overlay:"rgba(255,220,150,.06)",base:6},
+  {name:"Afternoon",icon:"🌤️",overlay:"rgba(255,255,255,0)",base:12},
+  {name:"Evening",icon:"🌇",overlay:"rgba(221,113,65,.15)",base:18},
+  {name:"Night",icon:"🌙",overlay:"rgba(15,32,58,.38)",base:22}
+];
+
+const state={
+  layout:null,registry:null,buildingImage:null,
+  world:{width:1344,height:1920},
+  player:{x:672,y:930,direction:"up",moving:false},
+  camera:{x:0,y:0},resources:{wood:0,stone:0,coin:25},
+  input:{pointerId:null,startX:0,startY:0,x:0,y:0},
+  context:null,gameTimeAnchor:Date.now(),last:performance.now(),
+  fallback:false,toastTimer:null
+};
+
+function clamp(v,a,b){return Math.max(a,Math.min(b,v))}
+function dist(a,b){return Math.hypot(a.x-b.x,a.y-b.y)}
+function showToast(t){ui.toast.textContent=t;ui.toast.classList.add("show");clearTimeout(state.toastTimer);state.toastTimer=setTimeout(()=>ui.toast.classList.remove("show"),1400)}
+function save(){localStorage.setItem(CONFIG.saveKey,JSON.stringify({player:state.player,resources:state.resources,gameTimeAnchor:state.gameTimeAnchor}))}
+function loadSave(){try{const d=JSON.parse(localStorage.getItem(CONFIG.saveKey));if(!d)return;Object.assign(state.player,d.player||{});Object.assign(state.resources,d.resources||{});state.gameTimeAnchor=d.gameTimeAnchor||Date.now()}catch{}}
+
+async function fetchJson(url){
+  const r=await fetch(url,{cache:"no-store"});
+  if(!r.ok)throw new Error(`${url}: ${r.status}`);
+  return r.json();
+}
+function loadImage(url){
+  return new Promise((resolve,reject)=>{const img=new Image();img.onload=()=>resolve(img);img.onerror=()=>reject(new Error(`Image failed: ${url}`));img.src=url+"?v=4";});
+}
+
+function resize(){
+  const r=canvas.getBoundingClientRect(),d=Math.min(devicePixelRatio||1,CONFIG.maxPixelRatio);
+  canvas.width=Math.round(r.width*d);canvas.height=Math.round(r.height*d);
+}
+function beginLogical(){
+  const sx=canvas.width/CONFIG.logicalWidth,sy=canvas.height/CONFIG.logicalHeight,s=Math.min(sx,sy);
+  ctx.setTransform(s,0,0,s,(canvas.width-CONFIG.logicalWidth*s)/2,(canvas.height-CONFIG.logicalHeight*s)/2);
+}
+
+function spriteMeta(id){
+  return state.registry?.atlases?.village_buildings?.sprites?.[id]||null;
+}
+function drawAtlasSprite(id,x,y){
+  const m=spriteMeta(id);
+  if(!m||!state.buildingImage){drawFallbackBuilding(id,x,y);return;}
+  const fw=state.registry.atlases.village_buildings.frameWidth;
+  const fh=state.registry.atlases.village_buildings.frameHeight;
+  const [dw,dh]=m.drawSize;
+  const [px,py]=m.pivot;
+  ctx.drawImage(state.buildingImage,m.col*fw,m.row*fh,fw,fh,x-dw*px,y-dh*py,dw,dh);
+}
+function drawFallbackBuilding(id,x,y){
+  ctx.save();ctx.fillStyle="#a77448";ctx.fillRect(x-80,y-110,160,110);ctx.fillStyle="#8b4f32";ctx.beginPath();ctx.moveTo(x-95,y-110);ctx.lineTo(x,y-170);ctx.lineTo(x+95,y-110);ctx.closePath();ctx.fill();ctx.fillStyle="#4d3428";ctx.fillRect(x-16,y-48,32,48);ctx.restore();
+}
+
+function drawGround(){
+  ctx.fillStyle="#7ca66b";ctx.fillRect(0,0,CONFIG.logicalWidth,CONFIG.logicalHeight);
+  const cx=state.camera.x,cy=state.camera.y;
+  for(const p of state.layout.paths||[]){
+    ctx.strokeStyle="#d0b67d";ctx.lineWidth=p.width;ctx.lineCap="round";ctx.lineJoin="round";ctx.beginPath();
+    p.points.forEach((pt,i)=>i?ctx.lineTo(pt.x-cx,pt.y-cy):ctx.moveTo(pt.x-cx,pt.y-cy));ctx.stroke();
+  }
+  for(const w of state.layout.water||[]){
+    ctx.fillStyle="#5c9fb0";ctx.beginPath();w.polygon.forEach((pt,i)=>i?ctx.lineTo(pt.x-cx,pt.y-cy):ctx.moveTo(pt.x-cx,pt.y-cy));ctx.closePath();ctx.fill();
+  }
+}
+
+function drawDecor(){
+  const cx=state.camera.x,cy=state.camera.y;
+  for(let i=0;i<48;i++){
+    const x=(i*173)%state.world.width,y=(i*257)%state.world.height;
+    if((state.layout.buildings||[]).some(b=>Math.hypot(x-b.position.x,y-b.position.y)<b.clearRadius))continue;
+    ctx.fillStyle=i%3?"#4d7d43":"#5c8b50";ctx.beginPath();ctx.arc(x-cx,y-cy-22,26,0,Math.PI*2);ctx.fill();
+    ctx.fillStyle="#76523d";ctx.fillRect(x-cx-6,y-cy-22,12,35);
+  }
+}
+
+function drawBuildings(){
+  const cx=state.camera.x,cy=state.camera.y;
+  const sorted=[...(state.layout.buildings||[])].sort((a,b)=>a.position.y-b.position.y);
+  for(const b of sorted)drawAtlasSprite(b.spriteId,b.position.x-cx,b.position.y-cy);
+}
+
+function drawPlayer(){
+  const x=state.player.x-state.camera.x,y=state.player.y-state.camera.y;
+  ctx.fillStyle="rgba(0,0,0,.2)";ctx.beginPath();ctx.ellipse(x,y+5,22,9,0,0,Math.PI*2);ctx.fill();
+  ctx.fillStyle="#3f7880";ctx.fillRect(x-14,y-34,28,30);ctx.fillStyle="#d9a36f";ctx.beginPath();ctx.arc(x,y-49,16,0,Math.PI*2);ctx.fill();
+  ctx.fillStyle="#4b3326";ctx.beginPath();ctx.arc(x,y-54,16,Math.PI,Math.PI*2);ctx.fill();
+}
+
+function timeState(){
+  const e=Date.now()-state.gameTimeAnchor,c=((e%CONFIG.dayCycleMs)+CONFIG.dayCycleMs)%CONFIG.dayCycleMs,idx=Math.floor(c/CONFIG.phaseDurationMs);
+  const min=Math.floor((c%CONFIG.phaseDurationMs)/CONFIG.phaseDurationMs*360),h=(phases[idx].base+Math.floor(min/60))%24;
+  return{phase:phases[idx],day:Math.floor(e/CONFIG.dayCycleMs)+1,h,m:min%60};
+}
+
+function render(){
+  beginLogical();drawGround();drawDecor();drawBuildings();drawPlayer();
+  const t=timeState();ctx.fillStyle=t.phase.overlay;ctx.fillRect(0,0,CONFIG.logicalWidth,CONFIG.logicalHeight);
+}
+
+function blocked(x,y){
+  if(x<30||y<30||x>state.world.width-30||y>state.world.height-30)return true;
+  return (state.layout.buildings||[]).some(b=>Math.hypot(x-b.position.x,y-b.position.y)<(b.collisionRadius||60)+18);
+}
+
+function update(dt){
+  let x=state.input.x,y=state.input.y,l=Math.hypot(x,y);if(l>1){x/=l;y/=l}
+  const nx=state.player.x+x*CONFIG.speed*dt,ny=state.player.y+y*CONFIG.speed*dt;
+  if(!blocked(nx,state.player.y))state.player.x=nx;if(!blocked(state.player.x,ny))state.player.y=ny;
+  const tx=clamp(state.player.x-CONFIG.logicalWidth/2,0,state.world.width-CONFIG.logicalWidth),ty=clamp(state.player.y-CONFIG.logicalHeight/2,0,state.world.height-CONFIG.logicalHeight);
+  state.camera.x+=(tx-state.camera.x)*Math.min(1,dt*8);state.camera.y+=(ty-state.camera.y)*Math.min(1,dt*8);
+
+  let best=null,bestD=1e9;
+  for(const b of state.layout.buildings||[]){const d=Math.hypot(state.player.x-b.interactionPoint.x,state.player.y-b.interactionPoint.y);if(d<CONFIG.interactionRange&&d<bestD){best=b;bestD=d}}
+  state.context=best;ui.prompt.textContent=best?.interactionLabel||"";ui.prompt.classList.toggle("show",!!best);
+
+  const t=timeState();ui.phase.textContent=`${t.phase.icon} ${t.phase.name}`;ui.clock.textContent=`Day ${t.day} · ${String(t.h).padStart(2,"0")}:${String(t.m).padStart(2,"0")}`;
+  ui.wood.textContent=state.resources.wood;ui.stone.textContent=state.resources.stone;ui.coin.textContent=state.resources.coin;
+}
+
+function loop(now){const dt=Math.min(.05,(now-state.last)/1000);state.last=now;update(dt);render();requestAnimationFrame(loop)}
+
+function logicalPoint(e){const r=canvas.getBoundingClientRect();return{x:(e.clientX-r.left)/r.width*CONFIG.logicalWidth,y:(e.clientY-r.top)/r.height*CONFIG.logicalHeight}}
+canvas.addEventListener("pointerdown",e=>{
+  const p=logicalPoint(e);if(p.y<CONFIG.logicalHeight*.45)return;
+  state.input.pointerId=e.pointerId;state.input.startX=e.clientX;state.input.startY=e.clientY;
+  ui.joy.style.left=(e.clientX-59)+"px";ui.joy.style.top=(e.clientY-59)+"px";ui.joy.classList.add("show");canvas.setPointerCapture?.(e.pointerId);
+});
+canvas.addEventListener("pointermove",e=>{
+  if(e.pointerId!==state.input.pointerId)return;let dx=e.clientX-state.input.startX,dy=e.clientY-state.input.startY,l=Math.hypot(dx,dy),r=40;if(l>r){dx=dx/l*r;dy=dy/l*r}
+  state.input.x=dx/r;state.input.y=dy/r;ui.knob.style.transform=`translate(${dx}px,${dy}px)`;
+});
+function endJoy(e){if(e.pointerId!==state.input.pointerId)return;state.input.pointerId=null;state.input.x=0;state.input.y=0;ui.joy.classList.remove("show");ui.knob.style.transform="translate(0,0)"}
+canvas.addEventListener("pointerup",endJoy);canvas.addEventListener("pointercancel",endJoy);
+
+ui.menu.onclick=()=>ui.panel.classList.toggle("open");
+ui.prompt.onclick=()=>state.context&&showToast(`${state.context.interactionLabel} · Coming Soon`);
+ui.panel.onclick=e=>{const a=e.target.dataset.a;if(!a)return;if(a==="save"){save();showToast("Game saved.")}else showToast(`${a[0].toUpperCase()+a.slice(1)} · Coming Soon`)};
+document.addEventListener("visibilitychange",()=>{if(document.hidden)save()});
+window.addEventListener("resize",resize);
+
+async function boot(){
+  loadSave();
+  const results=await Promise.allSettled([fetchJson(PATHS.layout),fetchJson(PATHS.registry),loadImage(PATHS.buildings)]);
+  if(results[0].status==="fulfilled")state.layout=results[0].value;else throw results[0].reason;
+  if(results[1].status==="fulfilled")state.registry=results[1].value;else state.fallback=true;
+  if(results[2].status==="fulfilled")state.buildingImage=results[2].value;else state.fallback=true;
+  state.world=state.layout.worldSize||state.world;
+  const spawn=state.layout.playerSpawn||{};if(!localStorage.getItem(CONFIG.saveKey)){state.player.x=spawn.x||672;state.player.y=spawn.y||930;state.player.direction=spawn.direction||"up"}
+  resize();ui.loading.classList.add("hidden");if(state.fallback)showToast("Asset fallback active.");requestAnimationFrame(loop);
+}
+
+boot().catch(err=>{console.error(err);ui.loading.textContent="Failed to load game files. Check data/ and assets/ paths.";});
+</script>
 </body>
 </html>
