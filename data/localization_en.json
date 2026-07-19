@@ -1,0 +1,13 @@
+{
+  "version": "0.0.3",
+  "language": "en",
+  "description": "English localization strings",
+  "ui": {
+    "action.enter_home": "Enter Home",
+    "action.visit_farm": "Visit Farm",
+    "action.visit_forester": "Visit Forester's Hut",
+    "action.inspect_mine": "Inspect Mine",
+    "action.inspect_harbor": "Inspect Harbor"
+  },
+  "placeholder": "Localization strings being added"
+}

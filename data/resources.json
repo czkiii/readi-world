@@ -1,0 +1,9 @@
+{
+  "version": "0.0.3",
+  "description": "Resource definitions and economy",
+  "resources": {
+    "wood": { "id": "resource.wood", "name": "Wood", "icon": "🪵" },
+    "stone": { "id": "resource.stone", "name": "Stone", "icon": "🪨" },
+    "coin": { "id": "resource.coin", "name": "Coin", "icon": "🪙" }
+  }
+}
