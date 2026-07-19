@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<title>Readi Game Test v0.1</title>
+
+<style>
+html,body{
+    margin:0;
+    padding:0;
+    overflow:hidden;
+    background:#111;
+    color:white;
+    font-family:-apple-system,BlinkMacSystemFont,sans-serif;
+    touch-action:none;
+}
+
+canvas{
+    display:block;
+    width:100vw;
+    height:100vh;
+    background:#181818;
+}
+</style>
+</head>
+
+<body>
+
+<canvas id="game"></canvas>
+
+<script>
+const VERSION="0.1";
+
+const canvas=document.getElementById("game");
+const ctx=canvas.getContext("2d");
+
+let w,h;
+
+function resize(){
+    w=canvas.width=window.innerWidth;
+    h=canvas.height=window.innerHeight;
+}
+window.addEventListener("resize",resize);
+resize();
+
+const player={
+    x:0,
+    y:0,
+    r:30,
+    color:"#00ff99"
+};
+
+function centerPlayer(){
+    player.x=w/2;
+    player.y=h/2;
+}
+centerPlayer();
+
+window.addEventListener("resize",centerPlayer);
+
+canvas.addEventListener("pointerdown",move);
+canvas.addEventListener("pointermove",e=>{
+    if(e.buttons) move(e);
+});
+
+function move(e){
+    player.x=e.clientX;
+    player.y=e.clientY;
+}
+
+let frames=0;
+let fps=0;
+let last=performance.now();
+
+function loop(time){
+
+    frames++;
+
+    if(time-last>=1000){
+        fps=frames;
+        frames=0;
+        last=time;
+    }
+
+    ctx.clearRect(0,0,w,h);
+
+    ctx.fillStyle="#181818";
+    ctx.fillRect(0,0,w,h);
+
+    ctx.beginPath();
+    ctx.arc(player.x,player.y,player.r,0,Math.PI*2);
+    ctx.fillStyle=player.color;
+    ctx.fill();
+
+    ctx.fillStyle="white";
+    ctx.font="20px sans-serif";
+
+    ctx.fillText("Readi Game Test",20,40);
+    ctx.fillText("Version: "+VERSION,20,70);
+    ctx.fillText("FPS: "+fps,20,100);
+    ctx.fillText("Tap or drag the circle",20,130);
+
+    requestAnimationFrame(loop);
+}
+
+requestAnimationFrame(loop);
+</script>
+
+</body>
+</html>
