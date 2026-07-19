@@ -1,0 +1,22 @@
+{
+  "id": "./",
+  "name": "Readi World",
+  "short_name": "Readi World",
+  "description": "A cozy, portrait-first, progression-focused village world.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "display_override": [
+    "standalone",
+    "fullscreen"
+  ],
+  "orientation": "portrait",
+  "background_color": "#0f1714",
+  "theme_color": "#20382c",
+  "lang": "en",
+  "dir": "ltr",
+  "categories": [
+    "games",
+    "entertainment"
+  ]
+}
