@@ -7,7 +7,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <link rel="manifest" href="./manifest.json">
-<title>Readi World v0.0.9</title>
+<title>Readi World v0.0.10</title>
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#102019;touch-action:none;overscroll-behavior:none;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
@@ -28,16 +28,19 @@ canvas{position:absolute;inset:0;width:100%;height:100%;display:block;touch-acti
 <body><main id="app">
 <canvas id="game"></canvas><div id="loading">Loading Readi World…</div>
 <div class="top"><div class="card profile"><div class="avatar">🧑🏻</div><div class="meta"><strong>Player</strong>Lv. 3</div></div><div class="card center"><div class="resources"><span class="res">🪵 <b id="wood">0</b></span><span class="res">🪨 <b id="stone">0</b></span><span class="res">🪙 <b id="coin">25</b></span></div><div class="time"><strong id="phase">☀️ Morning</strong><span id="clock">Day 1 · 08:30</span></div></div><button class="menu" id="menu">☰</button></div>
-<button id="prompt"></button><div id="toast"></div><div id="debug">INPUT 0.00 0.00</div><div id="joy"><div id="knob"></div></div>
+<button id="prompt"></button><div id="toast"></div><div id="debug">INPUT 0.00 0.00 | 0 ATLAS</div><div id="joy"><div id="knob"></div></div>
 <aside id="panel"><div class="grid"><button class="item" data-a="save">Save now</button><button class="item" data-a="inventory">Inventory</button><button class="item" data-a="village">Village</button><button class="item" data-a="settings">Settings</button></div></aside>
 </main><script>
 "use strict";
-const CONFIG={LW:720,LH:1280,DPR:2,SPEED:240,INTERACT:95,HARVEST:70,SAVE:"readiWorld_v009",DAY:4*60*60*1000,PHASE:60*60*1000};
-const PATHS={layout:"./data/village_layout.json?v=9",registry:"./data/sprite_registry.json?v=9",buildings:"./assets/buildings/village_buildings.png?v=9"};
+const CONFIG={LW:720,LH:1280,DPR:2,SPEED:240,INTERACT:95,HARVEST:70,SAVE:"readiWorld_v010",DAY:4*60*60*1000,PHASE:60*60*1000};
+const PATHS={
+  layout:"./data/village_layout.json?v=10",
+  registry:"./data/sprite_registry.json?v=10"
+};
 const canvas=document.getElementById("game"),ctx=canvas.getContext("2d",{alpha:false});
 const app=document.getElementById("app"),ui={loading:document.getElementById("loading"),wood:document.getElementById("wood"),stone:document.getElementById("stone"),coin:document.getElementById("coin"),phase:document.getElementById("phase"),clock:document.getElementById("clock"),menu:document.getElementById("menu"),panel:document.getElementById("panel"),prompt:document.getElementById("prompt"),toast:document.getElementById("toast"),debug:document.getElementById("debug"),joy:document.getElementById("joy"),knob:document.getElementById("knob")};
 const phases=[{n:"Morning",i:"☀️",o:"rgba(255,220,150,.06)",h:6},{n:"Afternoon",i:"🌤️",o:"rgba(255,255,255,0)",h:12},{n:"Evening",i:"🌇",o:"rgba(221,113,65,.15)",h:18},{n:"Night",i:"🌙",o:"rgba(15,32,58,.38)",h:22}];
-const state={layout:null,registry:null,atlas:null,atlasCanvas:null,spriteRects:{},atlasValid:false,world:{width:1344,height:1920},player:{x:672,y:930},camera:{x:0,y:0},resources:{wood:0,stone:0,coin:25},input:{active:false,id:null,sx:0,sy:0,x:0,y:0,lastMove:0},trees:[],harvest:null,context:null,timeAnchor:Date.now(),last:performance.now(),toastTimer:null};
+const state={layout:null,registry:null,atlases:{},world:{width:1344,height:1920},player:{x:672,y:930},camera:{x:0,y:0},resources:{wood:0,stone:0,coin:25},input:{active:false,id:null,sx:0,sy:0,x:0,y:0,lastMove:0},trees:[],harvest:null,context:null,timeAnchor:Date.now(),last:performance.now(),toastTimer:null};
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
 function toast(t){ui.toast.textContent=t;ui.toast.classList.add("show");clearTimeout(state.toastTimer);state.toastTimer=setTimeout(()=>ui.toast.classList.remove("show"),1300)}
 function save(){localStorage.setItem(CONFIG.SAVE,JSON.stringify({player:state.player,resources:state.resources,timeAnchor:state.timeAnchor}))}
@@ -45,76 +48,141 @@ function loadSave(){try{const d=JSON.parse(localStorage.getItem(CONFIG.SAVE));if
 async function getJSON(u){const r=await fetch(u,{cache:"no-store"});if(!r.ok)throw Error(`${u}: ${r.status}`);return r.json()}
 function getImage(u){return new Promise((ok,no)=>{const im=new Image();im.crossOrigin="anonymous";im.onload=()=>ok(im);im.onerror=()=>no(Error(`Image failed: ${u}`));im.src=u})}
 function validLayout(v){return v&&v.worldSize&&v.playerSpawn&&Array.isArray(v.buildings)&&v.buildings.length&&Array.isArray(v.paths)&&Array.isArray(v.water)}
-function validRegistry(v){const a=v?.atlases?.village_buildings;return !!(a&&a.frameWidth===384&&a.frameHeight===384&&a.sprites&&Object.keys(a.sprites).length>=6)}
-function hasRealTransparency(im){try{const c=document.createElement("canvas");c.width=im.naturalWidth;c.height=im.naturalHeight;const x=c.getContext("2d",{willReadFrequently:true});x.drawImage(im,0,0);const d=x.getImageData(0,0,c.width,c.height).data;let transparent=0;for(let i=3;i<d.length;i+=64){if(d[i]<250){transparent++;if(transparent>20)return true}}return false}catch(e){console.warn("Alpha validation failed",e);return false}}
-function resize(){const r=app.getBoundingClientRect(),d=Math.min(devicePixelRatio||1,CONFIG.DPR);canvas.width=Math.max(1,Math.round(r.width*d));canvas.height=Math.max(1,Math.round(r.height*d))}
-function logical(){const sx=canvas.width/CONFIG.LW,sy=canvas.height/CONFIG.LH,s=Math.min(sx,sy);ctx.setTransform(s,0,0,s,(canvas.width-CONFIG.LW*s)/2,(canvas.height-CONFIG.LH*s)/2)}
-function drawFallback(id,x,y){ctx.save();const well=id.includes("well"),mine=id.includes("mine"),harbor=id.includes("harbor"),farm=id.includes("farm"),forester=id.includes("forester");if(well){ctx.fillStyle="#777";ctx.beginPath();ctx.arc(x,y-25,45,0,Math.PI*2);ctx.fill();ctx.fillStyle="#65452f";ctx.fillRect(x-48,y-80,10,70);ctx.fillRect(x+38,y-80,10,70);ctx.fillStyle="#9c5937";ctx.beginPath();ctx.moveTo(x-60,y-80);ctx.lineTo(x,y-115);ctx.lineTo(x+60,y-80);ctx.closePath();ctx.fill()}else if(harbor){ctx.fillStyle="#8f6945";ctx.fillRect(x-90,y-80,180,80);ctx.fillStyle="#325b6f";ctx.beginPath();ctx.moveTo(x-105,y-80);ctx.lineTo(x,y-145);ctx.lineTo(x+105,y-80);ctx.closePath();ctx.fill();ctx.fillStyle="#6d4d31";ctx.fillRect(x-120,y,240,14);ctx.fillRect(x-95,y,12,45);ctx.fillRect(x+83,y,12,45)}else{ctx.fillStyle=mine?"#766d62":forester?"#9a6a3e":farm?"#c09058":"#b47c4b";ctx.fillRect(x-80,y-110,160,110);ctx.fillStyle=mine?"#59524b":forester?"#6d4c2f":farm?"#8f6b37":"#9c5937";ctx.beginPath();ctx.moveTo(x-95,y-110);ctx.lineTo(x,y-170);ctx.lineTo(x+95,y-110);ctx.closePath();ctx.fill();ctx.fillStyle="#4d3428";ctx.fillRect(x-16,y-48,32,48)}ctx.restore()}
-function prepareAtlas(im){
-  const atlas=state.registry?.atlases?.village_buildings;
-  if(!atlas||!im?.naturalWidth||!im?.naturalHeight)return false;
-
-  const cols=atlas.columns||3,rows=atlas.rows||2;
-  const fw=im.naturalWidth/cols,fh=im.naturalHeight/rows;
-  if(!Number.isFinite(fw)||!Number.isFinite(fh)||fw<64||fh<64)return false;
-
-  const c=document.createElement("canvas");
-  c.width=im.naturalWidth;c.height=im.naturalHeight;
-  const x=c.getContext("2d",{willReadFrequently:true});
-  x.drawImage(im,0,0);
-
-  let data;
-  try{data=x.getImageData(0,0,c.width,c.height)}catch(e){console.warn("Atlas pixel access failed",e);return false}
-  const p=data.data;
-
-  // The Adobe source currently has a white matte instead of alpha.
-  // Convert only near-white, low-saturation pixels to transparency.
-  for(let i=0;i<p.length;i+=4){
-    const r=p[i],g=p[i+1],b=p[i+2];
+function validRegistry(v){
+  return !!(v&&v.atlases&&v.atlases.village_buildings&&v.atlases.forest_environment);
+}
+function normalizeAssetPath(path){
+  if(!path)return "";
+  return "./"+String(path).replace(/^\.?\//,"");
+}
+function isLikelyBackgroundPixel(r,g,b,a,policy){
+  if(a<245)return true;
+  const threshold=policy?.threshold??244;
+  const nearWhite=r>=threshold&&g>=threshold&&b>=threshold;
+  if(nearWhite)return true;
+  if(policy?.mode?.includes("checkerboard")){
     const max=Math.max(r,g,b),min=Math.min(r,g,b);
-    const neutral=max-min<18;
-    if(neutral&&min>247)p[i+3]=0;
-    else if(neutral&&min>232)p[i+3]=Math.round((247-min)/15*255);
+    const neutral=max-min<(policy.checkerboardTolerance??16);
+    const checkerLight=neutral&&r>210&&g>210&&b>210;
+    if(checkerLight)return true;
   }
-  x.putImageData(data,0,0);
+  return false;
+}
+function prepareAtlas(atlasId,image){
+  const meta=state.registry?.atlases?.[atlasId];
+  if(!meta||!image?.naturalWidth||!image?.naturalHeight)return null;
+  const cols=meta.columns||3,rows=meta.rows||2;
+  const fw=image.naturalWidth/cols,fh=image.naturalHeight/rows;
+  if(!Number.isFinite(fw)||!Number.isFinite(fh)||fw<=0||fh<=0)return null;
 
-  state.spriteRects={};
-  for(const [id,m] of Object.entries(atlas.sprites||{})){
-    const sx=Math.round((m.col||0)*fw),sy=Math.round((m.row||0)*fh);
-    const ex=Math.min(c.width,Math.round(sx+fw)),ey=Math.min(c.height,Math.round(sy+fh));
-    let minX=ex,minY=ey,maxX=sx-1,maxY=sy-1;
-    for(let yy=sy;yy<ey;yy++){
-      for(let xx=sx;xx<ex;xx++){
-        if(p[(yy*c.width+xx)*4+3]>18){
-          if(xx<minX)minX=xx;if(xx>maxX)maxX=xx;
-          if(yy<minY)minY=yy;if(yy>maxY)maxY=yy;
+  const canvas=document.createElement("canvas");
+  canvas.width=image.naturalWidth;canvas.height=image.naturalHeight;
+  const c=canvas.getContext("2d",{willReadFrequently:true});
+  c.drawImage(image,0,0);
+  const img=c.getImageData(0,0,canvas.width,canvas.height);
+  const d=img.data,policy=meta.backgroundPolicy||{};
+  for(let i=0;i<d.length;i+=4){
+    if(isLikelyBackgroundPixel(d[i],d[i+1],d[i+2],d[i+3],policy)){
+      d[i+3]=0;
+    }
+  }
+  c.putImageData(img,0,0);
+
+  const rects={};
+  for(const [id,s] of Object.entries(meta.sprites||{})){
+    const sx=Math.round((s.col||0)*fw),sy=Math.round((s.row||0)*fh);
+    const ex=Math.round(sx+fw),ey=Math.round(sy+fh);
+    const cell=c.getImageData(sx,sy,Math.max(1,ex-sx),Math.max(1,ey-sy)).data;
+    let minX=ex,minY=ey,maxX=-1,maxY=-1;
+    const cw=Math.max(1,ex-sx),ch=Math.max(1,ey-sy);
+    for(let y=0;y<ch;y+=2){
+      for(let x=0;x<cw;x+=2){
+        const a=cell[(y*cw+x)*4+3];
+        if(a>24){
+          minX=Math.min(minX,sx+x);minY=Math.min(minY,sy+y);
+          maxX=Math.max(maxX,sx+x);maxY=Math.max(maxY,sy+y);
         }
       }
     }
     if(maxX>=minX&&maxY>=minY){
-      const pad=3;
-      minX=Math.max(sx,minX-pad);minY=Math.max(sy,minY-pad);
-      maxX=Math.min(ex-1,maxX+pad);maxY=Math.min(ey-1,maxY+pad);
-      state.spriteRects[id]={x:minX,y:minY,w:maxX-minX+1,h:maxY-minY+1};
+      const pad=4;
+      rects[id]={
+        x:Math.max(sx,minX-pad),y:Math.max(sy,minY-pad),
+        w:Math.min(ex-1,maxX+pad)-Math.max(sx,minX-pad)+1,
+        h:Math.min(ey-1,maxY+pad)-Math.max(sy,minY-pad)+1
+      };
     }
   }
-  state.atlasCanvas=c;
-  return Object.keys(state.spriteRects).length>=6;
+  return {id:atlasId,meta,image,canvas,rects,valid:Object.keys(rects).length>0};
 }
-function drawSprite(id,x,y){
-  const m=state.registry?.atlases?.village_buildings?.sprites?.[id];
-  const r=state.spriteRects[id];
-  if(!state.atlasValid||!state.atlasCanvas||!m||!r){drawFallback(id,x,y);return}
-  const boxW=m.drawSize?.[0]||240,boxH=m.drawSize?.[1]||240;
-  const scale=Math.min(boxW/r.w,boxH/r.h);
-  const dw=r.w*scale,dh=r.h*scale;
-  const pivot=m.pivot||[0.5,0.9];
-  ctx.drawImage(state.atlasCanvas,r.x,r.y,r.w,r.h,x-dw*pivot[0],y-dh*pivot[1],dw,dh);
+async function loadReadyAtlases(){
+  const ready=Object.entries(state.registry.atlases||{}).filter(([,m])=>m.status==="ready"&&m.file);
+  const results=await Promise.allSettled(ready.map(async([id,m])=>{
+    const image=await getImage(normalizeAssetPath(m.file)+`?v=10`);
+    return [id,prepareAtlas(id,image)];
+  }));
+  results.forEach((r,i)=>{
+    const id=ready[i][0];
+    if(r.status==="fulfilled"&&r.value[1]?.valid)state.atlases[id]=r.value[1];
+    else console.warn(`Atlas unavailable: ${id}`,r.status==="rejected"?r.reason:"invalid atlas");
+  });
+}
+function findSprite(spriteId){
+  for(const [atlasId,atlas] of Object.entries(state.atlases)){
+    const meta=atlas.meta.sprites?.[spriteId];
+    const rect=atlas.rects?.[spriteId];
+    if(meta&&rect)return {atlasId,atlas,meta,rect};
+  }
+  return null;
+}
+function resize(){const r=app.getBoundingClientRect(),d=Math.min(devicePixelRatio||1,CONFIG.DPR);canvas.width=Math.max(1,Math.round(r.width*d));canvas.height=Math.max(1,Math.round(r.height*d))}
+function logical(){const sx=canvas.width/CONFIG.LW,sy=canvas.height/CONFIG.LH,s=Math.min(sx,sy);ctx.setTransform(s,0,0,s,(canvas.width-CONFIG.LW*s)/2,(canvas.height-CONFIG.LH*s)/2)}
+function drawFallback(id,x,y){ctx.save();const well=id.includes("well"),mine=id.includes("mine"),harbor=id.includes("harbor"),farm=id.includes("farm"),forester=id.includes("forester");if(well){ctx.fillStyle="#777";ctx.beginPath();ctx.arc(x,y-25,45,0,Math.PI*2);ctx.fill();ctx.fillStyle="#65452f";ctx.fillRect(x-48,y-80,10,70);ctx.fillRect(x+38,y-80,10,70);ctx.fillStyle="#9c5937";ctx.beginPath();ctx.moveTo(x-60,y-80);ctx.lineTo(x,y-115);ctx.lineTo(x+60,y-80);ctx.closePath();ctx.fill()}else if(harbor){ctx.fillStyle="#8f6945";ctx.fillRect(x-90,y-80,180,80);ctx.fillStyle="#325b6f";ctx.beginPath();ctx.moveTo(x-105,y-80);ctx.lineTo(x,y-145);ctx.lineTo(x+105,y-80);ctx.closePath();ctx.fill();ctx.fillStyle="#6d4d31";ctx.fillRect(x-120,y,240,14);ctx.fillRect(x-95,y,12,45);ctx.fillRect(x+83,y,12,45)}else{ctx.fillStyle=mine?"#766d62":forester?"#9a6a3e":farm?"#c09058":"#b47c4b";ctx.fillRect(x-80,y-110,160,110);ctx.fillStyle=mine?"#59524b":forester?"#6d4c2f":farm?"#8f6b37":"#9c5937";ctx.beginPath();ctx.moveTo(x-95,y-110);ctx.lineTo(x,y-170);ctx.lineTo(x+95,y-110);ctx.closePath();ctx.fill();ctx.fillStyle="#4d3428";ctx.fillRect(x-16,y-48,32,48)}ctx.restore()}
+function drawSprite(id,x,y,overrideSize=null){
+  const found=findSprite(id);
+  if(!found){drawFallback(id,x,y);return false}
+  const {atlas,meta,rect}=found;
+  const size=overrideSize||meta.drawSize||[240,240];
+  const boxW=size[0],boxH=size[1];
+  const scale=Math.min(boxW/rect.w,boxH/rect.h);
+  const dw=rect.w*scale,dh=rect.h*scale;
+  const pivot=meta.pivot||[0.5,0.9];
+  ctx.drawImage(atlas.canvas,rect.x,rect.y,rect.w,rect.h,x-dw*pivot[0],y-dh*pivot[1],dw,dh);
+  return true;
 }
 function drawGround(){ctx.fillStyle="#7ca66b";ctx.fillRect(0,0,CONFIG.LW,CONFIG.LH);const cx=state.camera.x,cy=state.camera.y;for(const p of state.layout.paths){ctx.strokeStyle="#d0b67d";ctx.lineWidth=p.width;ctx.lineCap="round";ctx.lineJoin="round";ctx.beginPath();p.points.forEach((q,i)=>i?ctx.lineTo(q.x-cx,q.y-cy):ctx.moveTo(q.x-cx,q.y-cy));ctx.stroke()}for(const w of state.layout.water){ctx.fillStyle="#5c9fb0";ctx.beginPath();w.polygon.forEach((q,i)=>i?ctx.lineTo(q.x-cx,q.y-cy):ctx.moveTo(q.x-cx,q.y-cy));ctx.closePath();ctx.fill()}}
-function makeTrees(){state.trees=[];for(let i=0;i<52;i++){const x=70+((i*173)%1200),y=120+((i*257)%1680);if(state.layout.buildings.some(b=>Math.hypot(x-b.position.x,y-b.position.y)<b.clearRadius+30))continue;state.trees.push({id:i,x,y,active:true,respawn:0})}}
-function drawTrees(){for(const t of state.trees){if(!t.active&&t.respawn<Date.now())t.active=true;if(!t.active)continue;const x=t.x-state.camera.x,y=t.y-state.camera.y;if(x<-80||x>800||y<-100||y>1380)continue;ctx.fillStyle="#76523d";ctx.fillRect(x-7,y-28,14,38);ctx.fillStyle=t.id%3?"#4d7d43":"#5c8b50";ctx.beginPath();ctx.arc(x,y-52,30,0,Math.PI*2);ctx.arc(x-22,y-40,22,0,Math.PI*2);ctx.arc(x+22,y-40,22,0,Math.PI*2);ctx.fill()}}
-function drawBuildings(){for(const b of [...state.layout.buildings].sort((a,b)=>a.position.y-b.position.y))drawSprite(b.spriteId,b.position.x-state.camera.x,b.position.y-state.camera.y)}
+function makeTrees(){
+  state.trees=[];
+  const variants=["oak_tree_01","oak_tree_02","pine_tree_01"];
+  for(let i=0;i<58;i++){
+    const x=70+((i*173)%1200),y=120+((i*257)%1680);
+    if(state.layout.buildings.some(b=>Math.hypot(x-b.position.x,y-b.position.y)<(b.clearRadius||140)+34))continue;
+    state.trees.push({
+      id:i,x,y,active:true,respawn:0,
+      spriteId:variants[i%variants.length],
+      stumpSprite:"tree_stump"
+    });
+  }
+}
+function drawTreeFallback(t,x,y){
+  if(!t.active){
+    ctx.fillStyle="#8b5a32";ctx.fillRect(x-17,y-18,34,20);
+    ctx.fillStyle="#c88a47";ctx.beginPath();ctx.ellipse(x,y-18,18,7,0,0,Math.PI*2);ctx.fill();
+    return;
+  }
+  ctx.fillStyle="#76523d";ctx.fillRect(x-7,y-28,14,38);
+  ctx.fillStyle=t.id%3?"#4d7d43":"#5c8b50";
+  ctx.beginPath();ctx.arc(x,y-52,30,0,Math.PI*2);ctx.arc(x-22,y-40,22,0,Math.PI*2);ctx.arc(x+22,y-40,22,0,Math.PI*2);ctx.fill();
+}
+function drawTrees(){
+  for(const t of state.trees){
+    if(!t.active&&t.respawn<Date.now()){t.active=true;t.respawn=0}
+    const x=t.x-state.camera.x,y=t.y-state.camera.y;
+    if(x<-180||x>900||y<-220||y>1450)continue;
+    const sprite=t.active?t.spriteId:t.stumpSprite;
+    if(!drawSprite(sprite,x,y))drawTreeFallback(t,x,y);
+  }
+}function drawBuildings(){for(const b of [...state.layout.buildings].sort((a,b)=>a.position.y-b.position.y))drawSprite(b.spriteId,b.position.x-state.camera.x,b.position.y-state.camera.y)}
 function drawPlayer(){const x=state.player.x-state.camera.x,y=state.player.y-state.camera.y;ctx.fillStyle="rgba(0,0,0,.2)";ctx.beginPath();ctx.ellipse(x,y+5,22,9,0,0,Math.PI*2);ctx.fill();ctx.fillStyle="#3f7880";ctx.fillRect(x-14,y-34,28,30);ctx.fillStyle="#d9a36f";ctx.beginPath();ctx.arc(x,y-49,16,0,Math.PI*2);ctx.fill();ctx.fillStyle="#4b3326";ctx.beginPath();ctx.arc(x,y-54,16,Math.PI,Math.PI*2);ctx.fill()}
 function drawHarvestAnimation(){if(!state.harvest)return;const x=state.player.x-state.camera.x,y=state.player.y-state.camera.y;const elapsed=performance.now()-state.harvest.start;const p=Math.min(1,elapsed/850);const swing=Math.sin(p*Math.PI*4)*0.85-0.35;ctx.save();ctx.translate(x+14,y-36);ctx.rotate(swing);ctx.strokeStyle="#6f4a2f";ctx.lineWidth=5;ctx.lineCap="round";ctx.beginPath();ctx.moveTo(0,0);ctx.lineTo(0,-34);ctx.stroke();ctx.fillStyle="#b9c0c4";ctx.beginPath();ctx.moveTo(-10,-38);ctx.lineTo(12,-45);ctx.lineTo(14,-31);ctx.lineTo(-8,-28);ctx.closePath();ctx.fill();ctx.restore();ctx.strokeStyle="rgba(255,255,255,.9)";ctx.lineWidth=5;ctx.beginPath();ctx.arc(x,y+18,28,-Math.PI/2,-Math.PI/2+p*Math.PI*2);ctx.stroke()}
 function clock(){const e=Date.now()-state.timeAnchor,c=((e%CONFIG.DAY)+CONFIG.DAY)%CONFIG.DAY,k=Math.floor(c/CONFIG.PHASE),m=Math.floor((c%CONFIG.PHASE)/CONFIG.PHASE*360),h=(phases[k].h+Math.floor(m/60))%24;return{p:phases[k],d:Math.floor(e/CONFIG.DAY)+1,h,m:m%60}}
@@ -123,8 +191,8 @@ function insideBuilding(x,y){return state.layout.buildings.some(b=>Math.hypot(x-
 function recoverIfStuck(){if(!insideBuilding(state.player.x,state.player.y))return;const s=state.layout.playerSpawn;state.player.x=s.x;state.player.y=s.y;toast("Position recovered")}
 function blocked(x,y){return x<25||y<25||x>state.world.width-25||y>state.world.height-25||insideBuilding(x,y)}
 function nearestTree(){let best=null,d=1e9;for(const t of state.trees){if(!t.active)continue;const n=Math.hypot(state.player.x-t.x,state.player.y-t.y);if(n<CONFIG.HARVEST&&n<d){best=t;d=n}}return best}
-function harvestUpdate(){if(state.input.active||Math.hypot(state.input.x,state.input.y)>.05){state.harvest=null;return}if(state.harvest){if(performance.now()-state.harvest.start>850){state.harvest.tree.active=false;state.harvest.tree.respawn=Date.now()+300000;state.resources.wood+=3;state.harvest=null;toast("+3 Wood");save()}return}if(performance.now()-state.input.lastMove>350){const t=nearestTree();if(t){state.harvest={tree:t,start:performance.now()};toast("Chopping…")}}}
-function update(dt){let ix=state.input.x,iy=state.input.y,l=Math.hypot(ix,iy);if(l>1){ix/=l;iy/=l}if(l>.04){state.harvest=null;const dx=ix*CONFIG.SPEED*dt,dy=iy*CONFIG.SPEED*dt;const nx=state.player.x+dx,ny=state.player.y+dy;if(!blocked(nx,state.player.y))state.player.x=nx;if(!blocked(state.player.x,ny))state.player.y=ny}else harvestUpdate();const tx=clamp(state.player.x-CONFIG.LW/2,0,state.world.width-CONFIG.LW),ty=clamp(state.player.y-CONFIG.LH/2,0,state.world.height-CONFIG.LH);state.camera.x+=(tx-state.camera.x)*Math.min(1,dt*9);state.camera.y+=(ty-state.camera.y)*Math.min(1,dt*9);let best=null,bd=1e9;for(const b of state.layout.buildings){const d=Math.hypot(state.player.x-b.interactionPoint.x,state.player.y-b.interactionPoint.y);if(d<CONFIG.INTERACT&&d<bd){best=b;bd=d}}state.context=best;ui.prompt.textContent=best?.interactionLabel||"";ui.prompt.classList.toggle("show",!!best);const t=clock();ui.phase.textContent=`${t.p.i} ${t.p.n}`;ui.clock.textContent=`Day ${t.d} · ${String(t.h).padStart(2,"0")}:${String(t.m).padStart(2,"0")}`;ui.wood.textContent=state.resources.wood;ui.stone.textContent=state.resources.stone;ui.coin.textContent=state.resources.coin;ui.debug.textContent=`INPUT ${ix.toFixed(2)} ${iy.toFixed(2)} | PLAYER ${state.player.x.toFixed(0)} ${state.player.y.toFixed(0)} | ${state.input.active?"ACTIVE":"IDLE"} | ${state.atlasValid?"ATLAS":"FALLBACK"}`}
+function harvestUpdate(){if(state.input.active||Math.hypot(state.input.x,state.input.y)>.05){state.harvest=null;return}if(state.harvest){if(performance.now()-state.harvest.start>850){state.harvest.tree.active=false;state.harvest.tree.respawn=Date.now()+300000;const reward=findSprite(state.harvest.tree.spriteId)?.meta?.reward||3;state.resources.wood+=reward;state.harvest=null;toast(`+${reward} Wood`);save()}return}if(performance.now()-state.input.lastMove>350){const t=nearestTree();if(t){state.harvest={tree:t,start:performance.now()};toast("Chopping…")}}}
+function update(dt){let ix=state.input.x,iy=state.input.y,l=Math.hypot(ix,iy);if(l>1){ix/=l;iy/=l}if(l>.04){state.harvest=null;const dx=ix*CONFIG.SPEED*dt,dy=iy*CONFIG.SPEED*dt;const nx=state.player.x+dx,ny=state.player.y+dy;if(!blocked(nx,state.player.y))state.player.x=nx;if(!blocked(state.player.x,ny))state.player.y=ny}else harvestUpdate();const tx=clamp(state.player.x-CONFIG.LW/2,0,state.world.width-CONFIG.LW),ty=clamp(state.player.y-CONFIG.LH/2,0,state.world.height-CONFIG.LH);state.camera.x+=(tx-state.camera.x)*Math.min(1,dt*9);state.camera.y+=(ty-state.camera.y)*Math.min(1,dt*9);let best=null,bd=1e9;for(const b of state.layout.buildings){const d=Math.hypot(state.player.x-b.interactionPoint.x,state.player.y-b.interactionPoint.y);if(d<CONFIG.INTERACT&&d<bd){best=b;bd=d}}state.context=best;ui.prompt.textContent=best?.interactionLabel||"";ui.prompt.classList.toggle("show",!!best);const t=clock();ui.phase.textContent=`${t.p.i} ${t.p.n}`;ui.clock.textContent=`Day ${t.d} · ${String(t.h).padStart(2,"0")}:${String(t.m).padStart(2,"0")}`;ui.wood.textContent=state.resources.wood;ui.stone.textContent=state.resources.stone;ui.coin.textContent=state.resources.coin;ui.debug.textContent=`INPUT ${ix.toFixed(2)} ${iy.toFixed(2)} | PLAYER ${state.player.x.toFixed(0)} ${state.player.y.toFixed(0)} | ${state.input.active?"ACTIVE":"IDLE"} | ${Object.keys(state.atlases).length} ATLAS`}
 function loop(n){const dt=Math.min(.05,(n-state.last)/1000);state.last=n;update(dt);render();requestAnimationFrame(loop)}
 function startJoy(x,y,id){if(state.input.active)return;state.input.active=true;state.input.id=id;state.input.sx=x;state.input.sy=y;state.input.x=0;state.input.y=0;state.input.lastMove=performance.now();ui.joy.style.left=`${clamp(x-59,4,innerWidth-122)}px`;ui.joy.style.top=`${clamp(y-59,120,innerHeight-122)}px`;ui.joy.classList.add("show")}
 function moveJoy(x,y,id){if(!state.input.active||id!==state.input.id)return;let dx=x-state.input.sx,dy=y-state.input.sy,l=Math.hypot(dx,dy),r=42;if(l>r){dx=dx/l*r;dy=dy/l*r}state.input.x=dx/r;state.input.y=dy/r;state.input.lastMove=performance.now();ui.knob.style.transform=`translate(${dx}px,${dy}px)`}
@@ -135,6 +203,25 @@ window.addEventListener("touchend",e=>{for(const t of e.changedTouches)if(t.iden
 window.addEventListener("touchcancel",e=>{for(const t of e.changedTouches)if(t.identifier===state.input.id)endJoy(t.identifier)},{passive:false,capture:true});
 app.addEventListener("pointerdown",e=>{if(e.pointerType==="touch"||e.target.closest("button"))return;startJoy(e.clientX,e.clientY,e.pointerId)},{capture:true});window.addEventListener("pointermove",e=>{if(e.pointerType!=="touch")moveJoy(e.clientX,e.clientY,e.pointerId)});window.addEventListener("pointerup",e=>{if(e.pointerType!=="touch")endJoy(e.pointerId)});window.addEventListener("pointercancel",e=>{if(e.pointerType!=="touch")endJoy(e.pointerId)});
 ui.menu.onclick=()=>ui.panel.classList.toggle("open");ui.prompt.onclick=()=>state.context&&toast(`${state.context.interactionLabel} · Coming Soon`);ui.panel.onclick=e=>{const a=e.target.dataset.a;if(!a)return;if(a==="save"){save();toast("Game saved") }else toast(`${a} · Coming Soon`)};document.addEventListener("visibilitychange",()=>document.hidden&&save());window.addEventListener("resize",resize);
-async function boot(){loadSave();const r=await Promise.allSettled([getJSON(PATHS.layout),getJSON(PATHS.registry),getImage(PATHS.buildings)]);if(r[0].status!=="fulfilled"||!validLayout(r[0].value))throw Error("Invalid village_layout.json");state.layout=r[0].value;state.world=state.layout.worldSize;if(r[1].status==="fulfilled"&&validRegistry(r[1].value))state.registry=r[1].value;else console.warn("Invalid sprite registry; fallback buildings enabled");if(r[2].status==="fulfilled"){state.atlas=r[2].value;state.atlasValid=prepareAtlas(state.atlas);if(!state.atlasValid)console.warn("Building atlas could not be prepared; fallback buildings enabled")}else console.warn("Building atlas failed to load; fallback buildings enabled");if(!localStorage.getItem(CONFIG.SAVE)){state.player.x=state.layout.playerSpawn.x;state.player.y=state.layout.playerSpawn.y}recoverIfStuck();makeTrees();resize();ui.loading.classList.add("hidden");requestAnimationFrame(loop)}
+async function boot(){
+  loadSave();
+  const r=await Promise.allSettled([getJSON(PATHS.layout),getJSON(PATHS.registry)]);
+  if(r[0].status!=="fulfilled"||!validLayout(r[0].value))throw Error("Invalid village_layout.json");
+  state.layout=r[0].value;
+  state.world=state.layout.worldSize;
+  if(r[1].status!=="fulfilled"||!validRegistry(r[1].value))throw Error("Invalid sprite_registry.json");
+  state.registry=r[1].value;
+  await loadReadyAtlases();
+  if(!localStorage.getItem(CONFIG.SAVE)){
+    state.player.x=state.layout.playerSpawn.x;
+    state.player.y=state.layout.playerSpawn.y;
+  }
+  recoverIfStuck();
+  makeTrees();
+  resize();
+  ui.loading.classList.add("hidden");
+  if(!state.atlases.village_buildings)toast("Building fallback active");
+  requestAnimationFrame(loop);
+}
 boot().catch(e=>{console.error(e);ui.loading.textContent=`Game load failed: ${e.message}`});
 </script></body></html>
