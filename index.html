@@ -7,7 +7,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <link rel="manifest" href="./manifest.json">
-<title>Readi World v0.0.12</title>
+<title>Readi World</title>
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#102019;touch-action:none;overscroll-behavior:none;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
@@ -32,10 +32,11 @@ canvas{position:absolute;inset:0;width:100%;height:100%;display:block;touch-acti
 <aside id="panel"><div class="grid"><button class="item" data-a="save">Save now</button><button class="item" data-a="inventory">Inventory</button><button class="item" data-a="village">Village</button><button class="item" data-a="settings">Settings</button></div></aside>
 </main><script>
 "use strict";
-const CONFIG={LW:720,LH:1280,DPR:2,SPEED:240,INTERACT:95,HARVEST:70,SAVE:"readiWorld_v012",DAY:4*60*60*1000,PHASE:60*60*1000};
+const ASSET_CACHE=Date.now();
+const CONFIG={LW:720,LH:1280,DPR:2,SPEED:240,INTERACT:95,HARVEST:70,SAVE:"readiWorld",DAY:4*60*60*1000,PHASE:60*60*1000};
 const PATHS={
-  layout:"./data/village_layout.json?v=12",
-  registry:"./data/sprite_registry.json?v=12"
+  layout:`./data/village_layout.json?cache=${ASSET_CACHE}`,
+  registry:`./data/sprite_registry.json?cache=${ASSET_CACHE}`
 };
 const canvas=document.getElementById("game"),ctx=canvas.getContext("2d",{alpha:false});
 const app=document.getElementById("app"),ui={loading:document.getElementById("loading"),wood:document.getElementById("wood"),stone:document.getElementById("stone"),coin:document.getElementById("coin"),phase:document.getElementById("phase"),clock:document.getElementById("clock"),menu:document.getElementById("menu"),panel:document.getElementById("panel"),prompt:document.getElementById("prompt"),toast:document.getElementById("toast"),debug:document.getElementById("debug"),joy:document.getElementById("joy"),knob:document.getElementById("knob")};
@@ -49,12 +50,7 @@ async function getJSON(u){const r=await fetch(u,{cache:"no-store"});if(!r.ok)thr
 function getImage(u){return new Promise((ok,no)=>{const im=new Image();im.crossOrigin="anonymous";im.onload=()=>ok(im);im.onerror=()=>no(Error(`Image failed: ${u}`));im.src=u})}
 function validLayout(v){return v&&v.worldSize&&v.playerSpawn&&Array.isArray(v.buildings)&&v.buildings.length&&Array.isArray(v.paths)&&Array.isArray(v.water)}
 function validRegistry(v){
-  return !!(
-    v &&
-    v.atlases &&
-    v.atlases.village_buildings &&
-    v.atlases.forest_environment
-  );
+  return !!(v&&v.atlases&&v.atlases.village_buildings&&v.atlases.forest_environment);
 }
 function normalizeAssetPath(path){
   if(!path)return "";
@@ -126,7 +122,7 @@ async function loadReadyAtlases(){
     !!m.file&&(m.status==="ready"||forceVisual.has(id))
   );
   const results=await Promise.allSettled(ready.map(async([id,m])=>{
-    const image=await getImage(normalizeAssetPath(m.file)+`?v=12`);
+    const image=await getImage(normalizeAssetPath(m.file)+`?cache=${ASSET_CACHE}`);
     return [id,prepareAtlas(id,image)];
   }));
   results.forEach((r,i)=>{
@@ -192,7 +188,7 @@ function drawGroundTexture(){
   const startWorldY=Math.floor(state.camera.y/tile)*tile;
   for(let wy=startWorldY-tile;wy<state.camera.y+CONFIG.LH+tile;wy+=tile){
     for(let wx=startWorldX-tile;wx<state.camera.x+CONFIG.LW+tile;wx+=tile){
-      drawTileCell("grass_base",wx-state.camera.x,wy-state.camera.y,tile+2,tile+2,.78);
+      drawTileCell("grass_base",wx-state.camera.x,wy-state.camera.y,tile+2,tile+2,.52);
     }
   }
   return true;
@@ -207,7 +203,7 @@ function drawWaterTexture(poly){
   const tile=210;
   for(let y=-tile;y<CONFIG.LH+tile;y+=tile){
     for(let x=-tile;x<CONFIG.LW+tile;x+=tile){
-      drawTileCell("shallow_water",x,y,tile+2,tile+2,.72);
+      drawTileCell("shallow_water",x,y,tile+2,tile+2,.48);
     }
   }
   ctx.restore();
@@ -274,11 +270,8 @@ function drawTrees(){
     if(!t.active&&t.respawn<Date.now()){t.active=true;t.respawn=0}
     const x=t.x-state.camera.x,y=t.y-state.camera.y;
     if(x<-180||x>900||y<-220||y>1450)continue;
-    if(t.active){
-      if(!drawSprite(t.spriteId,x,y))drawTreeFallback(t,x,y);
-    }else{
-      drawTreeFallback(t,x,y);
-    }
+    const sprite=t.active?t.spriteId:t.stumpSprite;
+    if(!drawSprite(sprite,x,y))drawTreeFallback(t,x,y);
   }
 }function drawBuildings(){for(const b of [...state.layout.buildings].sort((a,b)=>a.position.y-b.position.y))drawSprite(b.spriteId,b.position.x-state.camera.x,b.position.y-state.camera.y)}
 function drawPlayer(){const x=state.player.x-state.camera.x,y=state.player.y-state.camera.y;ctx.fillStyle="rgba(0,0,0,.2)";ctx.beginPath();ctx.ellipse(x,y+5,22,9,0,0,Math.PI*2);ctx.fill();ctx.fillStyle="#3f7880";ctx.fillRect(x-14,y-34,28,30);ctx.fillStyle="#d9a36f";ctx.beginPath();ctx.arc(x,y-49,16,0,Math.PI*2);ctx.fill();ctx.fillStyle="#4b3326";ctx.beginPath();ctx.arc(x,y-54,16,Math.PI,Math.PI*2);ctx.fill()}
@@ -374,7 +367,6 @@ async function boot(){
   resize();
   ui.loading.classList.add("hidden");
   if(!state.atlases.village_buildings)toast("Building fallback active");
-  else if(!state.atlases.forest_environment)toast("Forest fallback active");
   const missingVisual=["ground_tiles","tool_overlays","effects"].filter(id=>!state.atlases[id]);
   if(missingVisual.length)console.warn("Optional visual atlases missing:",missingVisual);
   requestAnimationFrame(loop);
