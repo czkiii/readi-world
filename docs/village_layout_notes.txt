@@ -1,0 +1,23 @@
+READI WORLD — VILLAGE LAYOUT V1
+
+Purpose:
+This file locks the spatial structure before generating final assets.
+
+Core layout:
+- Forest / Forester's Hut: upper-left
+- Mine: upper-right
+- Home: center-right
+- Farm: lower-left
+- Well: lower-center
+- Harbor: bottom
+- Main path: vertical, slightly curved
+
+Important rules:
+- No decoration inside building clearRadius.
+- No decoration on or too close to paths.
+- Player starts near Home.
+- First camera view shows player, Home and at least one route.
+- Assets must be generated to match these footprint and pivot values.
+
+Next step:
+Generate village_buildings.png using the locked building list and dimensions.
