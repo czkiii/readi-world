@@ -1,0 +1,357 @@
+{
+  "schemaVersion": 1,
+  "layoutId": "village.master_reference.v1",
+  "name": "Village Master Reference v1",
+  "orientation": "portrait",
+  "logicalViewport": {
+    "width": 720,
+    "height": 1280
+  },
+  "worldSize": {
+    "width": 1344,
+    "height": 1920
+  },
+  "camera": {
+    "start": {
+      "x": 312,
+      "y": 330
+    },
+    "followDamping": 0.12,
+    "clampToWorld": true
+  },
+  "playerSpawn": {
+    "x": 672,
+    "y": 930,
+    "direction": "up"
+  },
+  "zones": [
+    {
+      "id": "zone.forest",
+      "name": "Forest Edge",
+      "bounds": {
+        "x": 0,
+        "y": 0,
+        "width": 760,
+        "height": 620
+      }
+    },
+    {
+      "id": "zone.mine",
+      "name": "Mine Ridge",
+      "bounds": {
+        "x": 760,
+        "y": 0,
+        "width": 584,
+        "height": 620
+      }
+    },
+    {
+      "id": "zone.village_center",
+      "name": "Village Center",
+      "bounds": {
+        "x": 300,
+        "y": 520,
+        "width": 760,
+        "height": 700
+      }
+    },
+    {
+      "id": "zone.farm",
+      "name": "Farm District",
+      "bounds": {
+        "x": 0,
+        "y": 980,
+        "width": 660,
+        "height": 520
+      }
+    },
+    {
+      "id": "zone.harbor",
+      "name": "Harbor District",
+      "bounds": {
+        "x": 520,
+        "y": 1380,
+        "width": 824,
+        "height": 540
+      }
+    }
+  ],
+  "buildings": [
+    {
+      "id": "building.forester_hut",
+      "spriteId": "forester_hut_lv1",
+      "position": {
+        "x": 360,
+        "y": 430
+      },
+      "footprint": {
+        "width": 210,
+        "height": 150
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.9
+      },
+      "collisionRadius": 68,
+      "clearRadius": 165,
+      "interactionPoint": {
+        "x": 360,
+        "y": 500
+      },
+      "interactionLabel": "Visit Forester's Hut"
+    },
+    {
+      "id": "building.mine",
+      "spriteId": "mine_entrance_locked",
+      "position": {
+        "x": 980,
+        "y": 380
+      },
+      "footprint": {
+        "width": 220,
+        "height": 150
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.9
+      },
+      "collisionRadius": 72,
+      "clearRadius": 170,
+      "interactionPoint": {
+        "x": 940,
+        "y": 490
+      },
+      "interactionLabel": "Inspect Mine"
+    },
+    {
+      "id": "building.home",
+      "spriteId": "home_lv1",
+      "position": {
+        "x": 820,
+        "y": 900
+      },
+      "footprint": {
+        "width": 240,
+        "height": 175
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.9
+      },
+      "collisionRadius": 80,
+      "clearRadius": 185,
+      "interactionPoint": {
+        "x": 820,
+        "y": 1000
+      },
+      "interactionLabel": "Enter Home"
+    },
+    {
+      "id": "building.farm",
+      "spriteId": "farm_lv1",
+      "position": {
+        "x": 330,
+        "y": 1260
+      },
+      "footprint": {
+        "width": 250,
+        "height": 170
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.9
+      },
+      "collisionRadius": 76,
+      "clearRadius": 180,
+      "interactionPoint": {
+        "x": 400,
+        "y": 1340
+      },
+      "interactionLabel": "Visit Farm"
+    },
+    {
+      "id": "building.well",
+      "spriteId": "village_well",
+      "position": {
+        "x": 760,
+        "y": 1280
+      },
+      "footprint": {
+        "width": 110,
+        "height": 95
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.92
+      },
+      "collisionRadius": 40,
+      "clearRadius": 100,
+      "interactionPoint": {
+        "x": 760,
+        "y": 1345
+      },
+      "interactionLabel": "Use Village Well"
+    },
+    {
+      "id": "building.harbor",
+      "spriteId": "harbor_locked",
+      "position": {
+        "x": 900,
+        "y": 1680
+      },
+      "footprint": {
+        "width": 320,
+        "height": 210
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.9
+      },
+      "collisionRadius": 95,
+      "clearRadius": 220,
+      "interactionPoint": {
+        "x": 900,
+        "y": 1780
+      },
+      "interactionLabel": "Inspect Harbor"
+    }
+  ],
+  "paths": [
+    {
+      "id": "path.main",
+      "width": 64,
+      "points": [
+        {
+          "x": 470,
+          "y": 220
+        },
+        {
+          "x": 620,
+          "y": 560
+        },
+        {
+          "x": 700,
+          "y": 930
+        },
+        {
+          "x": 600,
+          "y": 1250
+        },
+        {
+          "x": 830,
+          "y": 1640
+        }
+      ]
+    },
+    {
+      "id": "path.mine_branch",
+      "width": 54,
+      "points": [
+        {
+          "x": 620,
+          "y": 560
+        },
+        {
+          "x": 980,
+          "y": 420
+        }
+      ]
+    },
+    {
+      "id": "path.home_branch",
+      "width": 50,
+      "points": [
+        {
+          "x": 700,
+          "y": 930
+        },
+        {
+          "x": 820,
+          "y": 980
+        }
+      ]
+    },
+    {
+      "id": "path.farm_branch",
+      "width": 50,
+      "points": [
+        {
+          "x": 600,
+          "y": 1250
+        },
+        {
+          "x": 360,
+          "y": 1320
+        }
+      ]
+    }
+  ],
+  "water": [
+    {
+      "id": "water.harbor_bay",
+      "polygon": [
+        {
+          "x": 540,
+          "y": 1660
+        },
+        {
+          "x": 1344,
+          "y": 1500
+        },
+        {
+          "x": 1344,
+          "y": 1920
+        },
+        {
+          "x": 0,
+          "y": 1920
+        },
+        {
+          "x": 0,
+          "y": 1810
+        }
+      ]
+    }
+  ],
+  "generationRules": {
+    "buildingClearZonesRequired": true,
+    "pathClearance": 88,
+    "minimumTreeSpacing": 72,
+    "minimumRockSpacing": 42,
+    "edgeDensityMultiplier": 1.35,
+    "centerDensityMultiplier": 0.55,
+    "rejectDecorationInsideClearZone": true,
+    "rejectDecorationOnPaths": true
+  },
+  "assetTargets": {
+    "groundAtlas": {
+      "file": "assets/environment/ground_tiles.png",
+      "cellSize": {
+        "width": 128,
+        "height": 128
+      }
+    },
+    "buildingAtlas": {
+      "file": "assets/buildings/village_buildings.png",
+      "cellSize": {
+        "width": 384,
+        "height": 384
+      },
+      "grid": {
+        "columns": 3,
+        "rows": 2
+      }
+    },
+    "forestAtlas": {
+      "file": "assets/environment/forest_atlas.png",
+      "cellSize": {
+        "width": 192,
+        "height": 256
+      },
+      "grid": {
+        "columns": 4,
+        "rows": 3
+      }
+    }
+  }
+}
