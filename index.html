@@ -7,7 +7,7 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <link rel="manifest" href="./manifest.json">
-  <title>Readi World v0.0.4</title>
+  <title>Readi World v0.0.4b</title>
   <style>
     *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
     html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#102019;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;touch-action:none}
@@ -89,6 +89,64 @@ const phases=[
   {name:"Night",icon:"🌙",overlay:"rgba(15,32,58,.38)",base:22}
 ];
 
+const FALLBACK_LAYOUT={
+  worldSize:{width:1344,height:1920},
+  playerSpawn:{x:672,y:930,direction:"up"},
+  buildings:[
+    {id:"building.forester_hut",spriteId:"forester_hut_lv1",position:{x:360,y:430},collisionRadius:68,clearRadius:165,interactionPoint:{x:360,y:500},interactionLabel:"Visit Forester's Hut"},
+    {id:"building.mine",spriteId:"mine_entrance_locked",position:{x:980,y:380},collisionRadius:72,clearRadius:170,interactionPoint:{x:940,y:490},interactionLabel:"Inspect Mine"},
+    {id:"building.home",spriteId:"home_lv1",position:{x:820,y:900},collisionRadius:80,clearRadius:185,interactionPoint:{x:820,y:1000},interactionLabel:"Enter Home"},
+    {id:"building.farm",spriteId:"farm_lv1",position:{x:330,y:1260},collisionRadius:76,clearRadius:180,interactionPoint:{x:400,y:1340},interactionLabel:"Visit Farm"},
+    {id:"building.well",spriteId:"village_well",position:{x:760,y:1280},collisionRadius:40,clearRadius:100,interactionPoint:{x:760,y:1345},interactionLabel:"Use Village Well"},
+    {id:"building.harbor",spriteId:"harbor_locked",position:{x:900,y:1680},collisionRadius:95,clearRadius:220,interactionPoint:{x:900,y:1780},interactionLabel:"Inspect Harbor"}
+  ],
+  paths:[
+    {id:"path.main",width:64,points:[{x:470,y:220},{x:620,y:560},{x:700,y:930},{x:600,y:1250},{x:830,y:1640}]},
+    {id:"path.mine_branch",width:54,points:[{x:620,y:560},{x:980,y:420}]},
+    {id:"path.home_branch",width:50,points:[{x:700,y:930},{x:820,y:980}]},
+    {id:"path.farm_branch",width:50,points:[{x:600,y:1250},{x:360,y:1320}]}
+  ],
+  water:[
+    {id:"water.harbor_bay",polygon:[{x:540,y:1660},{x:1344,y:1500},{x:1344,y:1920},{x:0,y:1920},{x:0,y:1810}]}
+  ]
+};
+
+function validLayout(layout){
+  return !!layout &&
+    Array.isArray(layout.buildings) && layout.buildings.length >= 6 &&
+    Array.isArray(layout.paths) && layout.paths.length > 0 &&
+    Array.isArray(layout.water);
+}
+
+function createHarvestTrees(){
+  const trees=[];
+  const buildings=state.layout?.buildings||[];
+  for(let i=0;i<44;i++){
+    const x=70+((i*173)%1200);
+    const y=120+((i*257)%1680);
+    const blockedByBuilding=buildings.some(b=>Math.hypot(x-b.position.x,y-b.position.y)<(b.clearRadius||140)+22);
+    const blockedByPath=(state.layout?.paths||[]).some(path=>{
+      for(let j=1;j<path.points.length;j++){
+        const a=path.points[j-1],b=path.points[j];
+        const vx=b.x-a.x,vy=b.y-a.y;
+        const wx=x-a.x,wy=y-a.y;
+        const c1=vx*wx+vy*wy;
+        const c2=vx*vx+vy*vy;
+        const t=Math.max(0,Math.min(1,c2?c1/c2:0));
+        const px=a.x+t*vx,py=a.y+t*vy;
+        if(Math.hypot(x-px,y-py)<(path.width||50)*0.75)return true;
+      }
+      return false;
+    });
+    if(!blockedByBuilding&&!blockedByPath){
+      trees.push({id:`tree.${i}`,x,y,state:"active",respawnAt:0});
+    }
+  }
+  state.trees=trees;
+}
+
+
+
 const state={
   layout:null,registry:null,buildingImage:null,
   world:{width:1344,height:1920},
@@ -96,7 +154,7 @@ const state={
   camera:{x:0,y:0},resources:{wood:0,stone:0,coin:25},
   input:{pointerId:null,startX:0,startY:0,x:0,y:0},
   context:null,gameTimeAnchor:Date.now(),last:performance.now(),
-  fallback:false,toastTimer:null
+  fallback:false,toastTimer:null,trees:[],harvesting:null
 };
 
 function clamp(v,a,b){return Math.max(a,Math.min(b,v))}
@@ -111,7 +169,7 @@ async function fetchJson(url){
   return r.json();
 }
 function loadImage(url){
-  return new Promise((resolve,reject)=>{const img=new Image();img.onload=()=>resolve(img);img.onerror=()=>reject(new Error(`Image failed: ${url}`));img.src=url+"?v=4";});
+  return new Promise((resolve,reject)=>{const img=new Image();img.onload=()=>resolve(img);img.onerror=()=>reject(new Error(`Image failed: ${url}`));img.src=url+"?v=4b";});
 }
 
 function resize(){
@@ -127,10 +185,14 @@ function spriteMeta(id){
   return state.registry?.atlases?.village_buildings?.sprites?.[id]||null;
 }
 function drawAtlasSprite(id,x,y){
+  const atlas=state.registry?.atlases?.village_buildings;
   const m=spriteMeta(id);
-  if(!m||!state.buildingImage){drawFallbackBuilding(id,x,y);return;}
-  const fw=state.registry.atlases.village_buildings.frameWidth;
-  const fh=state.registry.atlases.village_buildings.frameHeight;
+  const validImage=state.buildingImage &&
+    atlas &&
+    state.buildingImage.naturalWidth===atlas.imageWidth &&
+    state.buildingImage.naturalHeight===atlas.imageHeight;
+  if(!m||!validImage){drawFallbackBuilding(id,x,y);return;}
+  const fw=atlas.frameWidth,fh=atlas.frameHeight;
   const [dw,dh]=m.drawSize;
   const [px,py]=m.pivot;
   ctx.drawImage(state.buildingImage,m.col*fw,m.row*fh,fw,fh,x-dw*px,y-dh*py,dw,dh);
@@ -153,14 +215,25 @@ function drawGround(){
 
 function drawDecor(){
   const cx=state.camera.x,cy=state.camera.y;
-  for(let i=0;i<48;i++){
-    const x=(i*173)%state.world.width,y=(i*257)%state.world.height;
-    if((state.layout.buildings||[]).some(b=>Math.hypot(x-b.position.x,y-b.position.y)<b.clearRadius))continue;
-    ctx.fillStyle=i%3?"#4d7d43":"#5c8b50";ctx.beginPath();ctx.arc(x-cx,y-cy-22,26,0,Math.PI*2);ctx.fill();
-    ctx.fillStyle="#76523d";ctx.fillRect(x-cx-6,y-cy-22,12,35);
+  const now=Date.now();
+  for(const tree of state.trees){
+    if(tree.state==="harvested"&&tree.respawnAt<=now){
+      tree.state="active";
+      tree.respawnAt=0;
+    }
+    if(tree.state!=="active")continue;
+    const x=tree.x-cx,y=tree.y-cy;
+    if(x<-80||y<-100||x>CONFIG.logicalWidth+80||y>CONFIG.logicalHeight+100)continue;
+    ctx.fillStyle="#76523d";
+    ctx.fillRect(x-7,y-28,14,38);
+    ctx.fillStyle=Number(tree.id.split(".")[1])%3?"#4d7d43":"#5c8b50";
+    ctx.beginPath();
+    ctx.arc(x,y-52,30,0,Math.PI*2);
+    ctx.arc(x-22,y-40,22,0,Math.PI*2);
+    ctx.arc(x+22,y-40,22,0,Math.PI*2);
+    ctx.fill();
   }
 }
-
 function drawBuildings(){
   const cx=state.camera.x,cy=state.camera.y;
   const sorted=[...(state.layout.buildings||[])].sort((a,b)=>a.position.y-b.position.y);
@@ -187,11 +260,48 @@ function render(){
 
 function blocked(x,y){
   if(x<30||y<30||x>state.world.width-30||y>state.world.height-30)return true;
-  return (state.layout.buildings||[]).some(b=>Math.hypot(x-b.position.x,y-b.position.y)<(b.collisionRadius||60)+18);
+  if((state.layout.buildings||[]).some(b=>Math.hypot(x-b.position.x,y-b.position.y)<(b.collisionRadius||60)+18))return true;
+  return state.trees.some(tree=>tree.state==="active"&&Math.hypot(x-tree.x,y-tree.y)<38);
+}
+
+
+function nearestHarvestTree(){
+  let best=null,bestD=Infinity;
+  for(const tree of state.trees){
+    if(tree.state!=="active")continue;
+    const d=Math.hypot(state.player.x-tree.x,state.player.y-tree.y);
+    if(d<CONFIG.harvestRange&&d<bestD){best=tree;bestD=d}
+  }
+  return best;
+}
+
+function updateHarvesting(){
+  if(state.harvesting){
+    state.input.x=0;
+    state.input.y=0;
+    if(performance.now()-state.harvesting.startedAt>=900){
+      const tree=state.harvesting.tree;
+      tree.state="harvested";
+      tree.respawnAt=Date.now()+5*60*1000;
+      state.resources.wood+=3;
+      state.harvesting=null;
+      showToast("+3 Wood");
+      save();
+    }
+    return true;
+  }
+  const tree=nearestHarvestTree();
+  if(tree){
+    state.harvesting={tree,startedAt:performance.now()};
+    showToast("Chopping…");
+    return true;
+  }
+  return false;
 }
 
 function update(dt){
-  let x=state.input.x,y=state.input.y,l=Math.hypot(x,y);if(l>1){x/=l;y/=l}
+  const harvesting=updateHarvesting();
+  let x=harvesting?0:state.input.x,y=harvesting?0:state.input.y,l=Math.hypot(x,y);if(l>1){x/=l;y/=l}
   const nx=state.player.x+x*CONFIG.speed*dt,ny=state.player.y+y*CONFIG.speed*dt;
   if(!blocked(nx,state.player.y))state.player.x=nx;if(!blocked(state.player.x,ny))state.player.y=ny;
   const tx=clamp(state.player.x-CONFIG.logicalWidth/2,0,state.world.width-CONFIG.logicalWidth),ty=clamp(state.player.y-CONFIG.logicalHeight/2,0,state.world.height-CONFIG.logicalHeight);
@@ -229,10 +339,16 @@ window.addEventListener("resize",resize);
 async function boot(){
   loadSave();
   const results=await Promise.allSettled([fetchJson(PATHS.layout),fetchJson(PATHS.registry),loadImage(PATHS.buildings)]);
-  if(results[0].status==="fulfilled")state.layout=results[0].value;else throw results[0].reason;
+  if(results[0].status==="fulfilled"&&validLayout(results[0].value)){
+    state.layout=results[0].value;
+  }else{
+    state.layout=FALLBACK_LAYOUT;
+    state.fallback=true;
+  }
   if(results[1].status==="fulfilled")state.registry=results[1].value;else state.fallback=true;
   if(results[2].status==="fulfilled")state.buildingImage=results[2].value;else state.fallback=true;
   state.world=state.layout.worldSize||state.world;
+  createHarvestTrees();
   const spawn=state.layout.playerSpawn||{};if(!localStorage.getItem(CONFIG.saveKey)){state.player.x=spawn.x||672;state.player.y=spawn.y||930;state.player.direction=spawn.direction||"up"}
   resize();ui.loading.classList.add("hidden");if(state.fallback)showToast("Asset fallback active.");requestAnimationFrame(loop);
 }
