@@ -1,0 +1,789 @@
+READI WORLD
+ENGINE & DESIGN BIBLE — VERSION 0.2
+Updated foundation for the portrait-first B+ prototype
+
+Document status: Living source of truth
+Previous version: 0.1
+Updated: 2026-07-19
+Primary prototype target: Readi World v0.0.3 and later
+Primary platform: iPhone 16 Pro, Safari / Home Screen PWA, portrait orientation
+Development language: Hungarian discussion; English code, IDs, filenames, comments and visible game text
+
+CORE PROMISE
+
+“A small world that remembers you, visibly grows with you, and always feels good to return to.”
+
+PURPOSE
+
+This document is the central source of truth for Readi World. Separate conversations may design characters,
+locations, buildings, animations, systems, UI, code or art, but all work must remain compatible with this Bible.
+
+VERSION 0.2 CHANGE SUMMARY
+
+Version 0.2 replaces several earlier prototype assumptions after real-device testing.
+
+Changed locked decisions:
+- Primary orientation changed from landscape to portrait.
+- The fixed left joystick was replaced by a floating joystick that appears where the player touches.
+- The permanent ACT button was removed.
+- Harvestable resources use automatic proximity interaction where appropriate.
+- Buildings use one contextual prompt at a time.
+- The top HUD now follows the approved B+ layout.
+- Important buildings, entrances and paths require procedural clear zones.
+- Permanent object-name labels are removed from normal gameplay.
+- GitHub Pages and Home Screen PWA are now the preferred daily test environment.
+- The current logical viewport is 720 x 1280.
+- The initial village layout is designed around a readable vertical flow.
+
+Unchanged foundations:
+- One persistent home village.
+- Compact scenes and replayable stages.
+- Atlas-based visuals.
+- Layered character equipment.
+- Automatic categorized inventory.
+- Optional combat.
+- Four-hour world day.
+- Automatic persistent saving.
+- Deterministic generation.
+- English game and code.
+- Audio-ready semantic events.
+- Coming Soon as an intentional product state.
+- No false claim of cheat-proof security without a backend.
+
+HOW TO USE THIS BIBLE
+
+LOCKED DECISION
+An accepted foundation. Do not silently change it. Any change must be recorded in the Decision Log.
+
+RECOMMENDED DEFAULT
+The best current solution. It may be tuned after testing without redesigning the full project.
+
+FUTURE SYSTEM
+Architecturally reserved but not required in the current prototype.
+
+OPEN QUESTION
+Not decided. Prototype, measure and decide later.
+
+PROJECT CONVERSATION CONTRACT
+
+- All code, identifiers, filenames, comments and visible game text are English.
+- Design discussion may remain Hungarian.
+- New systems must be modular, data-driven and suitable for mobile performance limits.
+- A feature is rejected or simplified if it adds management burden without meaningful play.
+- “Coming Soon” is an accepted and intentional state.
+- The prototype proves game feel and architecture, not every future feature.
+- Current working systems should be preserved during refactors unless a Decision Log entry replaces them.
+- Every generated asset must follow the approved visual references and technical atlas rules.
+
+CHAPTER 01 — VISION AND NON-NEGOTIABLE PRINCIPLES
+
+LOCKED DECISION
+Readi World is a cozy, progression-focused portrait mobile game centered on one evolving home village.
+It respects player time, minimizes administration and does not require combat.
+
+The desired emotion is ownership without pressure. The player should feel that the village is personally theirs,
+that short visits matter, that the world remembers changes and that visible progression is more important than
+menu-driven numbers.
+
+Two minutes of play should produce a gathered resource, visible environmental change, progress toward an upgrade,
+a discovered route, useful goal information or a pleasant world-state change.
+
+Anti-goals:
+- tower defense;
+- idle economy simulation;
+- heavy farming simulation;
+- inventory-management simulation;
+- forced combat;
+- giant continuously loaded open world;
+- notification-driven obligation;
+- pay-to-win or frustration-to-payment design.
+
+Decision filter:
+- Does the idea strengthen ownership, discovery, visible growth or calm mastery?
+- Does it work comfortably in portrait?
+- Does it respect a two-minute session?
+- Does it create chores that should be automated?
+- Does it force one specialization?
+- Can it reuse a general system?
+- Can the player understand it without excessive UI?
+
+CHAPTER 02 — PLAYER EXPERIENCE AND CORE LOOP
+
+LOCKED DECISION
+The player always returns to one persistent home village. Activities branch outward and feed visible improvements
+back into the village.
+
+Primary loop:
+1. Leave the village for a compact area or stage.
+2. Gather resources, discover something or complete a small objective.
+3. Return home.
+4. Resources enter automatic categorized storage.
+5. Spend resources on construction, upgrades, tools or decoration.
+6. See the village change.
+7. Choose the next specialization.
+
+Session expectations:
+- 2 minutes: harvest, check growth or make one small improvement.
+- 10 minutes: complete a compact stage or gather toward an upgrade.
+- 30 minutes: progress an area tier or unlock a meaningful feature.
+- Long play: chain activities freely without energy walls.
+
+Combat remains optional and must never block peaceful progression.
+
+CHAPTER 03 — WORLD STRUCTURE AND SCENE MODEL
+
+LOCKED DECISION
+The world is a set of compact scenes, not one giant continuously simulated map.
+
+Village Hub branches:
+- Farm
+- Forest stages
+- Mine stages
+- Harbor and Sea stages
+- Mountains — future
+- Expedition Gate — future
+
+The village is persistent and mostly hand-authored. Activity areas may be authored, procedural or hybrid.
+Only the current scene is fully rendered and updated.
+
+LOCKED DECISION — PORTRAIT FLOW
+The village is composed for readable vertical navigation.
+
+Recommended broad layout:
+- upper area: Forest and Mine;
+- upper-middle: Forester’s Hut and woodland landmarks;
+- center: Home and main path;
+- lower-middle: Farm, well and service buildings;
+- lower area: Harbor and Expedition access.
+
+The first camera view should show the player, Home, a path and at least one destination.
+
+Current logical viewport: 720 x 1280.
+Current village planning size: 1344 x 1920 logical pixels.
+Planning tile: 48 x 48 logical pixels.
+
+Area progression examples:
+Harbor: Beach -> Shallow Water -> Open Sea -> Deep Ocean -> Islands -> Frozen Sea
+Mine: Surface -> Copper -> Iron -> Gold -> Crystal -> Ancient Ruins -> Magic Depths
+Forest: Clearing -> Pine Forest -> Old Forest -> Swamp -> Enchanted Grove
+
+Every tier introduces a meaningful new resource, rule, verb, encounter or visual identity.
+
+Village specialization remains player-driven. Harbor, mining and farming identities must all be viable.
+
+CHAPTER 04 — TIME, DAY CYCLE AND OFFLINE PROGRESSION
+
+LOCKED DECISION
+The world clock advances in real time while open or closed, but is independent from the player’s local day/night.
+
+Four-hour world day:
+- Hour 1: Morning
+- Hour 2: Afternoon
+- Hour 3: Evening
+- Hour 4: Night
+
+The cycle then returns to Morning.
+
+World time model:
+worldTimeMs = savedWorldTimeMs + max(0, nowMs - lastRealTimestampMs)
+
+The top HUD shows phase icon, phase name, world day and in-game clock.
+Example: Morning — Day 1 · 08:30
+
+Allowed offline:
+- crop growth;
+- tree regrowth;
+- construction;
+- day-phase progress;
+- natural environmental changes.
+
+Not allowed offline:
+- active harvesting;
+- infinite currency production;
+- quest decisions;
+- combat completion;
+- player movement;
+- dangerous expedition completion.
+
+Phone-time manipulation cannot be fully prevented without a backend. Detect and clamp suspicious jumps rather
+than punish players aggressively.
+
+CHAPTER 05 — SAVING, PERSISTENCE AND RECOVERY
+
+LOCKED DECISION
+Anything the player changes, wherever they stop, is remembered automatically.
+
+Save:
+- player position, direction and scene;
+- resources and currency;
+- object states;
+- harvested trees and respawn times;
+- building levels and construction;
+- world seed and time anchor;
+- equipment and appearance;
+- settings;
+- milestones and progression;
+- save version and game version.
+
+Save triggers:
+- important interaction;
+- harvest completion;
+- upgrade;
+- scene transition;
+- periodic debounced autosave;
+- page hidden or app backgrounded;
+- import/export;
+- migration.
+
+Save layers:
+- current save;
+- backup save;
+- previous backup when possible.
+
+Current prototype may use localStorage. The SaveManager API must remain storage-independent for later migration
+to IndexedDB or cloud save.
+
+The game must load v0.0.1 and v0.0.2 data safely. Stable IDs are never reused for a different meaning.
+
+CHAPTER 06 — ENGINE ARCHITECTURE
+
+LOCKED DECISION
+The prototype may remain one index.html, but internal sections behave like separable modules.
+
+Engine systems:
+GameLoop, Renderer, AtlasManager, SceneManager, ObjectManager, CollisionSystem, InteractionSystem,
+InputManager, Camera, AnimationSystem, TimeSystem, SaveManager, AudioManager, EventBus, Localization,
+UIManager and DebugTools.
+
+Game content:
+Village, Farming, Forest, Mining, Harbor, Fishing, Milestones, Quests and NPCs.
+Future systems remain reserved until activated by the roadmap.
+
+Main-loop rules:
+- clamp delta time;
+- never simulate offline progress through giant frame steps;
+- pause expensive work while hidden;
+- render visible objects only.
+
+Semantic event examples:
+- audio.emit("tree.chop")
+- events.emit("resource.collected", payload)
+- events.emit("building.enter", payload)
+- events.emit("building.upgraded", payload)
+- events.emit("save.requested", payload)
+
+CHAPTER 07 — WORLD OBJECTS, COMPONENTS AND STATES
+
+LOCKED DECISION
+Trees, rocks, crops, buildings, boats and interactables share one object format.
+
+Reference fields:
+id, type, subtype, transform, visual, collision, interaction, autoAction, clearRadius, state, level,
+persistent, audioProfile and tags.
+
+Components:
+- Transform: position, scale, direction, depth anchor.
+- Visual: atlas, cell, animation, tint, visibility.
+- Collision: physical footprint.
+- Interaction: type, trigger, range, label, priority and requirements.
+- Harvest: resource, amount, duration or hit count and regeneration.
+- Growth: stage and timestamps.
+- Upgrade: level, cost and construction.
+- Clear zone: decoration-free radius.
+- Persistence: serialized state.
+
+Player states: idle, walking, chopping, mining, fishing, interacting, transitioning and disabled.
+Tree states: healthy, chopping, falling, stump and regrowing.
+Building states: locked, available, constructing, active and upgrading.
+
+CHAPTER 08 — RENDERING, LAYERS, ATLASES AND PIVOTS
+
+LOCKED DECISION
+The production visual pipeline is atlas-based with standardized pivots and metadata.
+
+World layers:
+0 Ground
+10 Paths and soil
+20 Ground decoration
+30 Crops and low objects
+40 Buildings and trunks
+50 Characters and moving objects
+60 Canopies and foreground occlusion
+70 Weather and lighting
+80 Context highlights
+90 Context prompts
+100 Fixed UI
+
+Depth-sensitive drawing uses foot/pivot Y.
+
+Separate atlases for character base, hair, clothes, tools, trees, plants, rocks, houses, harbor, boats and UI.
+
+Atlas rules:
+- transparent PNG;
+- exact cell dimensions;
+- consistent perspective and light direction;
+- consistent ground line;
+- safety padding;
+- no labels, numbers or grid lines;
+- metadata for row, column, pivot, collision and animation.
+
+Missing assets use a visible debug fallback and a neutral player-mode fallback.
+
+CHAPTER 09 — CHARACTER, CLOTHING, TOOLS AND ANIMATION
+
+LOCKED DECISION
+The character is assembled from synchronized layers.
+
+Layer stack:
+shadow, body base, pants, boots, torso, head, hair, tool or weapon, hat/accessory and foreground effect.
+
+All layers share exact frame dimensions, direction order, pivot, pose and timing.
+
+Foundation states:
+- idle;
+- walking;
+- chopping;
+- direction tracking.
+
+Future states:
+- mining;
+- fishing;
+- watering;
+- combat.
+
+Changing an axe, shirt or hat swaps only the relevant layer.
+
+CHAPTER 10 — VILLAGE, BUILDINGS, BOATS AND VISUAL PROGRESSION
+
+LOCKED DECISION
+Village progression must be visually obvious.
+
+Building methods:
+- full-state atlas when silhouette changes;
+- layered building when the base remains stable;
+- hybrid when major levels change the base and cosmetics remain layered.
+
+LOCKED DECISION — BUILDING INTERACTION
+Buildings do not display permanent names. When the player enters range, one contextual pill appears.
+Examples: Enter Home, Visit Farm, Visit Forester’s Hut, Inspect Mine and Inspect Harbor.
+Only one primary prompt may be visible.
+
+Construction transition:
+- enter constructing state;
+- show scaffolding or materials;
+- advance with world time if appropriate;
+- commit to save;
+- switch atlas state;
+- play short reveal feedback.
+
+Coming Soon locations must look intentional and never behave like broken features.
+
+CHAPTER 11 — PROCEDURAL GENERATION, CLEAR ZONES AND STAGES
+
+LOCKED DECISION
+Procedural decoration is deterministic and rule-driven.
+
+Seed streams:
+worldSeed, vegetationSeed, rockSeed, weatherSeed, villageDecorationSeed and stageSeed.
+
+LOCKED DECISION — CLEAR ZONES
+Important buildings, entrances and paths define exclusion areas.
+Each important object may define clearRadius.
+No generated tree, rock, bush, flower or decoration may enter that radius.
+
+Apply to Home, Farm, Forester’s Hut, Mine, Harbor, Expedition Gate, future NPC homes, doors, interaction points
+and central paths.
+
+Placement checks:
+- building clear radius;
+- path corridor;
+- minimum tree spacing;
+- navigation access;
+- interaction access.
+
+Forest defaults may use 55% oak, 25% pine, 10% young tree, 5% bush and 5% stump.
+Keep central navigation readable and allow denser edges.
+
+Persistent scenes generate once and store seed plus changed object states.
+
+Debug tools include density controls, regenerate, copy seed, clear zones, interaction ranges and collisions.
+
+CHAPTER 12 — INPUT, INTERACTION, CAMERA AND MOBILE UI
+
+LOCKED DECISION
+Readi World is portrait-first and touch-first.
+
+Abstract input actions:
+Input.moveVector, Input.openMenu, Input.cancel, Input.contextSelect and Input.debugToggle.
+
+LOCKED DECISION — FLOATING JOYSTICK
+There is no permanent fixed joystick.
+Touching the lower movement region creates the joystick at the initial touch point. Dragging controls movement.
+The joystick disappears on release and may start on either side. UI touches never create movement.
+Recommended movement zone: lower 55% of gameplay, excluding UI.
+
+LOCKED DECISION — NO ACT BUTTON
+There is no permanent ACT button.
+
+Resource behavior:
+- harvestable trees start chopping automatically at close range;
+- compatible resource nodes may use the same logic;
+- feedback is small and non-modal.
+
+Building behavior:
+- approaching shows a contextual pill;
+- the pill may be tapped;
+- automatic trigger is used only when accidental activation is unlikely;
+- cooldown prevents repeats.
+
+Decorative objects do not interact.
+
+The InteractionSystem chooses one target based on distance, type, access, priority, player state and cooldown.
+
+Camera rules:
+- smooth damping;
+- clamp to scene bounds;
+- no empty outside space;
+- logical coordinates;
+- initial view includes player, Home, path and destination;
+- optional subtle camera shake.
+
+CHAPTER 13 — B+ HUD, MENU AND UI RULES
+
+LOCKED DECISION
+The approved UI direction is B+: the cozy balanced B layout combined with clear A/C time information.
+
+Top HUD order:
+- avatar;
+- level and compact XP;
+- wood;
+- stone;
+- coin;
+- phase icon and name;
+- world day and in-game clock;
+- menu button.
+
+HUD requirements:
+- iOS safe areas;
+- compact rounded translucent panels;
+- readable on narrow portrait screens;
+- minimal gameplay obstruction;
+- no permanent object labels.
+
+Menu opens from the top-right and currently contains Inventory, Village, Settings, Debug, Save and Coming Soon.
+It does not cover the full screen, uses large touch targets and closes on outside tap.
+
+Resource feedback examples: +3 Wood, +1 Stone.
+Object names, collisions, clear zones and interaction ranges are debug-only.
+
+CHAPTER 14 — RESOURCES, INVENTORY, ECONOMY AND MILESTONES
+
+LOCKED DECISION
+Inventory is automatic and categorized. Players do not manually move stacks.
+
+All additions and spending pass through central services.
+
+Economic rules:
+- one ordinary currency at first;
+- avoid unnecessary currencies;
+- no mandatory energy wall;
+- meaningful rather than arbitrary exponential costs;
+- no multi-day progress loss as punishment;
+- monetization must not create artificial frustration.
+
+Milestones celebrate natural play and may reward decorations, clothing, banners, boat flags, titles or small currency.
+
+CHAPTER 15 — AUDIO-READY ARCHITECTURE
+
+LOCKED DECISION
+Detailed sound design may come later, but every system is audio-ready.
+
+Semantic events:
+- audio.emit("player.walk.grass")
+- audio.emit("tree.chop")
+- audio.emit("resource.collected")
+- audio.emit("building.enter")
+- audio.emit("ui.menu.open")
+
+Gameplay code does not reference specific audio filenames.
+Mixer groups: Master, Music, Ambience, Effects and UI.
+Safari audio unlock occurs after the first valid interaction.
+
+CHAPTER 16 — PERFORMANCE, RELIABILITY AND ACCESSIBILITY
+
+LOCKED DECISION
+The phone must remain responsive, cool and battery-conscious.
+
+Targets:
+- 60 FPS;
+- graceful fallback;
+- device pixel ratio capped at 2;
+- only active scene updated;
+- offscreen culling;
+- minimal allocations;
+- minimal DOM updates per frame;
+- pause expensive work while hidden;
+- autosave on backgrounding;
+- avoid expensive full-screen blur.
+
+Accessibility:
+- readable text;
+- large touch targets;
+- no color-only information;
+- reduced motion;
+- camera shake toggle;
+- UI scale;
+- separate audio groups;
+- strong contrast;
+- floating joystick supports either hand.
+
+CHAPTER 17 — LOCALIZATION AND NAMING
+
+LOCKED DECISION
+The game, code, IDs, filenames and comments are English. Design discussion may be Hungarian.
+
+Visible text uses localization keys even when English is the only language.
+Stable IDs are never renamed when display text changes.
+
+CHAPTER 18 — SECURITY, ANTI-TAMPER AND FUTURE BACKEND
+
+LOCKED DECISION
+A fully client-side HTML game cannot honestly be called cheat-proof.
+
+Current protection:
+- validation;
+- versioned saves;
+- backups;
+- range checks;
+- clock-jump detection;
+- central inventory and economy transactions;
+- optional corruption checksum.
+
+Do not waste prototype time on aggressive obfuscation, fake DRM, device locking or complex client-side encryption.
+
+Backend becomes necessary for real-money validation, premium currency, cloud sync, accounts, leaderboards,
+player trading, multiplayer or shared events.
+
+CHAPTER 19 — ART DIRECTION AND ASSET PIPELINE
+
+LOCKED DECISION
+Approved visual direction: warm, cozy, hand-painted, clean silhouettes, soft 3D volume, lightly tilted top-down view,
+soft shadows, no harsh pixel-art look, no neon palette and limited outlines.
+
+The B+ concept is the current UI visual reference:
+- compact premium top bar;
+- warm dark-green translucent panels;
+- clear resource icons;
+- phase and clock;
+- floating joystick;
+- contextual world prompts;
+- clear space around buildings.
+
+Asset pipeline:
+1. concept;
+2. Bible check;
+3. generate or draw;
+4. verify perspective, scale, light and pivot;
+5. arrange atlas;
+6. add metadata;
+7. test in engine;
+8. approve and version.
+
+CHAPTER 20 — DEVELOPMENT WORKFLOW AND ROADMAP
+
+Rules:
+- first make the system work once;
+- improve visual quality second;
+- create production assets after feel and scale testing;
+- prefer reusable systems;
+- keep working versions in GitHub;
+- use GitHub Pages and Home Screen PWA for stable device testing;
+- preserve save compatibility;
+- record locked changes here.
+
+Current v0.0.3 foundation:
+- portrait B+ HUD;
+- floating joystick;
+- automatic tree harvesting;
+- contextual building prompts;
+- clear zones;
+- four-phase time;
+- saving and migration;
+- debug tools.
+
+Next:
+- fix device-tested gameplay issues;
+- improve village composition;
+- create approved character and environment references;
+- integrate first atlases;
+- add save export/import;
+- improve interaction animation and feedback.
+
+Future:
+Farm, Forest Stage 01, Mine, Harbor, sailing, expeditions, NPCs, quests, milestones and optional combat.
+
+CHAPTER 21 — CURRENT PROTOTYPE SPECIFICATION
+
+Target: Readi World v0.0.3 UX Foundation.
+
+Required:
+- portrait PWA;
+- 720 x 1280 logical viewport;
+- GitHub Pages;
+- one index.html and manifest.json;
+- B+ top HUD;
+- floating joystick;
+- no ACT button;
+- automatic tree harvesting;
+- contextual building prompts;
+- one prompt at a time;
+- no permanent labels;
+- clear zones;
+- compact persistent village;
+- four-hour day;
+- automatic save, backup and migration;
+- audio hooks;
+- debug overlays;
+- mobile safeguards.
+
+Explicit exclusions:
+- finished farming simulation;
+- NPC schedules;
+- quest content;
+- combat;
+- payments;
+- backend accounts;
+- full soundtrack;
+- large inventory UI;
+- multiple finished regions;
+- final production art.
+
+APPENDIX A — REFERENCE DATA
+
+World object example:
+{
+  id: "building.home",
+  type: "building",
+  subtype: "home",
+  transform: { x: 820, y: 930, scale: 1 },
+  visual: { atlasId: "houses", state: "active", level: 1 },
+  collision: { enabled: true, radius: 78 },
+  clearRadius: 180,
+  interaction: {
+    type: "building",
+    labelKey: "action.enter_home",
+    trigger: "context",
+    range: 78,
+    priority: 100
+  },
+  persistent: true,
+  audioProfile: "building.home"
+}
+
+Harvest example:
+{
+  type: "harvest",
+  trigger: "automatic",
+  resourceId: "resource.wood.common",
+  amount: 3,
+  range: 60,
+  durationMs: 900,
+  requiredToolTag: "axe"
+}
+
+Save root:
+{
+  saveVersion: 2,
+  gameVersion: "0.0.3",
+  timestamps: { createdAt, updatedAt, lastRealTime },
+  player: { sceneId, position, direction, appearance, equippedToolId },
+  world: { seed, worldTimeMs, gameTimeAnchor, unlockedAreaIds },
+  scenes: {},
+  inventory: { resources, currency },
+  progression: { buildings, areaTiers, milestones },
+  settings: { audio, uiScale, reducedMotion },
+  diagnostics: { lastSaveReason, checksum }
+}
+
+APPENDIX B — AI ASSET PROMPT STANDARD
+
+Create a production-ready 2D sprite atlas for Readi World.
+
+Style:
+- warm hand-painted cozy mobile game art;
+- clean silhouettes;
+- soft 3D volume;
+- no harsh outlines;
+- lightly tilted top-down camera;
+- consistent upper-left light;
+- match the approved B+ reference.
+
+Technical:
+- transparent background;
+- exact grid and cell dimensions;
+- identical ground line and pivot;
+- safety padding;
+- no labels, numbers or grid lines.
+
+Every variant must preserve perspective, scale, material treatment and lighting.
+Every character layer must match the approved base-character pose, timing, pivot and direction order.
+
+APPENDIX C — DECISION LOG
+
+Retained:
+D-001 One persistent village hub with compact scenes.
+D-003 Single index.html prototype with modular internal architecture.
+D-004 Atlas-based visuals.
+D-005 Layered character equipment and clothing.
+D-006 Automatic categorized inventory.
+D-007 Optional combat.
+D-008 Four-hour real-time world day.
+D-009 Automatic persistent saving.
+D-010 Deterministic generation.
+D-011 English game/code/IDs.
+D-012 Audio-ready event system.
+D-013 Coming Soon is intentional.
+D-014 Security is resilient but not cheat-proof without backend.
+
+Replaced:
+D-002 Landscape-first.
+D-002A Portrait-first.
+
+New in v0.2:
+D-015 Logical viewport defaults to 720 x 1280.
+D-016 Approved HUD direction is B+.
+D-017 Movement uses a floating touch-position joystick.
+D-018 There is no permanent ACT button.
+D-019 Harvestable resources may use automatic proximity interaction.
+D-020 Buildings use one contextual prompt at a time.
+D-021 Important buildings, entrances and paths define clear zones.
+D-022 Permanent object-name labels are hidden in normal play.
+D-023 GitHub Pages plus Home Screen PWA is the preferred stable device-test route.
+D-024 Village composition follows a readable portrait vertical flow.
+
+Open questions:
+Q-001 Exact final palette after production asset tests.
+Q-002 Exact automatic-harvest duration and tool influence.
+Q-003 Tap-only or selectively automatic building interaction.
+Q-004 Exact village dimensions after camera testing.
+Q-005 Exact offline progression cap.
+Q-006 IndexedDB migration timing.
+Q-007 Save export/import format.
+Q-008 Final release route.
+Q-009 Cloud save and account strategy.
+Q-010 Whether energy exists.
+
+CHANGE PROCEDURE
+
+1. State the locked decision being challenged.
+2. Explain player benefit and technical cost.
+3. Describe migration impact.
+4. Prototype experiential uncertainty.
+5. Record the approved result.
+6. Update affected chapters.
+7. Increment the Bible version.
+
+END OF DOCUMENT
+
+Readi World v0.2 Foundation
+Build the system once. Let the world grow through data, art and meaningful choices.
