@@ -237,7 +237,7 @@
       }
     },
     "ground_tiles": {
-      "status": "planned",
+      "status": "ready",
       "profile": "short_hd_3x2",
       "file": "assets/environment/ground_tiles.png",
       "sprites": {
@@ -423,7 +423,7 @@
       }
     },
     "tool_overlays": {
-      "status": "planned",
+      "status": "ready",
       "profile": "short_hd_3x2",
       "file": "assets/characters/tool_overlays.png",
       "sprites": {
@@ -485,7 +485,7 @@
       }
     },
     "effects": {
-      "status": "planned",
+      "status": "ready",
       "profile": "short_hd_3x2",
       "file": "assets/effects/effects_atlas.png",
       "sprites": {
