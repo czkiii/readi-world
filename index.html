@@ -7,7 +7,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <link rel="manifest" href="./manifest.json">
-<title>Readi World v0.0.10</title>
+<title>Readi World v0.0.11</title>
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#102019;touch-action:none;overscroll-behavior:none;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
@@ -32,10 +32,10 @@ canvas{position:absolute;inset:0;width:100%;height:100%;display:block;touch-acti
 <aside id="panel"><div class="grid"><button class="item" data-a="save">Save now</button><button class="item" data-a="inventory">Inventory</button><button class="item" data-a="village">Village</button><button class="item" data-a="settings">Settings</button></div></aside>
 </main><script>
 "use strict";
-const CONFIG={LW:720,LH:1280,DPR:2,SPEED:240,INTERACT:95,HARVEST:70,SAVE:"readiWorld_v010",DAY:4*60*60*1000,PHASE:60*60*1000};
+const CONFIG={LW:720,LH:1280,DPR:2,SPEED:240,INTERACT:95,HARVEST:70,SAVE:"readiWorld_v011",DAY:4*60*60*1000,PHASE:60*60*1000};
 const PATHS={
-  layout:"./data/village_layout.json?v=10",
-  registry:"./data/sprite_registry.json?v=10"
+  layout:"./data/village_layout.json?v=11",
+  registry:"./data/sprite_registry.json?v=11"
 };
 const canvas=document.getElementById("game"),ctx=canvas.getContext("2d",{alpha:false});
 const app=document.getElementById("app"),ui={loading:document.getElementById("loading"),wood:document.getElementById("wood"),stone:document.getElementById("stone"),coin:document.getElementById("coin"),phase:document.getElementById("phase"),clock:document.getElementById("clock"),menu:document.getElementById("menu"),panel:document.getElementById("panel"),prompt:document.getElementById("prompt"),toast:document.getElementById("toast"),debug:document.getElementById("debug"),joy:document.getElementById("joy"),knob:document.getElementById("knob")};
@@ -116,15 +116,21 @@ function prepareAtlas(atlasId,image){
   return {id:atlasId,meta,image,canvas,rects,valid:Object.keys(rects).length>0};
 }
 async function loadReadyAtlases(){
-  const ready=Object.entries(state.registry.atlases||{}).filter(([,m])=>m.status==="ready"&&m.file);
+  const forceVisual=new Set(["village_buildings","forest_environment","ground_tiles","tool_overlays","effects"]);
+  const ready=Object.entries(state.registry.atlases||{}).filter(([id,m])=>
+    !!m.file&&(m.status==="ready"||forceVisual.has(id))
+  );
   const results=await Promise.allSettled(ready.map(async([id,m])=>{
-    const image=await getImage(normalizeAssetPath(m.file)+`?v=10`);
+    const image=await getImage(normalizeAssetPath(m.file)+`?v=11`);
     return [id,prepareAtlas(id,image)];
   }));
   results.forEach((r,i)=>{
     const id=ready[i][0];
-    if(r.status==="fulfilled"&&r.value[1]?.valid)state.atlases[id]=r.value[1];
-    else console.warn(`Atlas unavailable: ${id}`,r.status==="rejected"?r.reason:"invalid atlas");
+    if(r.status==="fulfilled"&&r.value[1]?.valid){
+      state.atlases[id]=r.value[1];
+    }else{
+      console.warn(`Atlas unavailable: ${id}`,r.status==="rejected"?r.reason:"invalid atlas");
+    }
   });
 }
 function findSprite(spriteId){
@@ -150,7 +156,91 @@ function drawSprite(id,x,y,overrideSize=null){
   ctx.drawImage(atlas.canvas,rect.x,rect.y,rect.w,rect.h,x-dw*pivot[0],y-dh*pivot[1],dw,dh);
   return true;
 }
-function drawGround(){ctx.fillStyle="#7ca66b";ctx.fillRect(0,0,CONFIG.LW,CONFIG.LH);const cx=state.camera.x,cy=state.camera.y;for(const p of state.layout.paths){ctx.strokeStyle="#d0b67d";ctx.lineWidth=p.width;ctx.lineCap="round";ctx.lineJoin="round";ctx.beginPath();p.points.forEach((q,i)=>i?ctx.lineTo(q.x-cx,q.y-cy):ctx.moveTo(q.x-cx,q.y-cy));ctx.stroke()}for(const w of state.layout.water){ctx.fillStyle="#5c9fb0";ctx.beginPath();w.polygon.forEach((q,i)=>i?ctx.lineTo(q.x-cx,q.y-cy):ctx.moveTo(q.x-cx,q.y-cy));ctx.closePath();ctx.fill()}}
+function drawOptionalSprite(id,x,y,size=[100,100],pivot=[0.5,0.9],alpha=1,rotation=0){
+  const found=findSprite(id);
+  if(!found)return false;
+  const {atlas,rect}=found;
+  const scale=Math.min(size[0]/rect.w,size[1]/rect.h);
+  const dw=rect.w*scale,dh=rect.h*scale;
+  ctx.save();
+  ctx.globalAlpha=alpha;
+  ctx.translate(x,y);
+  ctx.rotate(rotation);
+  ctx.drawImage(atlas.canvas,rect.x,rect.y,rect.w,rect.h,-dw*pivot[0],-dh*pivot[1],dw,dh);
+  ctx.restore();
+  return true;
+}
+function drawTileCell(id,x,y,w,h,alpha=1){
+  const found=findSprite(id);
+  if(!found)return false;
+  const {atlas,rect}=found;
+  ctx.save();
+  ctx.globalAlpha=alpha;
+  ctx.drawImage(atlas.canvas,rect.x,rect.y,rect.w,rect.h,x,y,w,h);
+  ctx.restore();
+  return true;
+}
+function drawGroundTexture(){
+  if(!findSprite("grass_base"))return false;
+  const tile=190;
+  const startWorldX=Math.floor(state.camera.x/tile)*tile;
+  const startWorldY=Math.floor(state.camera.y/tile)*tile;
+  for(let wy=startWorldY-tile;wy<state.camera.y+CONFIG.LH+tile;wy+=tile){
+    for(let wx=startWorldX-tile;wx<state.camera.x+CONFIG.LW+tile;wx+=tile){
+      drawTileCell("grass_base",wx-state.camera.x,wy-state.camera.y,tile+2,tile+2,.52);
+    }
+  }
+  return true;
+}
+function drawWaterTexture(poly){
+  if(!findSprite("shallow_water"))return;
+  ctx.save();
+  ctx.beginPath();
+  poly.forEach((q,i)=>i?ctx.lineTo(q.x-state.camera.x,q.y-state.camera.y):ctx.moveTo(q.x-state.camera.x,q.y-state.camera.y));
+  ctx.closePath();
+  ctx.clip();
+  const tile=210;
+  for(let y=-tile;y<CONFIG.LH+tile;y+=tile){
+    for(let x=-tile;x<CONFIG.LW+tile;x+=tile){
+      drawTileCell("shallow_water",x,y,tile+2,tile+2,.48);
+    }
+  }
+  ctx.restore();
+}
+
+function drawGround(){
+  ctx.fillStyle="#78a068";
+  ctx.fillRect(0,0,CONFIG.LW,CONFIG.LH);
+  drawGroundTexture();
+  const cx=state.camera.x,cy=state.camera.y;
+
+  for(const p of state.layout.paths){
+    ctx.strokeStyle="#cfb274";
+    ctx.lineWidth=p.width;
+    ctx.lineCap="round";
+    ctx.lineJoin="round";
+    ctx.beginPath();
+    p.points.forEach((q,i)=>i?ctx.lineTo(q.x-cx,q.y-cy):ctx.moveTo(q.x-cx,q.y-cy));
+    ctx.stroke();
+
+    ctx.save();
+    ctx.globalAlpha=.16;
+    ctx.strokeStyle="#8b663a";
+    ctx.lineWidth=Math.max(2,p.width*.16);
+    ctx.setLineDash([10,18]);
+    ctx.stroke();
+    ctx.restore();
+  }
+
+  for(const w of state.layout.water){
+    ctx.fillStyle="#5c9fb0";
+    ctx.beginPath();
+    w.polygon.forEach((q,i)=>i?ctx.lineTo(q.x-cx,q.y-cy):ctx.moveTo(q.x-cx,q.y-cy));
+    ctx.closePath();
+    ctx.fill();
+    drawWaterTexture(w.polygon);
+  }
+}
 function makeTrees(){
   state.trees=[];
   const variants=["oak_tree_01","oak_tree_02","pine_tree_01"];
@@ -184,9 +274,64 @@ function drawTrees(){
   }
 }function drawBuildings(){for(const b of [...state.layout.buildings].sort((a,b)=>a.position.y-b.position.y))drawSprite(b.spriteId,b.position.x-state.camera.x,b.position.y-state.camera.y)}
 function drawPlayer(){const x=state.player.x-state.camera.x,y=state.player.y-state.camera.y;ctx.fillStyle="rgba(0,0,0,.2)";ctx.beginPath();ctx.ellipse(x,y+5,22,9,0,0,Math.PI*2);ctx.fill();ctx.fillStyle="#3f7880";ctx.fillRect(x-14,y-34,28,30);ctx.fillStyle="#d9a36f";ctx.beginPath();ctx.arc(x,y-49,16,0,Math.PI*2);ctx.fill();ctx.fillStyle="#4b3326";ctx.beginPath();ctx.arc(x,y-54,16,Math.PI,Math.PI*2);ctx.fill()}
-function drawHarvestAnimation(){if(!state.harvest)return;const x=state.player.x-state.camera.x,y=state.player.y-state.camera.y;const elapsed=performance.now()-state.harvest.start;const p=Math.min(1,elapsed/850);const swing=Math.sin(p*Math.PI*4)*0.85-0.35;ctx.save();ctx.translate(x+14,y-36);ctx.rotate(swing);ctx.strokeStyle="#6f4a2f";ctx.lineWidth=5;ctx.lineCap="round";ctx.beginPath();ctx.moveTo(0,0);ctx.lineTo(0,-34);ctx.stroke();ctx.fillStyle="#b9c0c4";ctx.beginPath();ctx.moveTo(-10,-38);ctx.lineTo(12,-45);ctx.lineTo(14,-31);ctx.lineTo(-8,-28);ctx.closePath();ctx.fill();ctx.restore();ctx.strokeStyle="rgba(255,255,255,.9)";ctx.lineWidth=5;ctx.beginPath();ctx.arc(x,y+18,28,-Math.PI/2,-Math.PI/2+p*Math.PI*2);ctx.stroke()}
+function drawHarvestAnimation(){
+  if(!state.harvest)return;
+  const x=state.player.x-state.camera.x,y=state.player.y-state.camera.y;
+  const tx=state.harvest.tree.x-state.camera.x,ty=state.harvest.tree.y-state.camera.y;
+  const elapsed=performance.now()-state.harvest.start;
+  const p=Math.min(1,elapsed/850);
+  const swing=Math.sin(p*Math.PI*4)*.65-.25;
+
+  const usedTool=drawOptionalSprite("axe_swing",x+20,y-34,[82,82],[.25,.82],1,swing);
+  if(!usedTool){
+    ctx.save();
+    ctx.translate(x+14,y-36);
+    ctx.rotate(swing);
+    ctx.strokeStyle="#6f4a2f";
+    ctx.lineWidth=5;
+    ctx.lineCap="round";
+    ctx.beginPath();
+    ctx.moveTo(0,0);
+    ctx.lineTo(0,-34);
+    ctx.stroke();
+    ctx.fillStyle="#b9c0c4";
+    ctx.beginPath();
+    ctx.moveTo(-10,-38);
+    ctx.lineTo(12,-45);
+    ctx.lineTo(14,-31);
+    ctx.lineTo(-8,-28);
+    ctx.closePath();
+    ctx.fill();
+    ctx.restore();
+  }
+
+  const hitPulse=.65+.35*Math.sin(p*Math.PI*8)**2;
+  drawOptionalSprite("wood_hit",tx,ty-48,[92,92],[.5,.5],hitPulse,0);
+
+  ctx.strokeStyle="rgba(255,255,255,.92)";
+  ctx.lineWidth=5;
+  ctx.beginPath();
+  ctx.arc(x,y+18,28,-Math.PI/2,-Math.PI/2+p*Math.PI*2);
+  ctx.stroke();
+}
 function clock(){const e=Date.now()-state.timeAnchor,c=((e%CONFIG.DAY)+CONFIG.DAY)%CONFIG.DAY,k=Math.floor(c/CONFIG.PHASE),m=Math.floor((c%CONFIG.PHASE)/CONFIG.PHASE*360),h=(phases[k].h+Math.floor(m/60))%24;return{p:phases[k],d:Math.floor(e/CONFIG.DAY)+1,h,m:m%60}}
-function render(){logical();drawGround();drawTrees();drawBuildings();drawPlayer();drawHarvestAnimation();const t=clock();ctx.fillStyle=t.p.o;ctx.fillRect(0,0,CONFIG.LW,CONFIG.LH)}
+function render(){
+  logical();
+  drawGround();
+  drawTrees();
+  drawBuildings();
+  drawPlayer();
+
+  if(!state.harvest&&!state.input.active&&nearestTree()){
+    const x=state.player.x-state.camera.x,y=state.player.y-state.camera.y;
+    drawOptionalSprite("axe_idle",x+18,y-28,[58,58],[.3,.82],.88,-.18);
+  }
+
+  drawHarvestAnimation();
+  const t=clock();
+  ctx.fillStyle=t.p.o;
+  ctx.fillRect(0,0,CONFIG.LW,CONFIG.LH);
+}
 function insideBuilding(x,y){return state.layout.buildings.some(b=>Math.hypot(x-b.position.x,y-b.position.y)<(b.collisionRadius||60)+18)}
 function recoverIfStuck(){if(!insideBuilding(state.player.x,state.player.y))return;const s=state.layout.playerSpawn;state.player.x=s.x;state.player.y=s.y;toast("Position recovered")}
 function blocked(x,y){return x<25||y<25||x>state.world.width-25||y>state.world.height-25||insideBuilding(x,y)}
@@ -221,6 +366,8 @@ async function boot(){
   resize();
   ui.loading.classList.add("hidden");
   if(!state.atlases.village_buildings)toast("Building fallback active");
+  const missingVisual=["ground_tiles","tool_overlays","effects"].filter(id=>!state.atlases[id]);
+  if(missingVisual.length)console.warn("Optional visual atlases missing:",missingVisual);
   requestAnimationFrame(loop);
 }
 boot().catch(e=>{console.error(e);ui.loading.textContent=`Game load failed: ${e.message}`});
