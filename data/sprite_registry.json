@@ -1,6 +1,101 @@
 {
-  "version": "0.0.3",
-  "description": "Sprite atlas registry and metadata",
-  "atlases": {},
-  "placeholder": "Sprite registry coming soon"
+  "schemaVersion": 1,
+  "atlases": {
+    "village_buildings": {
+      "file": "assets/buildings/village_buildings.png",
+      "imageWidth": 1152,
+      "imageHeight": 768,
+      "columns": 3,
+      "rows": 2,
+      "frameWidth": 384,
+      "frameHeight": 384,
+      "transparentBackground": true,
+      "sprites": {
+        "home_lv1": {
+          "col": 0,
+          "row": 0,
+          "pivot": [
+            0.5,
+            0.9
+          ],
+          "drawSize": [
+            240,
+            240
+          ],
+          "collisionRadius": 80,
+          "clearRadius": 185
+        },
+        "forester_hut_lv1": {
+          "col": 1,
+          "row": 0,
+          "pivot": [
+            0.5,
+            0.9
+          ],
+          "drawSize": [
+            220,
+            220
+          ],
+          "collisionRadius": 68,
+          "clearRadius": 165
+        },
+        "mine_entrance_locked": {
+          "col": 2,
+          "row": 0,
+          "pivot": [
+            0.5,
+            0.9
+          ],
+          "drawSize": [
+            250,
+            250
+          ],
+          "collisionRadius": 72,
+          "clearRadius": 170
+        },
+        "farm_lv1": {
+          "col": 0,
+          "row": 1,
+          "pivot": [
+            0.5,
+            0.9
+          ],
+          "drawSize": [
+            240,
+            240
+          ],
+          "collisionRadius": 76,
+          "clearRadius": 180
+        },
+        "village_well": {
+          "col": 1,
+          "row": 1,
+          "pivot": [
+            0.5,
+            0.92
+          ],
+          "drawSize": [
+            130,
+            130
+          ],
+          "collisionRadius": 40,
+          "clearRadius": 100
+        },
+        "harbor_locked": {
+          "col": 2,
+          "row": 1,
+          "pivot": [
+            0.5,
+            0.9
+          ],
+          "drawSize": [
+            320,
+            260
+          ],
+          "collisionRadius": 95,
+          "clearRadius": 220
+        }
+      }
+    }
+  }
 }
