@@ -1,7 +1,28 @@
 {
-  "schemaVersion": 1,
+  "schemaVersion": 2,
+  "defaultProfile": "short_hd_3x2",
+  "profiles": {
+    "short_standard_3x2": {
+      "imageWidth": 1152,
+      "imageHeight": 768,
+      "columns": 3,
+      "rows": 2,
+      "frameWidth": 384,
+      "frameHeight": 384
+    },
+    "short_hd_3x2": {
+      "imageWidth": 1536,
+      "imageHeight": 1024,
+      "columns": 3,
+      "rows": 2,
+      "frameWidth": 512,
+      "frameHeight": 512
+    }
+  },
   "atlases": {
     "village_buildings": {
+      "status": "ready",
+      "profile": "short_standard_3x2",
       "file": "assets/buildings/village_buildings.png",
       "imageWidth": 1152,
       "imageHeight": 768,
@@ -9,7 +30,12 @@
       "rows": 2,
       "frameWidth": 384,
       "frameHeight": 384,
-      "transparentBackground": true,
+      "transparentBackground": false,
+      "backgroundPolicy": {
+        "mode": "remove_near_white_at_runtime",
+        "threshold": 244,
+        "edgeFeather": 2
+      },
       "sprites": {
         "home_lv1": {
           "col": 0,
@@ -94,6 +120,398 @@
           ],
           "collisionRadius": 95,
           "clearRadius": 220
+        }
+      }
+    },
+    "forest_environment": {
+      "status": "ready",
+      "profile": "short_hd_3x2",
+      "file": "assets/environment/forest_atlas.png",
+      "imageWidth": 1536,
+      "imageHeight": 1024,
+      "columns": 3,
+      "rows": 2,
+      "frameWidth": 512,
+      "frameHeight": 512,
+      "transparentBackground": false,
+      "backgroundPolicy": {
+        "mode": "remove_checkerboard_or_near_white_at_runtime",
+        "threshold": 244,
+        "checkerboardTolerance": 16,
+        "edgeFeather": 2
+      },
+      "sprites": {
+        "oak_tree_01": {
+          "col": 0,
+          "row": 0,
+          "pivot": [
+            0.5,
+            0.94
+          ],
+          "drawSize": [
+            250,
+            300
+          ],
+          "collisionRadius": 34,
+          "harvestable": true,
+          "harvestType": "wood",
+          "reward": 3,
+          "replacementSprite": "tree_stump"
+        },
+        "oak_tree_02": {
+          "col": 1,
+          "row": 0,
+          "pivot": [
+            0.5,
+            0.94
+          ],
+          "drawSize": [
+            245,
+            295
+          ],
+          "collisionRadius": 34,
+          "harvestable": true,
+          "harvestType": "wood",
+          "reward": 3,
+          "replacementSprite": "tree_stump"
+        },
+        "pine_tree_01": {
+          "col": 2,
+          "row": 0,
+          "pivot": [
+            0.5,
+            0.95
+          ],
+          "drawSize": [
+            205,
+            325
+          ],
+          "collisionRadius": 30,
+          "harvestable": true,
+          "harvestType": "wood",
+          "reward": 4,
+          "replacementSprite": "tree_stump"
+        },
+        "tree_stump": {
+          "col": 0,
+          "row": 1,
+          "pivot": [
+            0.5,
+            0.92
+          ],
+          "drawSize": [
+            150,
+            125
+          ],
+          "collisionRadius": 20,
+          "harvestable": false
+        },
+        "bush_01": {
+          "col": 1,
+          "row": 1,
+          "pivot": [
+            0.5,
+            0.9
+          ],
+          "drawSize": [
+            150,
+            110
+          ],
+          "collisionRadius": 18,
+          "harvestable": false
+        },
+        "rock_cluster_01": {
+          "col": 2,
+          "row": 1,
+          "pivot": [
+            0.5,
+            0.9
+          ],
+          "drawSize": [
+            165,
+            120
+          ],
+          "collisionRadius": 26,
+          "harvestable": false
+        }
+      }
+    },
+    "ground_tiles": {
+      "status": "planned",
+      "profile": "short_hd_3x2",
+      "file": "assets/environment/ground_tiles.png",
+      "sprites": {
+        "grass_base": {
+          "col": 0,
+          "row": 0
+        },
+        "dirt_path_straight": {
+          "col": 1,
+          "row": 0
+        },
+        "dirt_path_corner": {
+          "col": 2,
+          "row": 0
+        },
+        "sand_base": {
+          "col": 0,
+          "row": 1
+        },
+        "shallow_water": {
+          "col": 1,
+          "row": 1
+        },
+        "deep_water": {
+          "col": 2,
+          "row": 1
+        }
+      }
+    },
+    "resource_nodes": {
+      "status": "planned",
+      "profile": "short_hd_3x2",
+      "file": "assets/resources/resource_nodes.png",
+      "sprites": {
+        "ore_rock_01": {
+          "col": 0,
+          "row": 0
+        },
+        "ore_rock_02": {
+          "col": 1,
+          "row": 0
+        },
+        "fallen_log": {
+          "col": 2,
+          "row": 0
+        },
+        "herb_patch": {
+          "col": 0,
+          "row": 1
+        },
+        "berry_bush": {
+          "col": 1,
+          "row": 1
+        },
+        "clay_deposit": {
+          "col": 2,
+          "row": 1
+        }
+      }
+    },
+    "farm_crops": {
+      "status": "planned",
+      "profile": "short_hd_3x2",
+      "file": "assets/farm/farm_crops.png",
+      "sprites": {
+        "soil_empty": {
+          "col": 0,
+          "row": 0
+        },
+        "crop_seed": {
+          "col": 1,
+          "row": 0
+        },
+        "crop_sprout": {
+          "col": 2,
+          "row": 0
+        },
+        "crop_growing": {
+          "col": 0,
+          "row": 1
+        },
+        "crop_ready": {
+          "col": 1,
+          "row": 1
+        },
+        "crop_withered": {
+          "col": 2,
+          "row": 1
+        }
+      }
+    },
+    "boats": {
+      "status": "planned",
+      "profile": "short_hd_3x2",
+      "file": "assets/boats/boats_atlas.png",
+      "sprites": {
+        "rowboat_idle": {
+          "col": 0,
+          "row": 0
+        },
+        "rowboat_move": {
+          "col": 1,
+          "row": 0
+        },
+        "sailboat_idle": {
+          "col": 2,
+          "row": 0
+        },
+        "sailboat_move": {
+          "col": 0,
+          "row": 1
+        },
+        "fishing_boat": {
+          "col": 1,
+          "row": 1
+        },
+        "boat_wreck": {
+          "col": 2,
+          "row": 1
+        }
+      }
+    },
+    "mine_props": {
+      "status": "planned",
+      "profile": "short_hd_3x2",
+      "file": "assets/mine/mine_props.png",
+      "sprites": {
+        "mine_wall": {
+          "col": 0,
+          "row": 0
+        },
+        "mine_floor": {
+          "col": 1,
+          "row": 0
+        },
+        "rail_straight": {
+          "col": 2,
+          "row": 0
+        },
+        "rail_corner": {
+          "col": 0,
+          "row": 1
+        },
+        "mine_cart": {
+          "col": 1,
+          "row": 1
+        },
+        "torch": {
+          "col": 2,
+          "row": 1
+        }
+      }
+    },
+    "character_base": {
+      "status": "planned",
+      "profile": "short_hd_3x2",
+      "file": "assets/characters/player_base.png",
+      "sprites": {
+        "idle_front": {
+          "col": 0,
+          "row": 0
+        },
+        "idle_back": {
+          "col": 1,
+          "row": 0
+        },
+        "idle_side": {
+          "col": 2,
+          "row": 0
+        },
+        "walk_front": {
+          "col": 0,
+          "row": 1
+        },
+        "walk_back": {
+          "col": 1,
+          "row": 1
+        },
+        "walk_side": {
+          "col": 2,
+          "row": 1
+        }
+      }
+    },
+    "tool_overlays": {
+      "status": "planned",
+      "profile": "short_hd_3x2",
+      "file": "assets/characters/tool_overlays.png",
+      "sprites": {
+        "axe_idle": {
+          "col": 0,
+          "row": 0
+        },
+        "axe_swing": {
+          "col": 1,
+          "row": 0
+        },
+        "pickaxe_idle": {
+          "col": 2,
+          "row": 0
+        },
+        "pickaxe_swing": {
+          "col": 0,
+          "row": 1
+        },
+        "fishing_rod_idle": {
+          "col": 1,
+          "row": 1
+        },
+        "fishing_rod_cast": {
+          "col": 2,
+          "row": 1
+        }
+      }
+    },
+    "ui_icons": {
+      "status": "planned",
+      "profile": "short_hd_3x2",
+      "file": "assets/ui/ui_icons.png",
+      "sprites": {
+        "icon_wood": {
+          "col": 0,
+          "row": 0
+        },
+        "icon_stone": {
+          "col": 1,
+          "row": 0
+        },
+        "icon_coin": {
+          "col": 2,
+          "row": 0
+        },
+        "icon_inventory": {
+          "col": 0,
+          "row": 1
+        },
+        "icon_map": {
+          "col": 1,
+          "row": 1
+        },
+        "icon_settings": {
+          "col": 2,
+          "row": 1
+        }
+      }
+    },
+    "effects": {
+      "status": "planned",
+      "profile": "short_hd_3x2",
+      "file": "assets/effects/effects_atlas.png",
+      "sprites": {
+        "wood_hit": {
+          "col": 0,
+          "row": 0
+        },
+        "stone_hit": {
+          "col": 1,
+          "row": 0
+        },
+        "dust_puff": {
+          "col": 2,
+          "row": 0
+        },
+        "water_splash": {
+          "col": 0,
+          "row": 1
+        },
+        "sparkle": {
+          "col": 1,
+          "row": 1
+        },
+        "interaction_ping": {
+          "col": 2,
+          "row": 1
         }
       }
     }
