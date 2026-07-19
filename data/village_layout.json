@@ -1,10 +1,118 @@
 {
   "version": "0.0.3",
   "description": "Village layout and object placement data",
-  "village": {
+  "worldSize": {
     "width": 1344,
-    "height": 1920,
-    "tileSize": 48
+    "height": 1920
   },
-  "placeholder": "Village layout data coming soon"
+  "playerSpawn": {
+    "x": 672,
+    "y": 930,
+    "direction": "up"
+  },
+  "buildings": [
+    {
+      "id": "building.home",
+      "spriteId": "home_lv1",
+      "position": { "x": 820, "y": 900 },
+      "collisionRadius": 80,
+      "clearRadius": 185,
+      "interactionPoint": { "x": 820, "y": 1000 },
+      "interactionLabel": "Enter Home"
+    },
+    {
+      "id": "building.forester_hut",
+      "spriteId": "forester_hut_lv1",
+      "position": { "x": 360, "y": 430 },
+      "collisionRadius": 68,
+      "clearRadius": 165,
+      "interactionPoint": { "x": 360, "y": 500 },
+      "interactionLabel": "Visit Forester's Hut"
+    },
+    {
+      "id": "building.mine",
+      "spriteId": "mine_entrance_locked",
+      "position": { "x": 980, "y": 380 },
+      "collisionRadius": 72,
+      "clearRadius": 170,
+      "interactionPoint": { "x": 940, "y": 490 },
+      "interactionLabel": "Inspect Mine"
+    },
+    {
+      "id": "building.farm",
+      "spriteId": "farm_lv1",
+      "position": { "x": 330, "y": 1260 },
+      "collisionRadius": 76,
+      "clearRadius": 180,
+      "interactionPoint": { "x": 400, "y": 1340 },
+      "interactionLabel": "Visit Farm"
+    },
+    {
+      "id": "building.well",
+      "spriteId": "village_well",
+      "position": { "x": 760, "y": 1280 },
+      "collisionRadius": 40,
+      "clearRadius": 100,
+      "interactionPoint": { "x": 760, "y": 1345 },
+      "interactionLabel": "Use Village Well"
+    },
+    {
+      "id": "building.harbor",
+      "spriteId": "harbor_locked",
+      "position": { "x": 900, "y": 1680 },
+      "collisionRadius": 95,
+      "clearRadius": 220,
+      "interactionPoint": { "x": 900, "y": 1780 },
+      "interactionLabel": "Inspect Harbor"
+    }
+  ],
+  "paths": [
+    {
+      "id": "path.main",
+      "width": 64,
+      "points": [
+        { "x": 470, "y": 220 },
+        { "x": 620, "y": 560 },
+        { "x": 700, "y": 930 },
+        { "x": 600, "y": 1250 },
+        { "x": 830, "y": 1640 }
+      ]
+    },
+    {
+      "id": "path.mine_branch",
+      "width": 54,
+      "points": [
+        { "x": 620, "y": 560 },
+        { "x": 980, "y": 420 }
+      ]
+    },
+    {
+      "id": "path.home_branch",
+      "width": 50,
+      "points": [
+        { "x": 700, "y": 930 },
+        { "x": 820, "y": 980 }
+      ]
+    },
+    {
+      "id": "path.farm_branch",
+      "width": 50,
+      "points": [
+        { "x": 600, "y": 1250 },
+        { "x": 360, "y": 1320 }
+      ]
+    }
+  ],
+  "water": [
+    {
+      "id": "water.harbor_bay",
+      "polygon": [
+        { "x": 540, "y": 1660 },
+        { "x": 1344, "y": 1500 },
+        { "x": 1344, "y": 1920 },
+        { "x": 0, "y": 1920 },
+        { "x": 0, "y": 1810 }
+      ]
+    }
+  ]
 }
