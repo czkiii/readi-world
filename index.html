@@ -24,7 +24,7 @@ canvas{position:absolute;inset:0;width:100%;height:100%;display:block;touch-acti
 #debug{position:absolute;left:8px;bottom:calc(8px + env(safe-area-inset-bottom));z-index:8;color:#fff;background:rgba(0,0,0,.52);padding:5px 7px;border-radius:7px;font:11px ui-monospace,SFMono-Regular,Menlo,monospace;pointer-events:none}
 #panel{position:absolute;top:calc(82px + env(safe-area-inset-top));right:10px;width:min(88vw,330px);padding:14px;z-index:7;display:none;background:rgba(30,51,39,.97);border-radius:20px;color:#fff}#panel.open{display:block}.grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}.item{min-height:68px;border-radius:14px;border:1px solid rgba(255,255,255,.13);background:rgba(255,255,255,.06);color:#fff;text-align:left;padding:10px}
 #loading{position:absolute;inset:0;display:grid;place-items:center;background:#102019;color:#fff;font-size:18px;z-index:20}#loading.hidden{display:none}
-</style></head>
+</style><script src="./src/engine/runtime-foundation.js"></script></head>
 <body><main id="app">
 <canvas id="game"></canvas><div id="loading">Loading Readi World…</div>
 <div class="top"><div class="card profile"><div class="avatar">🧑🏻</div><div class="meta"><strong>Player</strong>Lv. 3</div></div><div class="card center"><div class="resources"><span class="res">🪵 <b id="wood">0</b></span><span class="res">🪨 <b id="stone">0</b></span><span class="res">🪙 <b id="coin">25</b></span></div><div class="time"><strong id="phase">☀️ Morning</strong><span id="clock">Day 1 · 08:30</span></div></div><button class="menu" id="menu">☰</button></div>
@@ -35,112 +35,95 @@ canvas{position:absolute;inset:0;width:100%;height:100%;display:block;touch-acti
 const ASSET_CACHE=Date.now();
 const CONFIG={LW:720,LH:1280,DPR:2,SPEED:240,INTERACT:95,HARVEST:70,SAVE:"readiWorld",DAY:4*60*60*1000,PHASE:60*60*1000};
 const PATHS={
+  manifest:`./data/assets_manifest.json?cache=${ASSET_CACHE}`,
+  buildings:`./data/buildings.json?cache=${ASSET_CACHE}`,
+  forest:`./data/forest_module.json?cache=${ASSET_CACHE}`,
   layout:`./data/village_layout.json?cache=${ASSET_CACHE}`,
+  localization:`./data/localization_en.json?cache=${ASSET_CACHE}`,
+  resources:`./data/resources.json?cache=${ASSET_CACHE}`,
   registry:`./data/sprite_registry.json?cache=${ASSET_CACHE}`
 };
 const canvas=document.getElementById("game"),ctx=canvas.getContext("2d",{alpha:false});
 const app=document.getElementById("app"),ui={loading:document.getElementById("loading"),wood:document.getElementById("wood"),stone:document.getElementById("stone"),coin:document.getElementById("coin"),phase:document.getElementById("phase"),clock:document.getElementById("clock"),menu:document.getElementById("menu"),panel:document.getElementById("panel"),prompt:document.getElementById("prompt"),toast:document.getElementById("toast"),debug:document.getElementById("debug"),joy:document.getElementById("joy"),knob:document.getElementById("knob")};
 const phases=[{n:"Morning",i:"☀️",o:"rgba(255,220,150,.06)",h:6},{n:"Afternoon",i:"🌤️",o:"rgba(255,255,255,0)",h:12},{n:"Evening",i:"🌇",o:"rgba(221,113,65,.15)",h:18},{n:"Night",i:"🌙",o:"rgba(15,32,58,.38)",h:22}];
-const state={layout:null,registry:null,atlases:{},world:{width:1344,height:1920},player:{x:672,y:930},camera:{x:0,y:0},resources:{wood:0,stone:0,coin:25},input:{active:false,id:null,sx:0,sy:0,x:0,y:0,lastMove:0},trees:[],harvest:null,context:null,timeAnchor:Date.now(),last:performance.now(),toastTimer:null};
+const state={manifest:null,layout:null,registry:null,buildingDefs:null,forestModule:null,localization:null,resourceDefs:null,atlases:{},world:{width:1344,height:1920},player:{x:672,y:930},camera:{x:0,y:0},resources:{wood:0,stone:0,coin:25},input:{active:false,id:null,sx:0,sy:0,x:0,y:0,lastMove:0},forestNodes:[],harvest:null,context:null,timeAnchor:Date.now(),last:performance.now(),toastTimer:null};
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
 function toast(t){ui.toast.textContent=t;ui.toast.classList.add("show");clearTimeout(state.toastTimer);state.toastTimer=setTimeout(()=>ui.toast.classList.remove("show"),1300)}
 function save(){localStorage.setItem(CONFIG.SAVE,JSON.stringify({player:state.player,resources:state.resources,timeAnchor:state.timeAnchor}))}
 function loadSave(){try{const d=JSON.parse(localStorage.getItem(CONFIG.SAVE));if(d){Object.assign(state.player,d.player||{});Object.assign(state.resources,d.resources||{});state.timeAnchor=d.timeAnchor||Date.now()}}catch{}}
 async function getJSON(u){const r=await fetch(u,{cache:"no-store"});if(!r.ok)throw Error(`${u}: ${r.status}`);return r.json()}
 function getImage(u){return new Promise((ok,no)=>{const im=new Image();im.crossOrigin="anonymous";im.onload=()=>ok(im);im.onerror=()=>no(Error(`Image failed: ${u}`));im.src=u})}
-function validLayout(v){return v&&v.worldSize&&v.playerSpawn&&Array.isArray(v.buildings)&&v.buildings.length&&Array.isArray(v.paths)&&Array.isArray(v.water)}
-function validRegistry(v){
-  return !!(v&&v.atlases&&v.atlases.village_buildings&&v.atlases.forest_environment);
+function t(key,fallback=""){
+  return state.localization?.ui?.[key]||fallback||key;
 }
-function normalizeAssetPath(path){
-  if(!path)return "";
-  return "./"+String(path).replace(/^\.?\//,"");
+const foundation=window.ReadiWorldFoundation?.createContractRuntime({state,getJSON,getImage,t,assetCache:ASSET_CACHE});
+if(!foundation)throw Error("ReadiWorldFoundation unavailable");
+const {assertRequiredAssets,findSprite,getAssetReport,getSpritesByRole,loadReadyAtlases,loadRuntimeContracts,pickSpriteByRole,summarizeRuntimeContracts}=foundation;
+function validForestModule(v){
+  return !!(v&&v.nodeTypes&&v.lootTables&&Array.isArray(v.spawnRules)&&v.spawnRules.length);
 }
-function isLikelyBackgroundPixel(r,g,b,a,policy){
-  if(a<245)return true;
-  const threshold=policy?.threshold??244;
-  const nearWhite=r>=threshold&&g>=threshold&&b>=threshold;
-  if(nearWhite)return true;
-  if(policy?.mode?.includes("checkerboard")){
-    const max=Math.max(r,g,b),min=Math.min(r,g,b);
-    const neutral=max-min<(policy.checkerboardTolerance??16);
-    const checkerLight=neutral&&r>210&&g>210&&b>210;
-    if(checkerLight)return true;
-  }
-  return false;
+function getForestNodeType(nodeOrTypeId){
+  const typeId=typeof nodeOrTypeId==="string"?nodeOrTypeId:nodeOrTypeId?.typeId;
+  return state.forestModule?.nodeTypes?.[typeId]||null;
 }
-function prepareAtlas(atlasId,image){
-  const meta=state.registry?.atlases?.[atlasId];
-  if(!meta||!image?.naturalWidth||!image?.naturalHeight)return null;
-  const cols=meta.columns||3,rows=meta.rows||2;
-  const fw=image.naturalWidth/cols,fh=image.naturalHeight/rows;
-  if(!Number.isFinite(fw)||!Number.isFinite(fh)||fw<=0||fh<=0)return null;
-
-  const canvas=document.createElement("canvas");
-  canvas.width=image.naturalWidth;canvas.height=image.naturalHeight;
-  const c=canvas.getContext("2d",{willReadFrequently:true});
-  c.drawImage(image,0,0);
-  const img=c.getImageData(0,0,canvas.width,canvas.height);
-  const d=img.data,policy=meta.backgroundPolicy||{};
-  for(let i=0;i<d.length;i+=4){
-    if(isLikelyBackgroundPixel(d[i],d[i+1],d[i+2],d[i+3],policy)){
-      d[i+3]=0;
+function pickForestSpriteId(nodeType){
+  if(!nodeType)return null;
+  return pickSpriteByRole(nodeType.role,nodeType.tags||[])||nodeType.spriteId||null;
+}
+function buildForestNodes(){
+  state.forestNodes=[];
+  for(const rule of state.forestModule.spawnRules){
+    const typeIds=rule.nodeTypes||[];
+    if(!typeIds.length)continue;
+    for(let i=0;i<rule.count;i++){
+      const typeId=typeIds[i%typeIds.length];
+      const nodeType=getForestNodeType(typeId);
+      if(!nodeType)continue;
+      const x=rule.origin.x+((i*rule.step.x)%rule.bounds.width);
+      const y=rule.origin.y+((i*rule.step.y)%rule.bounds.height);
+      if(state.layout.buildings.some(building=>Math.hypot(x-building.position.x,y-building.position.y)<(building.clearRadius||140)+(rule.clearRadiusPadding||0)))continue;
+      state.forestNodes.push({
+        id:`${rule.id}.${i}`,
+        typeId,
+        x,
+        y,
+        active:true,
+        respawnAt:0,
+        spriteId:pickForestSpriteId(nodeType),
+        stumpSpriteId:nodeType.stumpSpriteId||""
+      });
     }
   }
-  c.putImageData(img,0,0);
-
-  const rects={};
-  for(const [id,s] of Object.entries(meta.sprites||{})){
-    const sx=Math.round((s.col||0)*fw),sy=Math.round((s.row||0)*fh);
-    const ex=Math.round(sx+fw),ey=Math.round(sy+fh);
-    const cell=c.getImageData(sx,sy,Math.max(1,ex-sx),Math.max(1,ey-sy)).data;
-    let minX=ex,minY=ey,maxX=-1,maxY=-1;
-    const cw=Math.max(1,ex-sx),ch=Math.max(1,ey-sy);
-    for(let y=0;y<ch;y+=2){
-      for(let x=0;x<cw;x+=2){
-        const a=cell[(y*cw+x)*4+3];
-        if(a>24){
-          minX=Math.min(minX,sx+x);minY=Math.min(minY,sy+y);
-          maxX=Math.max(maxX,sx+x);maxY=Math.max(maxY,sy+y);
-        }
-      }
-    }
-    if(maxX>=minX&&maxY>=minY){
-      const pad=4;
-      rects[id]={
-        x:Math.max(sx,minX-pad),y:Math.max(sy,minY-pad),
-        w:Math.min(ex-1,maxX+pad)-Math.max(sx,minX-pad)+1,
-        h:Math.min(ey-1,maxY+pad)-Math.max(sy,minY-pad)+1
-      };
-    }
-  }
-  return {id:atlasId,meta,image,canvas,rects,valid:Object.keys(rects).length>0};
 }
-async function loadReadyAtlases(){
-  const forceVisual=new Set(["village_buildings","forest_environment","ground_tiles","tool_overlays","effects"]);
-  const ready=Object.entries(state.registry.atlases||{}).filter(([id,m])=>
-    !!m.file&&(m.status==="ready"||forceVisual.has(id))
-  );
-  const results=await Promise.allSettled(ready.map(async([id,m])=>{
-    const image=await getImage(normalizeAssetPath(m.file)+`?cache=${ASSET_CACHE}`);
-    return [id,prepareAtlas(id,image)];
-  }));
-  results.forEach((r,i)=>{
-    const id=ready[i][0];
-    if(r.status==="fulfilled"&&r.value[1]?.valid){
-      state.atlases[id]=r.value[1];
-    }else{
-      console.warn(`Atlas unavailable: ${id}`,r.status==="rejected"?r.reason:"invalid atlas");
-    }
+function hashString(value){
+  let hash=0;
+  const text=String(value||"");
+  for(let i=0;i<text.length;i++)hash=(hash*31+text.charCodeAt(i))>>>0;
+  return hash;
+}
+function resolveForestLoot(node){
+  const nodeType=getForestNodeType(node);
+  const tableId=nodeType?.lootTableId;
+  const table=tableId?state.forestModule?.lootTables?.[tableId]:null;
+  if(!table?.drops?.length)return [];
+  return table.drops.flatMap(drop=>{
+    const chance=drop.chance??1;
+    const roll=(hashString(`${node.id}:${drop.resourceKey}`)%1000)/1000;
+    if(roll>chance)return [];
+    const min=drop.amountMin??1,max=drop.amountMax??min;
+    const amount=min+(hashString(`${node.id}:${drop.variantId||drop.resourceKey}:amount`)%(Math.max(1,max-min+1)));
+    return [{resourceKey:drop.resourceKey,variantId:drop.variantId||null,amount}];
   });
 }
-function findSprite(spriteId){
-  for(const [atlasId,atlas] of Object.entries(state.atlases)){
-    const meta=atlas.meta.sprites?.[spriteId];
-    const rect=atlas.rects?.[spriteId];
-    if(meta&&rect)return {atlasId,atlas,meta,rect};
+function applyForestLoot(drops){
+  for(const drop of drops){
+    if(typeof state.resources[drop.resourceKey]!=="number")state.resources[drop.resourceKey]=0;
+    state.resources[drop.resourceKey]+=drop.amount;
   }
-  return null;
+}
+function getResourceLabel(resourceKey){
+  const resource=state.resourceDefs?.resources?.[resourceKey];
+  return resource?`${resource.icon||""} ${resource.name}`.trim():resourceKey;
 }
 function resize(){const r=app.getBoundingClientRect(),d=Math.min(devicePixelRatio||1,CONFIG.DPR);canvas.width=Math.max(1,Math.round(r.width*d));canvas.height=Math.max(1,Math.round(r.height*d))}
 function logical(){const sx=canvas.width/CONFIG.LW,sy=canvas.height/CONFIG.LH,s=Math.min(sx,sy);ctx.setTransform(s,0,0,s,(canvas.width-CONFIG.LW*s)/2,(canvas.height-CONFIG.LH*s)/2)}
@@ -182,19 +165,21 @@ function drawTileCell(id,x,y,w,h,alpha=1){
   return true;
 }
 function drawGroundTexture(){
-  if(!findSprite("grass_base"))return false;
+  const grassSpriteId=pickSpriteByRole("ground_cover",["grass"])||"grass_base";
+  if(!findSprite(grassSpriteId))return false;
   const tile=190;
   const startWorldX=Math.floor(state.camera.x/tile)*tile;
   const startWorldY=Math.floor(state.camera.y/tile)*tile;
   for(let wy=startWorldY-tile;wy<state.camera.y+CONFIG.LH+tile;wy+=tile){
     for(let wx=startWorldX-tile;wx<state.camera.x+CONFIG.LW+tile;wx+=tile){
-      drawTileCell("grass_base",wx-state.camera.x,wy-state.camera.y,tile+2,tile+2,.52);
+      drawTileCell(grassSpriteId,wx-state.camera.x,wy-state.camera.y,tile+2,tile+2,.52);
     }
   }
   return true;
 }
 function drawWaterTexture(poly){
-  if(!findSprite("shallow_water"))return;
+  const waterSpriteId=pickSpriteByRole("water_surface",["water"])||"shallow_water";
+  if(!findSprite(waterSpriteId))return;
   ctx.save();
   ctx.beginPath();
   poly.forEach((q,i)=>i?ctx.lineTo(q.x-state.camera.x,q.y-state.camera.y):ctx.moveTo(q.x-state.camera.x,q.y-state.camera.y));
@@ -203,7 +188,7 @@ function drawWaterTexture(poly){
   const tile=210;
   for(let y=-tile;y<CONFIG.LH+tile;y+=tile){
     for(let x=-tile;x<CONFIG.LW+tile;x+=tile){
-      drawTileCell("shallow_water",x,y,tile+2,tile+2,.48);
+      drawTileCell(waterSpriteId,x,y,tile+2,tile+2,.48);
     }
   }
   ctx.restore();
@@ -238,38 +223,33 @@ function drawGround(){
     ctx.beginPath();
     w.polygon.forEach((q,i)=>i?ctx.lineTo(q.x-cx,q.y-cy):ctx.moveTo(q.x-cx,q.y-cy));
     ctx.closePath();
-    ctx.fill();
-    drawWaterTexture(w.polygon);
+  function drawForestNodeFallback(node,x,y){
+    const nodeType=getForestNodeType(node);
+    if(!node.active&&nodeType?.harvestable){
+      ctx.fillStyle="#8b5a32";ctx.fillRect(x-17,y-18,34,20);
+      ctx.fillStyle="#c88a47";ctx.beginPath();ctx.ellipse(x,y-18,18,7,0,0,Math.PI*2);ctx.fill();
+      return;
+    }
+    if(nodeType?.fallbackShape==="bush"){
+      ctx.fillStyle="#4d7d43";
+      ctx.beginPath();ctx.arc(x,y-22,24,0,Math.PI*2);ctx.arc(x-18,y-18,18,0,Math.PI*2);ctx.arc(x+16,y-18,16,0,Math.PI*2);ctx.fill();
+      return;
+    }
+    ctx.fillStyle="#76523d";ctx.fillRect(x-7,y-28,14,38);
+    ctx.fillStyle=hashString(node.id)%2?"#4d7d43":"#5c8b50";
+    ctx.beginPath();ctx.arc(x,y-52,30,0,Math.PI*2);ctx.arc(x-22,y-40,22,0,Math.PI*2);ctx.arc(x+22,y-40,22,0,Math.PI*2);ctx.fill();
   }
-}
-function makeTrees(){
-  state.trees=[];
-  const variants=["oak_tree_01","oak_tree_02","pine_tree_01"];
-  for(let i=0;i<58;i++){
-    const x=70+((i*173)%1200),y=120+((i*257)%1680);
-    if(state.layout.buildings.some(b=>Math.hypot(x-b.position.x,y-b.position.y)<(b.clearRadius||140)+34))continue;
-    state.trees.push({
-      id:i,x,y,active:true,respawn:0,
-      spriteId:variants[i%variants.length],
-      stumpSprite:"tree_stump"
-    });
+  function drawForestNodes(){
+    for(const node of state.forestNodes){
+      const nodeType=getForestNodeType(node);
+      if(!nodeType)continue;
+      if(!node.active&&node.respawnAt&&node.respawnAt<Date.now()){node.active=true;node.respawnAt=0}
+      const x=node.x-state.camera.x,y=node.y-state.camera.y;
+      if(x<-180||x>900||y<-220||y>1450)continue;
+      const sprite=node.active?node.spriteId:node.stumpSpriteId;
+      if(!sprite||!drawSprite(sprite,x,y))drawForestNodeFallback(node,x,y);
+    }
   }
-}
-function drawTreeFallback(t,x,y){
-  if(!t.active){
-    ctx.fillStyle="#8b5a32";ctx.fillRect(x-17,y-18,34,20);
-    ctx.fillStyle="#c88a47";ctx.beginPath();ctx.ellipse(x,y-18,18,7,0,0,Math.PI*2);ctx.fill();
-    return;
-  }
-  ctx.fillStyle="#76523d";ctx.fillRect(x-7,y-28,14,38);
-  ctx.fillStyle=t.id%3?"#4d7d43":"#5c8b50";
-  ctx.beginPath();ctx.arc(x,y-52,30,0,Math.PI*2);ctx.arc(x-22,y-40,22,0,Math.PI*2);ctx.arc(x+22,y-40,22,0,Math.PI*2);ctx.fill();
-}
-function drawTrees(){
-  for(const t of state.trees){
-    if(!t.active&&t.respawn<Date.now()){t.active=true;t.respawn=0}
-    const x=t.x-state.camera.x,y=t.y-state.camera.y;
-    if(x<-180||x>900||y<-220||y>1450)continue;
     const sprite=t.active?t.spriteId:t.stumpSprite;
     if(!drawSprite(sprite,x,y))drawTreeFallback(t,x,y);
   }
@@ -278,12 +258,13 @@ function drawPlayer(){const x=state.player.x-state.camera.x,y=state.player.y-sta
 function drawHarvestAnimation(){
   if(!state.harvest)return;
   const x=state.player.x-state.camera.x,y=state.player.y-state.camera.y;
-  const tx=state.harvest.tree.x-state.camera.x,ty=state.harvest.tree.y-state.camera.y;
+  const tx=state.harvest.node.x-state.camera.x,ty=state.harvest.node.y-state.camera.y;
   const elapsed=performance.now()-state.harvest.start;
   const p=Math.min(1,elapsed/850);
   const swing=Math.sin(p*Math.PI*4)*.65-.25;
 
-  const usedTool=drawOptionalSprite("axe_swing",x+20,y-34,[82,82],[.25,.82],1,swing);
+  const axeSwingSpriteId=pickSpriteByRole("tool_overlay",["axe","swing"])||"axe_swing";
+  const usedTool=drawOptionalSprite(axeSwingSpriteId,x+20,y-34,[82,82],[.25,.82],1,swing);
   if(!usedTool){
     ctx.save();
     ctx.translate(x+14,y-36);
@@ -307,7 +288,8 @@ function drawHarvestAnimation(){
   }
 
   const hitPulse=.65+.35*Math.sin(p*Math.PI*8)**2;
-  drawOptionalSprite("wood_hit",tx,ty-48,[92,92],[.5,.5],hitPulse,0);
+  const woodHitSpriteId=pickSpriteByRole("impact_effect",["wood"])||"wood_hit";
+  drawOptionalSprite(woodHitSpriteId,tx,ty-48,[92,92],[.5,.5],hitPulse,0);
 
   ctx.strokeStyle="rgba(255,255,255,.92)";
   ctx.lineWidth=5;
@@ -319,13 +301,14 @@ function clock(){const e=Date.now()-state.timeAnchor,c=((e%CONFIG.DAY)+CONFIG.DA
 function render(){
   logical();
   drawGround();
-  drawTrees();
+  drawForestNodes();
   drawBuildings();
   drawPlayer();
 
-  if(!state.harvest&&!state.input.active&&nearestTree()){
+  if(!state.harvest&&!state.input.active&&nearestHarvestNode()){
     const x=state.player.x-state.camera.x,y=state.player.y-state.camera.y;
-    drawOptionalSprite("axe_idle",x+18,y-28,[58,58],[.3,.82],.88,-.18);
+    const axeIdleSpriteId=pickSpriteByRole("tool_overlay",["axe","idle"])||"axe_idle";
+    drawOptionalSprite(axeIdleSpriteId,x+18,y-28,[58,58],[.3,.82],.88,-.18);
   }
 
   drawHarvestAnimation();
@@ -334,10 +317,10 @@ function render(){
   ctx.fillRect(0,0,CONFIG.LW,CONFIG.LH);
 }
 function insideBuilding(x,y){return state.layout.buildings.some(b=>Math.hypot(x-b.position.x,y-b.position.y)<(b.collisionRadius||60)+18)}
-function recoverIfStuck(){if(!insideBuilding(state.player.x,state.player.y))return;const s=state.layout.playerSpawn;state.player.x=s.x;state.player.y=s.y;toast("Position recovered")}
+function recoverIfStuck(){if(!insideBuilding(state.player.x,state.player.y))return;const s=state.layout.playerSpawn;state.player.x=s.x;state.player.y=s.y;toast(t("status.position_recovered","Position recovered"))}
 function blocked(x,y){return x<25||y<25||x>state.world.width-25||y>state.world.height-25||insideBuilding(x,y)}
-function nearestTree(){let best=null,d=1e9;for(const t of state.trees){if(!t.active)continue;const n=Math.hypot(state.player.x-t.x,state.player.y-t.y);if(n<CONFIG.HARVEST&&n<d){best=t;d=n}}return best}
-function harvestUpdate(){if(state.input.active||Math.hypot(state.input.x,state.input.y)>.05){state.harvest=null;return}if(state.harvest){if(performance.now()-state.harvest.start>850){state.harvest.tree.active=false;state.harvest.tree.respawn=Date.now()+300000;const reward=findSprite(state.harvest.tree.spriteId)?.meta?.reward||3;state.resources.wood+=reward;state.harvest=null;toast(`+${reward} Wood`);save()}return}if(performance.now()-state.input.lastMove>350){const t=nearestTree();if(t){state.harvest={tree:t,start:performance.now()};toast("Chopping…")}}}
+function nearestHarvestNode(){let best=null,d=1e9;for(const node of state.forestNodes){const nodeType=getForestNodeType(node);if(!node.active||!nodeType?.harvestable)continue;const range=nodeType.interactionRange||CONFIG.HARVEST;const n=Math.hypot(state.player.x-node.x,state.player.y-node.y);if(n<range&&n<d){best=node;d=n}}return best}
+function harvestUpdate(){if(state.input.active||Math.hypot(state.input.x,state.input.y)>.05){state.harvest=null;return}if(state.harvest){const nodeType=getForestNodeType(state.harvest.node);const duration=nodeType?.harvestDurationMs||850;if(performance.now()-state.harvest.start>duration){state.harvest.node.active=false;state.harvest.node.respawnAt=Date.now()+(nodeType?.respawnMs||300000);const drops=resolveForestLoot(state.harvest.node);applyForestLoot(drops);const primaryDrop=drops[0];state.harvest=null;if(primaryDrop)toast(`+${primaryDrop.amount} ${getResourceLabel(primaryDrop.resourceKey)}`);else toast(t("status.forage_unavailable","Nothing harvestable nearby"));save()}return}if(performance.now()-state.input.lastMove>350){const node=nearestHarvestNode();if(node){state.harvest={node,start:performance.now()};toast(t("status.chopping","Chopping..."))}}}
 function update(dt){let ix=state.input.x,iy=state.input.y,l=Math.hypot(ix,iy);if(l>1){ix/=l;iy/=l}if(l>.04){state.harvest=null;const dx=ix*CONFIG.SPEED*dt,dy=iy*CONFIG.SPEED*dt;const nx=state.player.x+dx,ny=state.player.y+dy;if(!blocked(nx,state.player.y))state.player.x=nx;if(!blocked(state.player.x,ny))state.player.y=ny}else harvestUpdate();const tx=clamp(state.player.x-CONFIG.LW/2,0,state.world.width-CONFIG.LW),ty=clamp(state.player.y-CONFIG.LH/2,0,state.world.height-CONFIG.LH);state.camera.x+=(tx-state.camera.x)*Math.min(1,dt*9);state.camera.y+=(ty-state.camera.y)*Math.min(1,dt*9);let best=null,bd=1e9;for(const b of state.layout.buildings){const d=Math.hypot(state.player.x-b.interactionPoint.x,state.player.y-b.interactionPoint.y);if(d<CONFIG.INTERACT&&d<bd){best=b;bd=d}}state.context=best;ui.prompt.textContent=best?.interactionLabel||"";ui.prompt.classList.toggle("show",!!best);const t=clock();ui.phase.textContent=`${t.p.i} ${t.p.n}`;ui.clock.textContent=`Day ${t.d} · ${String(t.h).padStart(2,"0")}:${String(t.m).padStart(2,"0")}`;ui.wood.textContent=state.resources.wood;ui.stone.textContent=state.resources.stone;ui.coin.textContent=state.resources.coin;ui.debug.textContent=`INPUT ${ix.toFixed(2)} ${iy.toFixed(2)} | PLAYER ${state.player.x.toFixed(0)} ${state.player.y.toFixed(0)} | ${state.input.active?"ACTIVE":"IDLE"} | ${Object.keys(state.atlases).length} ATLAS`}
 function loop(n){const dt=Math.min(.05,(n-state.last)/1000);state.last=n;update(dt);render();requestAnimationFrame(loop)}
 function startJoy(x,y,id){if(state.input.active)return;state.input.active=true;state.input.id=id;state.input.sx=x;state.input.sy=y;state.input.x=0;state.input.y=0;state.input.lastMove=performance.now();ui.joy.style.left=`${clamp(x-59,4,innerWidth-122)}px`;ui.joy.style.top=`${clamp(y-59,120,innerHeight-122)}px`;ui.joy.classList.add("show")}
@@ -348,28 +331,35 @@ window.addEventListener("touchmove",e=>{for(const t of e.changedTouches)if(t.ide
 window.addEventListener("touchend",e=>{for(const t of e.changedTouches)if(t.identifier===state.input.id)endJoy(t.identifier)},{passive:false,capture:true});
 window.addEventListener("touchcancel",e=>{for(const t of e.changedTouches)if(t.identifier===state.input.id)endJoy(t.identifier)},{passive:false,capture:true});
 app.addEventListener("pointerdown",e=>{if(e.pointerType==="touch"||e.target.closest("button"))return;startJoy(e.clientX,e.clientY,e.pointerId)},{capture:true});window.addEventListener("pointermove",e=>{if(e.pointerType!=="touch")moveJoy(e.clientX,e.clientY,e.pointerId)});window.addEventListener("pointerup",e=>{if(e.pointerType!=="touch")endJoy(e.pointerId)});window.addEventListener("pointercancel",e=>{if(e.pointerType!=="touch")endJoy(e.pointerId)});
-ui.menu.onclick=()=>ui.panel.classList.toggle("open");ui.prompt.onclick=()=>state.context&&toast(`${state.context.interactionLabel} · Coming Soon`);ui.panel.onclick=e=>{const a=e.target.dataset.a;if(!a)return;if(a==="save"){save();toast("Game saved") }else toast(`${a} · Coming Soon`)};document.addEventListener("visibilitychange",()=>document.hidden&&save());window.addEventListener("resize",resize);
+ui.menu.onclick=()=>ui.panel.classList.toggle("open");ui.prompt.onclick=()=>state.context&&toast(`${state.context.interactionLabel} · ${t("status.coming_soon","Coming Soon")}`);ui.panel.onclick=e=>{const a=e.target.dataset.a;if(!a)return;if(a==="save"){save();toast(t("status.saved","Game saved")) }else toast(`${a} · ${t("status.coming_soon","Coming Soon")}`)};document.addEventListener("visibilitychange",()=>document.hidden&&save());window.addEventListener("resize",resize);
 async function boot(){
   loadSave();
-  const r=await Promise.allSettled([getJSON(PATHS.layout),getJSON(PATHS.registry)]);
-  if(r[0].status!=="fulfilled"||!validLayout(r[0].value))throw Error("Invalid village_layout.json");
-  state.layout=r[0].value;
-  state.world=state.layout.worldSize;
-  if(r[1].status!=="fulfilled"||!validRegistry(r[1].value))throw Error("Invalid sprite_registry.json");
-  state.registry=r[1].value;
+  await loadRuntimeContracts(PATHS);
+  const forestModule=await getJSON(PATHS.forest);
+  if(!validForestModule(forestModule))throw Error("Invalid forest_module.json");
+  state.forestModule=forestModule;
   await loadReadyAtlases();
+  const report=assertRequiredAssets();
+  const runtimeSummary=summarizeRuntimeContracts();
   if(!localStorage.getItem(CONFIG.SAVE)){
     state.player.x=state.layout.playerSpawn.x;
     state.player.y=state.layout.playerSpawn.y;
   }
   recoverIfStuck();
-  makeTrees();
+  buildForestNodes();
   resize();
   ui.loading.classList.add("hidden");
   if(!state.atlases.village_buildings)toast("Building fallback active");
-  const missingVisual=["ground_tiles","tool_overlays","effects"].filter(id=>!state.atlases[id]);
+  const missingVisual=Object.entries(state.manifest.modules)
+    .filter(([,m])=>m?.enabled&&m?.file)
+    .map(([id])=>id)
+    .filter(id=>!state.atlases[id]);
   if(missingVisual.length)console.warn("Optional visual atlases missing:",missingVisual);
+  const manifestOnly=Object.keys(state.manifest.modules).filter(id=>!state.registry.atlases[id]);
+  if(manifestOnly.length)console.warn("Manifest modules missing from registry:",manifestOnly);
+  console.info(`Asset report: ${report.loaded}/${report.total} loaded, ${report.required} required, missing required: ${report.missingRequired.length}`);
+  if(runtimeSummary.assetReport?.fallbacks?.length)console.info("Fallback policies:",runtimeSummary.assetReport.fallbacks);
   requestAnimationFrame(loop);
 }
-boot().catch(e=>{console.error(e);ui.loading.textContent=`Game load failed: ${e.message}`});
+boot().catch(e=>{console.error(e);ui.loading.textContent=`${t("status.load_failed","Game load failed")}: ${e.message}`});
 </script></body></html>
