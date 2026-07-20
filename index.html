@@ -223,37 +223,38 @@ function drawGround(){
     ctx.beginPath();
     w.polygon.forEach((q,i)=>i?ctx.lineTo(q.x-cx,q.y-cy):ctx.moveTo(q.x-cx,q.y-cy));
     ctx.closePath();
-  function drawForestNodeFallback(node,x,y){
+    ctx.fill();
+    drawWaterTexture(w.polygon);
+  }
+}
+function drawForestNodeFallback(node,x,y){
+  const nodeType=getForestNodeType(node);
+  if(!node.active&&nodeType?.harvestable){
+    ctx.fillStyle="#8b5a32";ctx.fillRect(x-17,y-18,34,20);
+    ctx.fillStyle="#c88a47";ctx.beginPath();ctx.ellipse(x,y-18,18,7,0,0,Math.PI*2);ctx.fill();
+    return;
+  }
+  if(nodeType?.fallbackShape==="bush"){
+    ctx.fillStyle="#4d7d43";
+    ctx.beginPath();ctx.arc(x,y-22,24,0,Math.PI*2);ctx.arc(x-18,y-18,18,0,Math.PI*2);ctx.arc(x+16,y-18,16,0,Math.PI*2);ctx.fill();
+    return;
+  }
+  ctx.fillStyle="#76523d";ctx.fillRect(x-7,y-28,14,38);
+  ctx.fillStyle=hashString(node.id)%2?"#4d7d43":"#5c8b50";
+  ctx.beginPath();ctx.arc(x,y-52,30,0,Math.PI*2);ctx.arc(x-22,y-40,22,0,Math.PI*2);ctx.arc(x+22,y-40,22,0,Math.PI*2);ctx.fill();
+}
+function drawForestNodes(){
+  for(const node of state.forestNodes){
     const nodeType=getForestNodeType(node);
-    if(!node.active&&nodeType?.harvestable){
-      ctx.fillStyle="#8b5a32";ctx.fillRect(x-17,y-18,34,20);
-      ctx.fillStyle="#c88a47";ctx.beginPath();ctx.ellipse(x,y-18,18,7,0,0,Math.PI*2);ctx.fill();
-      return;
-    }
-    if(nodeType?.fallbackShape==="bush"){
-      ctx.fillStyle="#4d7d43";
-      ctx.beginPath();ctx.arc(x,y-22,24,0,Math.PI*2);ctx.arc(x-18,y-18,18,0,Math.PI*2);ctx.arc(x+16,y-18,16,0,Math.PI*2);ctx.fill();
-      return;
-    }
-    ctx.fillStyle="#76523d";ctx.fillRect(x-7,y-28,14,38);
-    ctx.fillStyle=hashString(node.id)%2?"#4d7d43":"#5c8b50";
-    ctx.beginPath();ctx.arc(x,y-52,30,0,Math.PI*2);ctx.arc(x-22,y-40,22,0,Math.PI*2);ctx.arc(x+22,y-40,22,0,Math.PI*2);ctx.fill();
+    if(!nodeType)continue;
+    if(!node.active&&node.respawnAt&&node.respawnAt<Date.now()){node.active=true;node.respawnAt=0}
+    const x=node.x-state.camera.x,y=node.y-state.camera.y;
+    if(x<-180||x>900||y<-220||y>1450)continue;
+    const sprite=node.active?node.spriteId:node.stumpSpriteId;
+    if(!sprite||!drawSprite(sprite,x,y))drawForestNodeFallback(node,x,y);
   }
-  function drawForestNodes(){
-    for(const node of state.forestNodes){
-      const nodeType=getForestNodeType(node);
-      if(!nodeType)continue;
-      if(!node.active&&node.respawnAt&&node.respawnAt<Date.now()){node.active=true;node.respawnAt=0}
-      const x=node.x-state.camera.x,y=node.y-state.camera.y;
-      if(x<-180||x>900||y<-220||y>1450)continue;
-      const sprite=node.active?node.spriteId:node.stumpSpriteId;
-      if(!sprite||!drawSprite(sprite,x,y))drawForestNodeFallback(node,x,y);
-    }
-  }
-    const sprite=t.active?t.spriteId:t.stumpSprite;
-    if(!drawSprite(sprite,x,y))drawTreeFallback(t,x,y);
-  }
-}function drawBuildings(){for(const b of [...state.layout.buildings].sort((a,b)=>a.position.y-b.position.y))drawSprite(b.spriteId,b.position.x-state.camera.x,b.position.y-state.camera.y)}
+}
+function drawBuildings(){for(const b of [...state.layout.buildings].sort((a,b)=>a.position.y-b.position.y))drawSprite(b.spriteId,b.position.x-state.camera.x,b.position.y-state.camera.y)}
 function drawPlayer(){const x=state.player.x-state.camera.x,y=state.player.y-state.camera.y;ctx.fillStyle="rgba(0,0,0,.2)";ctx.beginPath();ctx.ellipse(x,y+5,22,9,0,0,Math.PI*2);ctx.fill();ctx.fillStyle="#3f7880";ctx.fillRect(x-14,y-34,28,30);ctx.fillStyle="#d9a36f";ctx.beginPath();ctx.arc(x,y-49,16,0,Math.PI*2);ctx.fill();ctx.fillStyle="#4b3326";ctx.beginPath();ctx.arc(x,y-54,16,Math.PI,Math.PI*2);ctx.fill()}
 function drawHarvestAnimation(){
   if(!state.harvest)return;
