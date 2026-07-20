@@ -13,93 +13,69 @@
   "buildings": [
     {
       "id": "building.forester_hut",
-      "spriteId": "forester_hut_lv1",
       "position": {
         "x": 360,
         "y": 430
       },
-      "collisionRadius": 68,
-      "clearRadius": 165,
       "interactionPoint": {
         "x": 360,
         "y": 510
-      },
-      "interactionLabel": "Visit Forester's Hut"
+      }
     },
     {
       "id": "building.mine",
-      "spriteId": "mine_entrance_locked",
       "position": {
         "x": 980,
         "y": 380
       },
-      "collisionRadius": 72,
-      "clearRadius": 170,
       "interactionPoint": {
         "x": 940,
         "y": 500
-      },
-      "interactionLabel": "Inspect Mine"
+      }
     },
     {
       "id": "building.home",
-      "spriteId": "home_lv1",
       "position": {
         "x": 820,
         "y": 900
       },
-      "collisionRadius": 80,
-      "clearRadius": 185,
       "interactionPoint": {
         "x": 820,
         "y": 1010
-      },
-      "interactionLabel": "Enter Home"
+      }
     },
     {
       "id": "building.farm",
-      "spriteId": "farm_lv1",
       "position": {
         "x": 330,
         "y": 1260
       },
-      "collisionRadius": 76,
-      "clearRadius": 180,
       "interactionPoint": {
         "x": 400,
         "y": 1350
-      },
-      "interactionLabel": "Visit Farm"
+      }
     },
     {
       "id": "building.well",
-      "spriteId": "village_well",
       "position": {
         "x": 760,
         "y": 1280
       },
-      "collisionRadius": 40,
-      "clearRadius": 100,
       "interactionPoint": {
         "x": 760,
         "y": 1350
-      },
-      "interactionLabel": "Use Village Well"
+      }
     },
     {
       "id": "building.harbor",
-      "spriteId": "harbor_locked",
       "position": {
         "x": 900,
         "y": 1680
       },
-      "collisionRadius": 95,
-      "clearRadius": 220,
       "interactionPoint": {
         "x": 900,
         "y": 1800
-      },
-      "interactionLabel": "Inspect Harbor"
+      }
     }
   ],
   "paths": [

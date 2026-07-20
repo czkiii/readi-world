@@ -1,6 +1,120 @@
 {
-  "version": "0.0.3",
-  "description": "Building definitions and progression",
-  "buildings": {},
-  "placeholder": "Building data coming soon"
+  "version": "0.3.0",
+  "description": "Building definitions and interaction contracts",
+  "buildings": {
+    "building.forester_hut": {
+      "type": "building",
+      "subtype": "forester_hut",
+      "role": "service_building",
+      "tags": ["village", "forestry", "starter"],
+      "defaultSpriteId": "forester_hut_lv1",
+      "collisionRadius": 68,
+      "clearRadius": 165,
+      "interaction": {
+        "type": "building",
+        "trigger": "context",
+        "range": 95,
+        "labelKey": "action.visit_forester"
+      },
+      "progression": {
+        "state": "available",
+        "level": 1
+      }
+    },
+    "building.mine": {
+      "type": "building",
+      "subtype": "mine_entrance",
+      "role": "activity_gate",
+      "tags": ["village", "mining", "locked"],
+      "defaultSpriteId": "mine_entrance_locked",
+      "collisionRadius": 72,
+      "clearRadius": 170,
+      "interaction": {
+        "type": "stage_gate",
+        "trigger": "context",
+        "range": 95,
+        "labelKey": "action.inspect_mine"
+      },
+      "progression": {
+        "state": "locked",
+        "level": 0
+      }
+    },
+    "building.home": {
+      "type": "building",
+      "subtype": "home",
+      "role": "player_home",
+      "tags": ["village", "core", "save"],
+      "defaultSpriteId": "home_lv1",
+      "collisionRadius": 80,
+      "clearRadius": 185,
+      "interaction": {
+        "type": "building",
+        "trigger": "context",
+        "range": 95,
+        "labelKey": "action.enter_home"
+      },
+      "progression": {
+        "state": "available",
+        "level": 1
+      }
+    },
+    "building.farm": {
+      "type": "building",
+      "subtype": "farm",
+      "role": "production_building",
+      "tags": ["village", "farming", "starter"],
+      "defaultSpriteId": "farm_lv1",
+      "collisionRadius": 76,
+      "clearRadius": 180,
+      "interaction": {
+        "type": "building",
+        "trigger": "context",
+        "range": 95,
+        "labelKey": "action.visit_farm"
+      },
+      "progression": {
+        "state": "available",
+        "level": 1
+      }
+    },
+    "building.well": {
+      "type": "building",
+      "subtype": "well",
+      "role": "utility_building",
+      "tags": ["village", "water", "utility"],
+      "defaultSpriteId": "village_well",
+      "collisionRadius": 40,
+      "clearRadius": 100,
+      "interaction": {
+        "type": "utility",
+        "trigger": "context",
+        "range": 95,
+        "labelKey": "action.use_well"
+      },
+      "progression": {
+        "state": "available",
+        "level": 1
+      }
+    },
+    "building.harbor": {
+      "type": "building",
+      "subtype": "harbor",
+      "role": "activity_gate",
+      "tags": ["village", "harbor", "locked"],
+      "defaultSpriteId": "harbor_locked",
+      "collisionRadius": 95,
+      "clearRadius": 220,
+      "interaction": {
+        "type": "stage_gate",
+        "trigger": "context",
+        "range": 95,
+        "labelKey": "action.inspect_harbor"
+      },
+      "progression": {
+        "state": "locked",
+        "level": 0
+      }
+    }
+  }
 }

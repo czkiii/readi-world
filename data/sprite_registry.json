@@ -14,6 +14,8 @@
   "atlases": {
     "village_buildings": {
       "status": "ready",
+      "role": "building_module",
+      "tags": ["village", "landmarks"],
       "profile": "short_hd_3x2",
       "file": "assets/buildings/village_buildings.png",
       "imageWidth": 1536,
@@ -33,6 +35,8 @@
         "home_lv1": {
           "col": 0,
           "row": 0,
+          "role": "player_home",
+          "tags": ["village", "building", "core", "level_1"],
           "pivot": [
             0.5,
             0.92
@@ -47,6 +51,8 @@
         "forester_hut_lv1": {
           "col": 1,
           "row": 0,
+          "role": "service_building",
+          "tags": ["village", "building", "forestry", "level_1"],
           "pivot": [
             0.5,
             0.92
@@ -61,6 +67,8 @@
         "village_well": {
           "col": 2,
           "row": 0,
+          "role": "utility_building",
+          "tags": ["village", "building", "water", "utility"],
           "pivot": [
             0.5,
             0.93
@@ -75,6 +83,8 @@
         "mine_entrance_locked": {
           "col": 0,
           "row": 1,
+          "role": "activity_gate",
+          "tags": ["village", "building", "mine", "locked"],
           "pivot": [
             0.5,
             0.93
@@ -89,6 +99,8 @@
         "harbor_locked": {
           "col": 1,
           "row": 1,
+          "role": "activity_gate",
+          "tags": ["village", "building", "harbor", "locked"],
           "pivot": [
             0.5,
             0.92
@@ -103,6 +115,8 @@
         "farm_lv1": {
           "col": 1,
           "row": 0,
+          "role": "production_building",
+          "tags": ["village", "building", "farm", "level_1"],
           "pivot": [
             0.5,
             0.92
@@ -118,6 +132,8 @@
     },
     "forest_environment": {
       "status": "ready",
+      "role": "environment_module",
+      "tags": ["forest", "nature", "harvest"],
       "profile": "short_hd_3x2",
       "file": "assets/environment/forest_atlas.png",
       "imageWidth": 1536,
@@ -137,6 +153,8 @@
         "oak_tree_01": {
           "col": 0,
           "row": 0,
+          "role": "harvestable_tree",
+          "tags": ["temperate", "oak", "common", "forest"],
           "pivot": [
             0.5,
             0.96
@@ -153,6 +171,8 @@
         "oak_tree_02": {
           "col": 1,
           "row": 0,
+          "role": "harvestable_tree",
+          "tags": ["temperate", "oak", "common", "forest"],
           "pivot": [
             0.5,
             0.96
@@ -169,6 +189,8 @@
         "pine_tree_01": {
           "col": 0,
           "row": 1,
+          "role": "harvestable_tree",
+          "tags": ["temperate", "pine", "uncommon", "forest"],
           "pivot": [
             0.5,
             0.97
@@ -185,6 +207,8 @@
         "bush_01": {
           "col": 2,
           "row": 1,
+          "role": "foliage",
+          "tags": ["temperate", "bush", "ground_cover"],
           "pivot": [
             0.5,
             0.94
@@ -200,6 +224,8 @@
     },
     "ground_tiles": {
       "status": "ready",
+      "role": "terrain_module",
+      "tags": ["ground", "tiles"],
       "profile": "short_hd_3x2",
       "file": "assets/environment/ground_tiles.png",
       "imageWidth": 1536,
@@ -216,6 +242,8 @@
         "grass_base": {
           "col": 0,
           "row": 0,
+          "role": "ground_cover",
+          "tags": ["grass", "temperate", "base"],
           "pivot": [
             0,
             0
@@ -228,6 +256,8 @@
         "dirt_path_straight": {
           "col": 1,
           "row": 0,
+          "role": "path_tile",
+          "tags": ["dirt", "path"],
           "pivot": [
             0,
             0
@@ -240,6 +270,8 @@
         "shallow_water": {
           "col": 2,
           "row": 0,
+          "role": "water_surface",
+          "tags": ["water", "shallow"],
           "pivot": [
             0,
             0
@@ -252,6 +284,8 @@
         "sand_base": {
           "col": 0,
           "row": 1,
+          "role": "ground_cover",
+          "tags": ["sand", "shore"],
           "pivot": [
             0,
             0
@@ -264,6 +298,8 @@
         "farmland": {
           "col": 1,
           "row": 1,
+          "role": "ground_cover",
+          "tags": ["farm", "soil", "tilled"],
           "pivot": [
             0,
             0
@@ -276,6 +312,8 @@
         "stone_path": {
           "col": 2,
           "row": 1,
+          "role": "path_tile",
+          "tags": ["stone", "path"],
           "pivot": [
             0,
             0
@@ -289,6 +327,8 @@
     },
     "tool_overlays": {
       "status": "ready",
+      "role": "tool_module",
+      "tags": ["tools", "overlays"],
       "profile": "short_hd_3x2",
       "file": "assets/characters/tool_overlays.png",
       "imageWidth": 1536,
@@ -307,6 +347,8 @@
         "axe_idle": {
           "col": 0,
           "row": 0,
+          "role": "tool_overlay",
+          "tags": ["axe", "idle", "woodcutting"],
           "pivot": [
             0.5,
             0.5
@@ -319,6 +361,8 @@
         "axe_swing": {
           "col": 1,
           "row": 0,
+          "role": "tool_overlay",
+          "tags": ["axe", "swing", "woodcutting"],
           "pivot": [
             0.5,
             0.5
@@ -331,6 +375,8 @@
         "fishing_rod_idle": {
           "col": 2,
           "row": 0,
+          "role": "tool_overlay",
+          "tags": ["fishing_rod", "idle", "fishing"],
           "pivot": [
             0.5,
             0.5
@@ -343,6 +389,8 @@
         "fishing_rod_cast": {
           "col": 0,
           "row": 1,
+          "role": "tool_overlay",
+          "tags": ["fishing_rod", "cast", "fishing"],
           "pivot": [
             0.5,
             0.5
@@ -355,6 +403,8 @@
         "pickaxe_idle": {
           "col": 1,
           "row": 1,
+          "role": "tool_overlay",
+          "tags": ["pickaxe", "idle", "mining"],
           "pivot": [
             0.5,
             0.5
@@ -367,6 +417,8 @@
         "pickaxe_swing": {
           "col": 2,
           "row": 1,
+          "role": "tool_overlay",
+          "tags": ["pickaxe", "swing", "mining"],
           "pivot": [
             0.5,
             0.5
@@ -380,6 +432,8 @@
     },
     "effects": {
       "status": "ready",
+      "role": "effects_module",
+      "tags": ["effects", "feedback"],
       "profile": "short_hd_3x2",
       "file": "assets/effects/effects_atlas.png",
       "imageWidth": 1536,
@@ -399,6 +453,8 @@
         "wood_hit": {
           "col": 0,
           "row": 0,
+          "role": "impact_effect",
+          "tags": ["wood", "hit", "harvest"],
           "pivot": [
             0.5,
             0.5
@@ -411,6 +467,8 @@
         "stone_hit": {
           "col": 1,
           "row": 0,
+          "role": "impact_effect",
+          "tags": ["stone", "hit", "mining"],
           "pivot": [
             0.5,
             0.5
@@ -423,6 +481,8 @@
         "dust_puff": {
           "col": 2,
           "row": 0,
+          "role": "ambient_effect",
+          "tags": ["dust", "movement"],
           "pivot": [
             0.5,
             0.5
@@ -435,6 +495,8 @@
         "sparkle": {
           "col": 0,
           "row": 1,
+          "role": "ambient_effect",
+          "tags": ["sparkle", "reward"],
           "pivot": [
             0.5,
             0.5
@@ -447,6 +509,8 @@
         "selection_ring": {
           "col": 1,
           "row": 1,
+          "role": "ui_effect",
+          "tags": ["selection", "ring"],
           "pivot": [
             0.5,
             0.5
@@ -459,6 +523,8 @@
         "shadow_soft": {
           "col": 2,
           "row": 1,
+          "role": "shadow_effect",
+          "tags": ["shadow", "soft"],
           "pivot": [
             0.5,
             0.5

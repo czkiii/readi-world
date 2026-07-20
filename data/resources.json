@@ -1,9 +1,59 @@
 {
-  "version": "0.0.3",
-  "description": "Resource definitions and economy",
+  "schemaVersion": 1,
+  "version": "0.3.0",
+  "description": "Resource definitions, categories and economy-facing metadata",
+  "categories": {
+    "raw_material": {
+      "label": "Raw Materials",
+      "storage": "inventory.resources"
+    },
+    "currency": {
+      "label": "Currency",
+      "storage": "inventory.currency"
+    }
+  },
   "resources": {
-    "wood": { "id": "resource.wood", "name": "Wood", "icon": "🪵" },
-    "stone": { "id": "resource.stone", "name": "Stone", "icon": "🪨" },
-    "coin": { "id": "resource.coin", "name": "Coin", "icon": "🪙" }
+    "wood": {
+      "id": "resource.wood",
+      "name": "Wood",
+      "icon": "🪵",
+      "category": "raw_material",
+      "defaultVariant": "resource.wood.common",
+      "stackable": true,
+      "tags": ["harvested", "forest", "starter"]
+    },
+    "stone": {
+      "id": "resource.stone",
+      "name": "Stone",
+      "icon": "🪨",
+      "category": "raw_material",
+      "defaultVariant": "resource.stone.common",
+      "stackable": true,
+      "tags": ["mined", "starter"]
+    },
+    "coin": {
+      "id": "resource.coin",
+      "name": "Coin",
+      "icon": "🪙",
+      "category": "currency",
+      "stackable": true,
+      "tags": ["money"]
+    }
+  },
+  "variants": {
+    "resource.wood.common": {
+      "baseResource": "wood",
+      "displayName": "Common Wood",
+      "yieldRange": [2, 4],
+      "sourceRoles": ["harvestable_tree"],
+      "tags": ["temperate", "common"]
+    },
+    "resource.stone.common": {
+      "baseResource": "stone",
+      "displayName": "Common Stone",
+      "yieldRange": [2, 4],
+      "sourceRoles": ["harvestable_rock"],
+      "tags": ["surface", "common"]
+    }
   }
 }
