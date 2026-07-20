@@ -70,6 +70,31 @@ function pickForestSpriteId(nodeType){
   if(!nodeType)return null;
   return pickSpriteByRole(nodeType.role,nodeType.tags||[])||nodeType.spriteId||null;
 }
+function pointInPolygon(x,y,polygon){
+  let inside=false;
+  for(let i=0,j=polygon.length-1;i<polygon.length;j=i++){
+    const a=polygon[i],b=polygon[j];
+    const crosses=((a.y>y)!==(b.y>y))&&(x<(b.x-a.x)*(y-a.y)/((b.y-a.y)||Number.EPSILON)+a.x);
+    if(crosses)inside=!inside;
+  }
+  return inside;
+}
+function distanceToSegment(x,y,a,b){
+  const dx=b.x-a.x,dy=b.y-a.y;
+  const lengthSq=dx*dx+dy*dy;
+  if(!lengthSq)return Math.hypot(x-a.x,y-a.y);
+  const t=clamp(((x-a.x)*dx+(y-a.y)*dy)/lengthSq,0,1);
+  return Math.hypot(x-(a.x+t*dx),y-(a.y+t*dy));
+}
+function overlapsWater(x,y,padding=0){
+  return (state.layout.water||[]).some(area=>{
+    const polygon=area.polygon||[];
+    if(polygon.length<3)return false;
+    if(pointInPolygon(x,y,polygon))return true;
+    if(padding<=0)return false;
+    return polygon.some((point,index)=>distanceToSegment(x,y,point,polygon[(index+1)%polygon.length])<padding);
+  });
+}
 function buildForestNodes(){
   state.forestNodes=[];
   for(const rule of state.forestModule.spawnRules){
@@ -81,6 +106,8 @@ function buildForestNodes(){
       if(!nodeType)continue;
       const x=rule.origin.x+((i*rule.step.x)%rule.bounds.width);
       const y=rule.origin.y+((i*rule.step.y)%rule.bounds.height);
+      const clearPadding=(rule.clearRadiusPadding||0)+(nodeType.fallbackShape==="bush"?24:38);
+      if(overlapsWater(x,y,clearPadding))continue;
       if(state.layout.buildings.some(building=>Math.hypot(x-building.position.x,y-building.position.y)<(building.clearRadius||140)+(rule.clearRadiusPadding||0)))continue;
       state.forestNodes.push({
         id:`${rule.id}.${i}`,
@@ -250,8 +277,13 @@ function drawForestNodes(){
     if(!node.active&&node.respawnAt&&node.respawnAt<Date.now()){node.active=true;node.respawnAt=0}
     const x=node.x-state.camera.x,y=node.y-state.camera.y;
     if(x<-180||x>900||y<-220||y>1450)continue;
-    const sprite=node.active?node.spriteId:node.stumpSpriteId;
-    if(!sprite||!drawSprite(sprite,x,y))drawForestNodeFallback(node,x,y);
+    if(node.active){
+      if(!node.spriteId||!drawSprite(node.spriteId,x,y))drawForestNodeFallback(node,x,y);
+      continue;
+    }
+    const hasStumpSprite=node.stumpSpriteId&&findSprite(node.stumpSpriteId);
+    if(hasStumpSprite)drawSprite(node.stumpSpriteId,x,y);
+    else drawForestNodeFallback(node,x,y);
   }
 }
 function drawBuildings(){for(const b of [...state.layout.buildings].sort((a,b)=>a.position.y-b.position.y))drawSprite(b.spriteId,b.position.x-state.camera.x,b.position.y-state.camera.y)}
