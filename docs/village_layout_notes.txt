@@ -1,4 +1,35 @@
 # Village Layout Notes
 
-Placeholder for village layout documentation.
-This file will contain detailed notes about village structure, object placement, and design decisions.
+Current target layout version: 0.0.7
+World size: 1344 x 1920 logical pixels
+Player spawn: 672, 930 facing up
+
+Composition goals
+- Portrait-first readable vertical village flow.
+- Home remains in the central anchor band.
+- Forest and Mine sit in the upper half as outward progression routes.
+- Farm and Well sit in the lower-middle support band.
+- Harbor opens the lower region and visually connects to water.
+
+Current authored landmark set
+- Forester's Hut: upper-left service landmark.
+- Mine Entrance: upper-right locked activity gate.
+- Home: central persistent return point.
+- Farm: lower-left production landmark.
+- Village Well: central utility landmark.
+- Harbor: lower-right locked activity gate.
+
+Pathing notes
+- One main path establishes top-to-bottom movement.
+- Branch paths connect Mine, Home and Farm to the main route.
+- Important interaction points should stay readable without permanent labels.
+
+Clear zone rules
+- Buildings reserve clear radius for readability, collision and future decoration safety.
+- Tree spawning must continue to respect authored building clear zones.
+- Harbor water edge should remain visually open for future dock interactions.
+
+Future data split
+- Authored placement stays in village_layout.json.
+- Shared building behavior belongs in data/buildings.json.
+- Localized interaction text belongs in data/localization_en.json.
