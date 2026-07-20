@@ -108,15 +108,24 @@ function createContractRuntime(options){
     return "./"+String(path).replace(/^\.?\//,"");
   }
 
+  function shouldRemoveBackground(meta){
+    const mode=meta?.backgroundPolicy?.mode||"none";
+    return mode!=="none";
+  }
+
   function isLikelyBackgroundPixel(r,g,b,a,policy){
-    if(a<245)return true;
-    const threshold=policy?.threshold??244;
-    const nearWhite=r>=threshold&&g>=threshold&&b>=threshold;
+    if(a===0)return true;
+    const mode=policy?.mode||"none";
+    if(mode==="none")return false;
+
+    const threshold=policy?.threshold??246;
+    const max=Math.max(r,g,b),min=Math.min(r,g,b);
+    const neutral=max-min<=(policy?.checkerboardTolerance??14);
+    const nearWhite=neutral&&r>=threshold&&g>=threshold&&b>=threshold;
     if(nearWhite)return true;
-    if(policy?.mode?.includes("checkerboard")){
-      const max=Math.max(r,g,b),min=Math.min(r,g,b);
-      const neutral=max-min<(policy.checkerboardTolerance??16);
-      const checkerLight=neutral&&r>210&&g>210&&b>210;
+
+    if(mode.includes("checkerboard")){
+      const checkerLight=neutral&&r>=218&&g>=218&&b>=218;
       if(checkerLight)return true;
     }
     return false;
@@ -125,48 +134,82 @@ function createContractRuntime(options){
   function prepareAtlas(atlasId,image){
     const meta=state.registry?.atlases?.[atlasId];
     if(!meta||!image?.naturalWidth||!image?.naturalHeight)return null;
+
     const cols=meta.columns||3,rows=meta.rows||2;
-    const fw=image.naturalWidth/cols,fh=image.naturalHeight/rows;
-    if(!Number.isFinite(fw)||!Number.isFinite(fh)||fw<=0||fh<=0)return null;
-
-    const canvas=document.createElement("canvas");
-    canvas.width=image.naturalWidth;canvas.height=image.naturalHeight;
-    const c=canvas.getContext("2d",{willReadFrequently:true});
-    c.drawImage(image,0,0);
-    const img=c.getImageData(0,0,canvas.width,canvas.height);
-    const data=img.data,policy=meta.backgroundPolicy||{};
-    for(let i=0;i<data.length;i+=4){
-      if(isLikelyBackgroundPixel(data[i],data[i+1],data[i+2],data[i+3],policy)){
-        data[i+3]=0;
-      }
+    if(!Number.isInteger(cols)||!Number.isInteger(rows)||cols<=0||rows<=0)return null;
+    if(image.naturalWidth%cols!==0||image.naturalHeight%rows!==0){
+      console.warn(`Atlas grid mismatch: ${atlasId}`);
+      return null;
     }
-    c.putImageData(img,0,0);
+    if(meta.imageWidth&&meta.imageWidth!==image.naturalWidth){
+      console.warn(`Atlas width mismatch for ${atlasId}: ${image.naturalWidth} vs ${meta.imageWidth}`);
+      return null;
+    }
+    if(meta.imageHeight&&meta.imageHeight!==image.naturalHeight){
+      console.warn(`Atlas height mismatch for ${atlasId}: ${image.naturalHeight} vs ${meta.imageHeight}`);
+      return null;
+    }
 
+    const fw=image.naturalWidth/cols,fh=image.naturalHeight/rows;
+    const canvas=document.createElement("canvas");
+    canvas.width=image.naturalWidth;
+    canvas.height=image.naturalHeight;
+    const c=canvas.getContext("2d",{willReadFrequently:shouldRemoveBackground(meta)});
+    c.drawImage(image,0,0);
+
+    const policy=meta.backgroundPolicy||{mode:"none"};
+    const removeBackground=shouldRemoveBackground(meta);
+    const processedCells=new Set();
     const rects={};
+
     for(const [id,spriteMeta] of Object.entries(meta.sprites||{})){
-      const sx=Math.round((spriteMeta.col||0)*fw),sy=Math.round((spriteMeta.row||0)*fh);
-      const ex=Math.round(sx+fw),ey=Math.round(sy+fh);
-      const cell=c.getImageData(sx,sy,Math.max(1,ex-sx),Math.max(1,ey-sy)).data;
-      let minX=ex,minY=ey,maxX=-1,maxY=-1;
-      const cw=Math.max(1,ex-sx),ch=Math.max(1,ey-sy);
-      for(let y=0;y<ch;y+=2){
-        for(let x=0;x<cw;x+=2){
-          const alpha=cell[(y*cw+x)*4+3];
-          if(alpha>24){
-            minX=Math.min(minX,sx+x);minY=Math.min(minY,sy+y);
-            maxX=Math.max(maxX,sx+x);maxY=Math.max(maxY,sy+y);
+      const col=spriteMeta.col||0,row=spriteMeta.row||0;
+      if(!Number.isInteger(col)||!Number.isInteger(row)||col<0||row<0||col>=cols||row>=rows){
+        console.warn(`Sprite cell out of range: ${atlasId}.${id}`);
+        continue;
+      }
+
+      const sx=col*fw,sy=row*fh;
+      const cellKey=`${col}:${row}`;
+
+      if(removeBackground&&!processedCells.has(cellKey)){
+        const img=c.getImageData(sx,sy,fw,fh);
+        const data=img.data;
+        for(let i=0;i<data.length;i+=4){
+          if(isLikelyBackgroundPixel(data[i],data[i+1],data[i+2],data[i+3],policy)){
+            data[i+3]=0;
+          }
+        }
+        c.putImageData(img,sx,sy);
+        processedCells.add(cellKey);
+      }
+
+      if(!removeBackground){
+        rects[id]={x:sx,y:sy,w:fw,h:fh};
+        continue;
+      }
+
+      const cell=c.getImageData(sx,sy,fw,fh).data;
+      let minX=fw,minY=fh,maxX=-1,maxY=-1;
+      for(let y=0;y<fh;y+=2){
+        for(let x=0;x<fw;x+=2){
+          if(cell[(y*fw+x)*4+3]>24){
+            minX=Math.min(minX,x);minY=Math.min(minY,y);
+            maxX=Math.max(maxX,x);maxY=Math.max(maxY,y);
           }
         }
       }
+
       if(maxX>=minX&&maxY>=minY){
         const pad=4;
-        rects[id]={
-          x:Math.max(sx,minX-pad),y:Math.max(sy,minY-pad),
-          w:Math.min(ex-1,maxX+pad)-Math.max(sx,minX-pad)+1,
-          h:Math.min(ey-1,maxY+pad)-Math.max(sy,minY-pad)+1
-        };
+        const x0=Math.max(0,minX-pad),y0=Math.max(0,minY-pad);
+        const x1=Math.min(fw-1,maxX+pad),y1=Math.min(fh-1,maxY+pad);
+        rects[id]={x:sx+x0,y:sy+y0,w:x1-x0+1,h:y1-y0+1};
+      }else{
+        console.warn(`Sprite became empty after background processing: ${atlasId}.${id}`);
       }
     }
+
     return {id:atlasId,meta,image,canvas,rects,valid:Object.keys(rects).length>0};
   }
 
