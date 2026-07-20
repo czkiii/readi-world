@@ -21,7 +21,7 @@ canvas{position:absolute;inset:0;width:100%;height:100%;display:block;touch-acti
 #prompt{position:absolute;top:calc(108px + env(safe-area-inset-top));left:50%;transform:translateX(-50%);z-index:5;padding:10px 15px;border-radius:999px;border:1px solid rgba(255,255,255,.16);background:rgba(30,51,39,.94);color:#fff;font-weight:700;opacity:0;pointer-events:none;transition:.15s}#prompt.show{opacity:1;pointer-events:auto}
 #joy{position:fixed;width:118px;height:118px;border-radius:50%;background:rgba(30,51,39,.42);border:1px solid rgba(255,255,255,.22);display:none;pointer-events:none;z-index:10}#joy.show{display:block}#knob{position:absolute;left:33px;top:33px;width:52px;height:52px;border-radius:50%;background:rgba(255,255,255,.82);transform:translate(0,0)}
 #toast{position:absolute;bottom:calc(110px + env(safe-area-inset-bottom));left:50%;transform:translateX(-50%);z-index:8;padding:9px 13px;border-radius:999px;background:rgba(30,51,39,.95);color:#fff;font-weight:700;opacity:0;transition:.18s;pointer-events:none}#toast.show{opacity:1}
-#debug{position:absolute;left:8px;bottom:calc(8px + env(safe-area-inset-bottom));z-index:8;color:#fff;background:rgba(0,0,0,.52);padding:5px 7px;border-radius:7px;font:11px ui-monospace,SFMono-Regular,Menlo,monospace;pointer-events:none}
+#debug{position:absolute;left:8px;bottom:calc(8px + env(safe-area-inset-bottom));z-index:8;color:#fff;background:rgba(0,0,0,.52);padding:5px 7px;border-radius:7px;font:11px ui-monospace,SFMono-Regular,Menlo,monospace;pointer-events:none}#debug.hidden{display:none}
 #panel{position:absolute;top:calc(82px + env(safe-area-inset-top));right:10px;width:min(88vw,330px);padding:14px;z-index:7;display:none;background:rgba(30,51,39,.97);border-radius:20px;color:#fff}#panel.open{display:block}.grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}.item{min-height:68px;border-radius:14px;border:1px solid rgba(255,255,255,.13);background:rgba(255,255,255,.06);color:#fff;text-align:left;padding:10px}
 #loading{position:absolute;inset:0;display:grid;place-items:center;background:#102019;color:#fff;font-size:18px;z-index:20}#loading.hidden{display:none}
 </style><script src="./src/engine/runtime-foundation.js"></script></head>
@@ -29,7 +29,7 @@ canvas{position:absolute;inset:0;width:100%;height:100%;display:block;touch-acti
 <canvas id="game"></canvas><div id="loading">Loading Readi World…</div>
 <div class="top"><div class="card profile"><div class="avatar">🧑🏻</div><div class="meta"><strong>Player</strong>Lv. 3</div></div><div class="card center"><div class="resources"><span class="res">🪵 <b id="wood">0</b></span><span class="res">🪨 <b id="stone">0</b></span><span class="res">🪙 <b id="coin">25</b></span></div><div class="time"><strong id="phase">☀️ Morning</strong><span id="clock">Day 1 · 08:30</span></div></div><button class="menu" id="menu">☰</button></div>
 <button id="prompt"></button><div id="toast"></div><div id="debug">INPUT 0.00 0.00 | 0 ATLAS</div><div id="joy"><div id="knob"></div></div>
-<aside id="panel"><div class="grid"><button class="item" data-a="save">Save now</button><button class="item" data-a="inventory">Inventory</button><button class="item" data-a="village">Village</button><button class="item" data-a="settings">Settings</button></div></aside>
+<aside id="panel"><div class="grid"><button class="item" data-a="save">Save now</button><button class="item" data-a="inventory">Inventory</button><button class="item" data-a="village">Village</button><button class="item" data-a="debug">Hide debug</button></div></aside>
 </main><script>
 "use strict";
 const ASSET_CACHE=Date.now();
@@ -48,6 +48,25 @@ const app=document.getElementById("app"),ui={loading:document.getElementById("lo
 const phases=[{n:"Morning",i:"☀️",o:"rgba(255,220,150,.06)",h:6},{n:"Afternoon",i:"🌤️",o:"rgba(255,255,255,0)",h:12},{n:"Evening",i:"🌇",o:"rgba(221,113,65,.15)",h:18},{n:"Night",i:"🌙",o:"rgba(15,32,58,.38)",h:22}];
 const state={manifest:null,layout:null,registry:null,buildingDefs:null,forestModule:null,localization:null,resourceDefs:null,atlases:{},world:{width:1344,height:1920},player:{x:672,y:930},camera:{x:0,y:0},resources:{wood:0,stone:0,coin:25},input:{active:false,id:null,sx:0,sy:0,x:0,y:0,lastMove:0},forestNodes:[],harvest:null,context:null,timeAnchor:Date.now(),last:performance.now(),toastTimer:null};
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+const debugState={visible:true,missingSprites:new Set()};
+function reportMissingSprite(id){
+  const key=String(id||"<empty>");
+  if(debugState.missingSprites.has(key))return;
+  debugState.missingSprites.add(key);
+  console.warn(`[Sprite missing] ${key}`);
+}
+function logAssetReport(report,runtimeSummary){
+  const loadedIds=Object.keys(state.atlases);
+  const missingRequired=report.missingRequired||[];
+  const fallbacks=runtimeSummary.assetReport?.fallbacks||[];
+  console.groupCollapsed(`[Readi World assets] ${report.loaded}/${report.total} modules loaded`);
+  console.info("Loaded modules:",loadedIds.length?loadedIds:"none");
+  console.info("Required modules:",report.required);
+  if(missingRequired.length)console.error("Missing required modules:",missingRequired);
+  else console.info("Missing required modules: none");
+  if(fallbacks.length)console.warn("Active fallback policies:",fallbacks);
+  console.groupEnd();
+}
 function toast(t){ui.toast.textContent=t;ui.toast.classList.add("show");clearTimeout(state.toastTimer);state.toastTimer=setTimeout(()=>ui.toast.classList.remove("show"),1300)}
 function save(){localStorage.setItem(CONFIG.SAVE,JSON.stringify({player:state.player,resources:state.resources,timeAnchor:state.timeAnchor}))}
 function loadSave(){try{const d=JSON.parse(localStorage.getItem(CONFIG.SAVE));if(d){Object.assign(state.player,d.player||{});Object.assign(state.resources,d.resources||{});state.timeAnchor=d.timeAnchor||Date.now()}}catch{}}
@@ -157,7 +176,7 @@ function logical(){const sx=canvas.width/CONFIG.LW,sy=canvas.height/CONFIG.LH,s=
 function drawFallback(id,x,y){ctx.save();const well=id.includes("well"),mine=id.includes("mine"),harbor=id.includes("harbor"),farm=id.includes("farm"),forester=id.includes("forester");if(well){ctx.fillStyle="#777";ctx.beginPath();ctx.arc(x,y-25,45,0,Math.PI*2);ctx.fill();ctx.fillStyle="#65452f";ctx.fillRect(x-48,y-80,10,70);ctx.fillRect(x+38,y-80,10,70);ctx.fillStyle="#9c5937";ctx.beginPath();ctx.moveTo(x-60,y-80);ctx.lineTo(x,y-115);ctx.lineTo(x+60,y-80);ctx.closePath();ctx.fill()}else if(harbor){ctx.fillStyle="#8f6945";ctx.fillRect(x-90,y-80,180,80);ctx.fillStyle="#325b6f";ctx.beginPath();ctx.moveTo(x-105,y-80);ctx.lineTo(x,y-145);ctx.lineTo(x+105,y-80);ctx.closePath();ctx.fill();ctx.fillStyle="#6d4d31";ctx.fillRect(x-120,y,240,14);ctx.fillRect(x-95,y,12,45);ctx.fillRect(x+83,y,12,45)}else{ctx.fillStyle=mine?"#766d62":forester?"#9a6a3e":farm?"#c09058":"#b47c4b";ctx.fillRect(x-80,y-110,160,110);ctx.fillStyle=mine?"#59524b":forester?"#6d4c2f":farm?"#8f6b37":"#9c5937";ctx.beginPath();ctx.moveTo(x-95,y-110);ctx.lineTo(x,y-170);ctx.lineTo(x+95,y-110);ctx.closePath();ctx.fill();ctx.fillStyle="#4d3428";ctx.fillRect(x-16,y-48,32,48)}ctx.restore()}
 function drawSprite(id,x,y,overrideSize=null){
   const found=findSprite(id);
-  if(!found){drawFallback(id,x,y);return false}
+  if(!found){reportMissingSprite(id);drawFallback(id,x,y);return false}
   const {atlas,meta,rect}=found;
   const size=overrideSize||meta.drawSize||[240,240];
   const boxW=size[0],boxH=size[1];
@@ -354,7 +373,7 @@ function recoverIfStuck(){if(!insideBuilding(state.player.x,state.player.y))retu
 function blocked(x,y){return x<25||y<25||x>state.world.width-25||y>state.world.height-25||insideBuilding(x,y)}
 function nearestHarvestNode(){let best=null,d=1e9;for(const node of state.forestNodes){const nodeType=getForestNodeType(node);if(!node.active||!nodeType?.harvestable)continue;const range=nodeType.interactionRange||CONFIG.HARVEST;const n=Math.hypot(state.player.x-node.x,state.player.y-node.y);if(n<range&&n<d){best=node;d=n}}return best}
 function harvestUpdate(){if(state.input.active||Math.hypot(state.input.x,state.input.y)>.05){state.harvest=null;return}if(state.harvest){const nodeType=getForestNodeType(state.harvest.node);const duration=nodeType?.harvestDurationMs||850;if(performance.now()-state.harvest.start>duration){state.harvest.node.active=false;state.harvest.node.respawnAt=Date.now()+(nodeType?.respawnMs||300000);const drops=resolveForestLoot(state.harvest.node);applyForestLoot(drops);const primaryDrop=drops[0];state.harvest=null;if(primaryDrop)toast(`+${primaryDrop.amount} ${getResourceLabel(primaryDrop.resourceKey)}`);else toast(t("status.forage_unavailable","Nothing harvestable nearby"));save()}return}if(performance.now()-state.input.lastMove>350){const node=nearestHarvestNode();if(node){state.harvest={node,start:performance.now()};toast(t("status.chopping","Chopping..."))}}}
-function update(dt){let ix=state.input.x,iy=state.input.y,l=Math.hypot(ix,iy);if(l>1){ix/=l;iy/=l}if(l>.04){state.harvest=null;const dx=ix*CONFIG.SPEED*dt,dy=iy*CONFIG.SPEED*dt;const nx=state.player.x+dx,ny=state.player.y+dy;if(!blocked(nx,state.player.y))state.player.x=nx;if(!blocked(state.player.x,ny))state.player.y=ny}else harvestUpdate();const tx=clamp(state.player.x-CONFIG.LW/2,0,state.world.width-CONFIG.LW),ty=clamp(state.player.y-CONFIG.LH/2,0,state.world.height-CONFIG.LH);state.camera.x+=(tx-state.camera.x)*Math.min(1,dt*9);state.camera.y+=(ty-state.camera.y)*Math.min(1,dt*9);let best=null,bd=1e9;for(const b of state.layout.buildings){const d=Math.hypot(state.player.x-b.interactionPoint.x,state.player.y-b.interactionPoint.y);if(d<CONFIG.INTERACT&&d<bd){best=b;bd=d}}state.context=best;ui.prompt.textContent=best?.interactionLabel||"";ui.prompt.classList.toggle("show",!!best);const t=clock();ui.phase.textContent=`${t.p.i} ${t.p.n}`;ui.clock.textContent=`Day ${t.d} · ${String(t.h).padStart(2,"0")}:${String(t.m).padStart(2,"0")}`;ui.wood.textContent=state.resources.wood;ui.stone.textContent=state.resources.stone;ui.coin.textContent=state.resources.coin;ui.debug.textContent=`INPUT ${ix.toFixed(2)} ${iy.toFixed(2)} | PLAYER ${state.player.x.toFixed(0)} ${state.player.y.toFixed(0)} | ${state.input.active?"ACTIVE":"IDLE"} | ${Object.keys(state.atlases).length} ATLAS`}
+function update(dt){let ix=state.input.x,iy=state.input.y,l=Math.hypot(ix,iy);if(l>1){ix/=l;iy/=l}if(l>.04){state.harvest=null;const dx=ix*CONFIG.SPEED*dt,dy=iy*CONFIG.SPEED*dt;const nx=state.player.x+dx,ny=state.player.y+dy;if(!blocked(nx,state.player.y))state.player.x=nx;if(!blocked(state.player.x,ny))state.player.y=ny}else harvestUpdate();const tx=clamp(state.player.x-CONFIG.LW/2,0,state.world.width-CONFIG.LW),ty=clamp(state.player.y-CONFIG.LH/2,0,state.world.height-CONFIG.LH);state.camera.x+=(tx-state.camera.x)*Math.min(1,dt*9);state.camera.y+=(ty-state.camera.y)*Math.min(1,dt*9);let best=null,bd=1e9;for(const b of state.layout.buildings){const d=Math.hypot(state.player.x-b.interactionPoint.x,state.player.y-b.interactionPoint.y);if(d<CONFIG.INTERACT&&d<bd){best=b;bd=d}}state.context=best;ui.prompt.textContent=best?.interactionLabel||"";ui.prompt.classList.toggle("show",!!best);const t=clock();ui.phase.textContent=`${t.p.i} ${t.p.n}`;ui.clock.textContent=`Day ${t.d} · ${String(t.h).padStart(2,"0")}:${String(t.m).padStart(2,"0")}`;ui.wood.textContent=state.resources.wood;ui.stone.textContent=state.resources.stone;ui.coin.textContent=state.resources.coin;ui.debug.textContent=`INPUT ${ix.toFixed(2)} ${iy.toFixed(2)} | PLAYER ${state.player.x.toFixed(0)} ${state.player.y.toFixed(0)} | ${state.input.active?"ACTIVE":"IDLE"} | ${Object.keys(state.atlases).length} ATLAS | ${debugState.missingSprites.size} MISS`}
 function loop(n){const dt=Math.min(.05,(n-state.last)/1000);state.last=n;update(dt);render();requestAnimationFrame(loop)}
 function startJoy(x,y,id){if(state.input.active)return;state.input.active=true;state.input.id=id;state.input.sx=x;state.input.sy=y;state.input.x=0;state.input.y=0;state.input.lastMove=performance.now();ui.joy.style.left=`${clamp(x-59,4,innerWidth-122)}px`;ui.joy.style.top=`${clamp(y-59,120,innerHeight-122)}px`;ui.joy.classList.add("show")}
 function moveJoy(x,y,id){if(!state.input.active||id!==state.input.id)return;let dx=x-state.input.sx,dy=y-state.input.sy,l=Math.hypot(dx,dy),r=42;if(l>r){dx=dx/l*r;dy=dy/l*r}state.input.x=dx/r;state.input.y=dy/r;state.input.lastMove=performance.now();ui.knob.style.transform=`translate(${dx}px,${dy}px)`}
@@ -364,7 +383,7 @@ window.addEventListener("touchmove",e=>{for(const t of e.changedTouches)if(t.ide
 window.addEventListener("touchend",e=>{for(const t of e.changedTouches)if(t.identifier===state.input.id)endJoy(t.identifier)},{passive:false,capture:true});
 window.addEventListener("touchcancel",e=>{for(const t of e.changedTouches)if(t.identifier===state.input.id)endJoy(t.identifier)},{passive:false,capture:true});
 app.addEventListener("pointerdown",e=>{if(e.pointerType==="touch"||e.target.closest("button"))return;startJoy(e.clientX,e.clientY,e.pointerId)},{capture:true});window.addEventListener("pointermove",e=>{if(e.pointerType!=="touch")moveJoy(e.clientX,e.clientY,e.pointerId)});window.addEventListener("pointerup",e=>{if(e.pointerType!=="touch")endJoy(e.pointerId)});window.addEventListener("pointercancel",e=>{if(e.pointerType!=="touch")endJoy(e.pointerId)});
-ui.menu.onclick=()=>ui.panel.classList.toggle("open");ui.prompt.onclick=()=>state.context&&toast(`${state.context.interactionLabel} · ${t("status.coming_soon","Coming Soon")}`);ui.panel.onclick=e=>{const a=e.target.dataset.a;if(!a)return;if(a==="save"){save();toast(t("status.saved","Game saved")) }else toast(`${a} · ${t("status.coming_soon","Coming Soon")}`)};document.addEventListener("visibilitychange",()=>document.hidden&&save());window.addEventListener("resize",resize);
+ui.menu.onclick=()=>ui.panel.classList.toggle("open");ui.prompt.onclick=()=>state.context&&toast(`${state.context.interactionLabel} · ${t("status.coming_soon","Coming Soon")}`);ui.panel.onclick=e=>{const button=e.target.closest("[data-a]");const a=button?.dataset.a;if(!a)return;if(a==="save"){save();toast(t("status.saved","Game saved"))}else if(a==="debug"){debugState.visible=!debugState.visible;ui.debug.classList.toggle("hidden",!debugState.visible);button.textContent=debugState.visible?"Hide debug":"Show debug";toast(debugState.visible?"Debug visible":"Debug hidden")}else toast(`${a} · ${t("status.coming_soon","Coming Soon")}`)};document.addEventListener("visibilitychange",()=>document.hidden&&save());window.addEventListener("resize",resize);
 async function boot(){
   loadSave();
   await loadRuntimeContracts(PATHS);
@@ -390,8 +409,7 @@ async function boot(){
   if(missingVisual.length)console.warn("Optional visual atlases missing:",missingVisual);
   const manifestOnly=Object.keys(state.manifest.modules).filter(id=>!state.registry.atlases[id]);
   if(manifestOnly.length)console.warn("Manifest modules missing from registry:",manifestOnly);
-  console.info(`Asset report: ${report.loaded}/${report.total} loaded, ${report.required} required, missing required: ${report.missingRequired.length}`);
-  if(runtimeSummary.assetReport?.fallbacks?.length)console.info("Fallback policies:",runtimeSummary.assetReport.fallbacks);
+  logAssetReport(report,runtimeSummary);
   requestAnimationFrame(loop);
 }
 boot().catch(e=>{console.error(e);ui.loading.textContent=`${t("status.load_failed","Game load failed")}: ${e.message}`});
