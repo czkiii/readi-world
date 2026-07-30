@@ -19,11 +19,14 @@ or art asset is copied into this baseline automatically.
 - staged save activation with one verified active save and one automatic backup;
 - platform-independent storage boundary and an IndexedDB/Web Locks adapter;
 - corruption recovery, quota retry, and idempotent unchanged-state saves;
+- versioned asset manifest, validated registry, and controlled role/tag vocabulary;
+- deterministic semantic asset resolution with aliases, variants, fallbacks,
+  and structured diagnostics;
 - no gameplay system, content definition, or production asset yet.
 
 Run `npm test` to verify the World State contract and `npm run check` for
 JavaScript syntax validation.
 
 The next work package must follow the approved dependency order. It must not
-mix asset resolution, vertical-slice gameplay, final art, export/import, or
-cloud sync into this Save Manager package.
+mix the first minimal gameplay loop, final art, export/import, or cloud sync
+into this asset contract package.
