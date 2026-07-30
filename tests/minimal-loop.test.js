@@ -9,8 +9,13 @@ import {
   createInitialMinimalLoopState,
   createMinimalLoopCommand,
   getMinimalLoopView,
-  MINIMAL_LOOP_COMMAND_HANDLERS
+  MINIMAL_LOOP_COMMAND_HANDLERS,
+  requiresMinimalCraftingMigration
 } from "../src/gameplay/minimal-loop/minimal-loop-state.js";
+import {
+  REPAIR_TIMBER_RECIPE,
+  validateMinimalCraftingRecipe
+} from "../src/gameplay/minimal-loop/minimal-crafting-contract.js";
 
 function createStore() {
   return createWorldStateStore({
@@ -28,10 +33,26 @@ function dispatch(store, type, payload) {
 test("creates a sparse minimal loop with stable persistent ids", () => {
   const view = getMinimalLoopView(createInitialMinimalLoopState());
   assert.equal(view.inventory.wood, 0);
+  assert.equal(view.inventory.repairTimber, 0);
   assert.equal(view.woodRequired, 3);
   assert.equal(view.completed, false);
   assert.equal(view.hut.id, "building.forester-hut");
+  assert.equal(view.workbench.id, "workstation.field-bench");
   assert.equal(view.woodNodes.length, 4);
+});
+
+test("declares one stable and versioned minimal crafting recipe", () => {
+  const recipe = validateMinimalCraftingRecipe(REPAIR_TIMBER_RECIPE);
+  assert.equal(recipe.id, "recipe.forester-repair-timber");
+  assert.equal(recipe.contentVersion, 1);
+  assert.deepEqual(recipe.inputs, [{ itemId: "item.wood", quantity: 3 }]);
+  assert.deepEqual(recipe.outputs, [
+    { itemId: "item.repair-timber", quantity: 1 }
+  ]);
+  assert.equal(
+    recipe.requirements.workstationCapability,
+    "crafting.basic-woodworking"
+  );
 });
 
 test("commits a validated player position checkpoint", () => {
@@ -81,17 +102,42 @@ test("rejects gathering outside the proximity radius", () => {
   );
 });
 
-test("restores the Forester Hut after three valid collections", () => {
+test("crafts one repair timber atomically after three valid collections", () => {
   const store = createStore();
+  collectThreeWood(store);
+  dispatch(store, "movement.commit-position", { x: 500, y: 700 });
+  dispatch(store, "crafting.craft-repair-timber", {
+    targetId: "workstation.field-bench",
+    recipeId: REPAIR_TIMBER_RECIPE.id,
+    recipeVersion: REPAIR_TIMBER_RECIPE.contentVersion
+  });
+  const view = getMinimalLoopView(store.getState());
+  assert.equal(view.inventory.wood, 0);
+  assert.equal(view.inventory.repairTimber, 1);
+});
 
-  for (const [targetId, position] of [
-    ["resource.wood-01", { x: 270, y: 1120 }],
-    ["resource.wood-02", { x: 740, y: 1080 }],
-    ["resource.wood-03", { x: 300, y: 820 }]
-  ]) {
-    dispatch(store, "movement.commit-position", position);
-    dispatch(store, "gather.collect-wood", { targetId });
-  }
+test("cannot craft before all recipe inputs are available", () => {
+  const store = createStore();
+  dispatch(store, "movement.commit-position", { x: 500, y: 700 });
+  assert.throws(() =>
+    dispatch(store, "crafting.craft-repair-timber", {
+      targetId: "workstation.field-bench",
+      recipeId: REPAIR_TIMBER_RECIPE.id,
+      recipeVersion: REPAIR_TIMBER_RECIPE.contentVersion
+    })
+  );
+  assert.equal(getMinimalLoopView(store.getState()).inventory.repairTimber, 0);
+});
+
+test("restores the Forester Hut only after crafting repair timber", () => {
+  const store = createStore();
+  collectThreeWood(store);
+  dispatch(store, "movement.commit-position", { x: 500, y: 700 });
+  dispatch(store, "crafting.craft-repair-timber", {
+    targetId: "workstation.field-bench",
+    recipeId: REPAIR_TIMBER_RECIPE.id,
+    recipeVersion: REPAIR_TIMBER_RECIPE.contentVersion
+  });
 
   dispatch(store, "movement.commit-position", { x: 500, y: 430 });
   dispatch(store, "restoration.restore-forester-hut", {
@@ -100,11 +146,13 @@ test("restores the Forester Hut after three valid collections", () => {
   const view = getMinimalLoopView(store.getState());
   assert.equal(view.completed, true);
   assert.equal(view.inventory.wood, 0);
+  assert.equal(view.inventory.repairTimber, 0);
   assert.equal(view.hut.components.restorationPhase, "restored");
 });
 
-test("cannot restore before the material requirement is met", () => {
+test("raw wood cannot bypass the crafting requirement", () => {
   const store = createStore();
+  collectThreeWood(store);
   dispatch(store, "movement.commit-position", { x: 500, y: 430 });
   assert.throws(() =>
     dispatch(store, "restoration.restore-forester-hut", {
@@ -113,3 +161,36 @@ test("cannot restore before the material requirement is met", () => {
   );
   assert.equal(getMinimalLoopView(store.getState()).completed, false);
 });
+
+test("migrates a P0-04 save without resetting its progress", () => {
+  const legacyState = structuredClone(createInitialMinimalLoopState());
+  delete legacyState.entities["workstation.field-bench"];
+  delete legacyState.systems.minimalLoop.inventory.repairTimber;
+  delete legacyState.systems.minimalLoop.unlockedRecipeIds;
+  legacyState.systems.minimalLoop.inventory.wood = 2;
+  const store = createWorldStateStore({
+    initialState: legacyState,
+    commandHandlers: MINIMAL_LOOP_COMMAND_HANDLERS
+  });
+
+  assert.equal(requiresMinimalCraftingMigration(store.getState()), true);
+  dispatch(store, "migration.add-minimal-crafting", {
+    migrationId: "migration.p0-05-minimal-crafting.v1"
+  });
+  const view = getMinimalLoopView(store.getState());
+  assert.equal(requiresMinimalCraftingMigration(store.getState()), false);
+  assert.equal(view.inventory.wood, 2);
+  assert.equal(view.inventory.repairTimber, 0);
+  assert.equal(view.workbench.id, "workstation.field-bench");
+});
+
+function collectThreeWood(store) {
+  for (const [targetId, position] of [
+    ["resource.wood-01", { x: 270, y: 1120 }],
+    ["resource.wood-02", { x: 740, y: 1080 }],
+    ["resource.wood-03", { x: 300, y: 820 }]
+  ]) {
+    dispatch(store, "movement.commit-position", position);
+    dispatch(store, "gather.collect-wood", { targetId });
+  }
+}

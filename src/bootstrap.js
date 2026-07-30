@@ -5,6 +5,7 @@ const app = document.querySelector("#app");
 const canvas = document.querySelector("#world-canvas");
 const status = document.querySelector("#runtime-status");
 const woodCount = document.querySelector("#wood-count");
+const repairTimberCount = document.querySelector("#repair-timber-count");
 const objective = document.querySelector("#objective-text");
 const prompt = document.querySelector("#context-prompt");
 const toast = document.querySelector("#toast");
@@ -25,6 +26,7 @@ if (!(status instanceof HTMLElement)) {
 
 for (const [name, element] of [
   ["wood-count", woodCount],
+  ["repair-timber-count", repairTimberCount],
   ["objective-text", objective],
   ["context-prompt", prompt],
   ["toast", toast],
@@ -42,6 +44,7 @@ startMinimalLoopRuntime({
   canvas,
   status,
   woodCount,
+  repairTimberCount,
   objective,
   prompt,
   toast,

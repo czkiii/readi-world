@@ -8,11 +8,12 @@ import {
   createMinimalLoopCommand,
   getMinimalLoopView,
   MINIMAL_LOOP_COMMAND_HANDLERS,
-  MINIMAL_LOOP_WORLD
+  MINIMAL_LOOP_WORLD,
+  requiresMinimalCraftingMigration
 } from "./minimal-loop-state.js";
 
 const SAVE_SLOT_ID = "local-world";
-const MOVE_SPEED = 215;
+const MOVE_SPEED = 172;
 const GATHER_DURATION = 0.85;
 const RESTORE_DURATION = 1.6;
 
@@ -21,6 +22,7 @@ export async function startMinimalLoopRuntime(elements) {
     canvas,
     status,
     woodCount,
+    repairTimberCount,
     objective,
     prompt,
     toast,
@@ -48,6 +50,16 @@ export async function startMinimalLoopRuntime(elements) {
     initialState: loaded.worldState ?? createInitialMinimalLoopState(),
     commandHandlers: MINIMAL_LOOP_COMMAND_HANDLERS
   });
+  const craftingMigrated = requiresMinimalCraftingMigration(store.getState());
+  if (craftingMigrated) {
+    store.dispatch(
+      createMinimalLoopCommand(
+        store.getState(),
+        "migration.add-minimal-crafting",
+        { migrationId: "migration.p0-05-minimal-crafting.v1" }
+      )
+    );
+  }
   let view = getMinimalLoopView(store.getState());
   let playerPosition = { ...view.player.components.position };
   let committedPosition = { ...playerPosition };
@@ -60,9 +72,8 @@ export async function startMinimalLoopRuntime(elements) {
 
   const updateHud = () => {
     woodCount.textContent = `${view.inventory.wood}/${view.woodRequired}`;
-    objective.textContent = view.completed
-      ? "A Forester’s Hut újra áll"
-      : "Gyűjts fát, majd térj vissza a kunyhóhoz";
+    repairTimberCount.textContent = `${view.inventory.repairTimber}/1`;
+    objective.textContent = getObjectiveText(view);
   };
 
   const showToast = (message) => {
@@ -129,6 +140,13 @@ export async function startMinimalLoopRuntime(elements) {
     if (target.type === "wood") {
       dispatch("gather.collect-wood", { targetId: target.id });
       showToast("+1 fa összegyűjtve");
+    } else if (target.type === "workbench") {
+      dispatch("crafting.craft-repair-timber", {
+        targetId: target.id,
+        recipeId: view.recipe.id,
+        recipeVersion: view.recipe.contentVersion
+      });
+      showToast("Javítógerenda elkészült!");
     } else {
       dispatch("restoration.restore-forester-hut", { targetId: target.id });
       showToast("A Forester’s Hut helyreállt!");
@@ -161,17 +179,28 @@ export async function startMinimalLoopRuntime(elements) {
       interactionProgress = 0;
       prompt.textContent = target.type === "wood"
         ? "Lépj közelebb az ágakhoz"
-        : "Lépj közelebb a Forester’s Huthoz";
+        : target.type === "workbench"
+          ? "Lépj közelebb az erdei munkapadhoz"
+          : "Lépj közelebb a Forester’s Huthoz";
       prompt.dataset.state = "locked";
       return;
     }
 
-    if (target.type === "hut") {
+    if (target.type === "workbench") {
       const missing = Math.max(0, view.woodRequired - view.inventory.wood);
 
       if (missing > 0) {
         interactionProgress = 0;
-        prompt.textContent = `Forester’s Hut – még ${missing} fa szükséges`;
+        prompt.textContent = `Munkapad – még ${missing} fa szükséges`;
+        prompt.dataset.state = "locked";
+        return;
+      }
+    }
+
+    if (target.type === "hut") {
+      if (view.inventory.repairTimber < 1) {
+        interactionProgress = 0;
+        prompt.textContent = "Forester’s Hut – előbb készíts javítógerendát";
         prompt.dataset.state = "locked";
         return;
       }
@@ -179,7 +208,9 @@ export async function startMinimalLoopRuntime(elements) {
 
     const duration = target.type === "wood"
       ? GATHER_DURATION
-      : RESTORE_DURATION;
+      : target.type === "workbench"
+        ? view.recipe.durationSeconds
+        : RESTORE_DURATION;
     interactionProgress += deltaTime;
     const percent = Math.min(
       100,
@@ -187,7 +218,9 @@ export async function startMinimalLoopRuntime(elements) {
     );
     prompt.textContent = target.type === "wood"
       ? `Ágak összegyűjtése… ${percent}%`
-      : `A kunyhó helyreállítása… ${percent}%`;
+      : target.type === "workbench"
+        ? `Javítógerenda készítése… ${percent}%`
+        : `A kunyhó helyreállítása… ${percent}%`;
     prompt.dataset.state = "active";
 
     if (interactionProgress >= duration) finishInteraction(target);
@@ -250,6 +283,7 @@ export async function startMinimalLoopRuntime(elements) {
       : "Helyi mentés aktív"
     : "Session mód – tartós mentés nem érhető el";
   updateHud();
+  if (craftingMigrated) queueSave("migration.p0-05-minimal-crafting");
   requestAnimationFrame(frame);
 }
 
@@ -298,6 +332,18 @@ function selectTarget(view, playerPosition, lockedTargetId) {
     }));
 
   if (!view.completed) {
+    if (view.inventory.repairTimber < 1) {
+      candidates.push({
+        id: view.workbench.id,
+        type: "workbench",
+        distance: distance(
+          playerPosition,
+          view.workbench.components.position
+        ),
+        radius: MINIMAL_LOOP_WORLD.craftingRadius
+      });
+    }
+
     candidates.push({
       id: view.hut.id,
       type: "hut",
@@ -351,6 +397,7 @@ function renderWorld(context, canvas, view) {
   drawPath(context);
   drawForest(context);
   drawHut(context, view.hut);
+  drawWorkbench(context, view.workbench);
   view.woodNodes
     .filter((node) => node.components.available)
     .forEach((node) => drawWoodNode(context, node.components.position));
@@ -433,6 +480,21 @@ function drawHut(context, hut) {
   context.fillText(restored ? "Forester’s Hut" : "Romos kunyhó", x, y - 150);
 }
 
+function drawWorkbench(context, workbench) {
+  const { x, y } = workbench.components.position;
+  context.fillStyle = "rgb(20 29 24 / 78%)";
+  context.font = "700 18px system-ui";
+  context.textAlign = "center";
+  context.fillText("Erdei munkapad", x, y - 62);
+  context.fillStyle = "#765033";
+  context.fillRect(x - 55, y - 32, 110, 25);
+  context.fillStyle = "#4d3526";
+  context.fillRect(x - 45, y - 7, 12, 48);
+  context.fillRect(x + 33, y - 7, 12, 48);
+  context.fillStyle = "#d29a4c";
+  context.fillRect(x - 20, y - 47, 42, 11);
+}
+
 function drawPlayer(context, { x, y }) {
   context.fillStyle = "rgb(0 0 0 / 18%)";
   context.beginPath();
@@ -461,6 +523,17 @@ function combinedMovement(joystick, keys) {
   if (keys.has("ArrowDown") || keys.has("KeyS")) y += 1;
   const length = Math.hypot(x, y);
   return length > 1 ? { x: x / length, y: y / length } : { x, y };
+}
+
+function getObjectiveText(view) {
+  if (view.completed) return "A Forester’s Hut újra áll";
+  if (view.inventory.repairTimber > 0) {
+    return "Vidd a javítógerendát a kunyhóhoz";
+  }
+  if (view.inventory.wood >= view.woodRequired) {
+    return "Készíts javítógerendát az erdei munkapadnál";
+  }
+  return "Gyűjts 3 fát az erdőben";
 }
 
 function movementKey(code) {
