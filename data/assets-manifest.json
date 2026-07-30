@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "registryVersion": 1,
+  "id": "readi-world.assets",
+  "packages": [],
+  "vocabulary": {
+    "roles": [],
+    "tags": []
+  },
+  "assets": [],
+  "fallbackChains": {},
+  "aliases": {}
+}

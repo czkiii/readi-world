@@ -5,6 +5,6 @@
   "type": "module",
   "scripts": {
     "test": "node --test --test-isolation=none",
-    "check": "node --check src/bootstrap.js && node --check src/core/world-state/world-state-contract.js && node --check src/core/world-state/world-state-store.js && node --check src/core/save/save-envelope.js && node --check src/core/save/save-manager.js && node --check src/platform/web/indexeddb-save-storage-adapter.js"
+    "check": "node --check src/bootstrap.js && node --check src/core/world-state/world-state-contract.js && node --check src/core/world-state/world-state-store.js && node --check src/core/save/save-envelope.js && node --check src/core/save/save-manager.js && node --check src/platform/web/indexeddb-save-storage-adapter.js && node --check src/core/assets/asset-manifest.js && node --check src/core/assets/asset-registry.js"
   }
 }
