@@ -1,0 +1,88 @@
+:root {
+  color: #f5efe1;
+  background: #17231d;
+  font-family:
+    Inter, ui-rounded, "SF Pro Rounded", system-ui, -apple-system, BlinkMacSystemFont,
+    "Segoe UI", sans-serif;
+  font-synthesis: none;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  width: 100%;
+  min-height: 100%;
+  margin: 0;
+  overflow: hidden;
+}
+
+body {
+  min-height: 100dvh;
+  background:
+    radial-gradient(circle at 50% 18%, rgb(109 139 103 / 28%), transparent 36%),
+    linear-gradient(180deg, #28382f, #17231d);
+}
+
+button,
+input,
+textarea,
+select {
+  font: inherit;
+}
+
+.app-shell {
+  position: relative;
+  width: 100%;
+  min-height: 100dvh;
+  padding:
+    max(24px, env(safe-area-inset-top))
+    max(20px, env(safe-area-inset-right))
+    max(24px, env(safe-area-inset-bottom))
+    max(20px, env(safe-area-inset-left));
+  display: grid;
+  place-items: center;
+  isolation: isolate;
+}
+
+#world-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+}
+
+.baseline-card {
+  width: min(100%, 360px);
+  padding: 28px;
+  border: 1px solid rgb(255 255 255 / 14%);
+  border-radius: 24px;
+  background: rgb(23 35 29 / 78%);
+  box-shadow: 0 24px 70px rgb(0 0 0 / 28%);
+  text-align: center;
+  backdrop-filter: blur(14px);
+}
+
+.baseline-card h1 {
+  margin: 6px 0 12px;
+  font-size: clamp(2rem, 9vw, 3.4rem);
+  line-height: 0.95;
+  letter-spacing: -0.045em;
+}
+
+.baseline-card p {
+  margin: 0;
+  color: #d9dfcf;
+  line-height: 1.55;
+}
+
+.baseline-card .eyebrow {
+  color: #f2c77f;
+  font-size: 0.75rem;
+  font-weight: 750;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
