@@ -1,0 +1,10 @@
+{
+  "name": "readi-world-runtime",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "test": "node --test --test-isolation=none",
+    "check": "node --check src/bootstrap.js && node --check src/core/world-state/world-state-contract.js && node --check src/core/world-state/world-state-store.js"
+  }
+}

@@ -12,7 +12,14 @@ or art asset is copied into this baseline automatically.
 - mobile-first portrait presentation;
 - installable-web-app manifest;
 - versioned runtime configuration;
+- versioned World State v1 contract and immutable state snapshots;
+- validated, deterministic commands, transactions, and events;
+- atomic rollback and duplicate-command protection;
 - no gameplay system, save schema, content definition, or production asset yet.
 
-The next work package must introduce only the approved P0 contract layer. It
-must not add vertical-slice gameplay, final art, or deferred systems.
+Run `npm test` to verify the World State contract and `npm run check` for
+JavaScript syntax validation.
+
+The next work package must follow the approved dependency order. It must not
+mix save implementation, vertical-slice gameplay, final art, or deferred
+systems into this World State package.
