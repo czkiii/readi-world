@@ -15,11 +15,15 @@ or art asset is copied into this baseline automatically.
 - versioned World State v1 contract and immutable state snapshots;
 - validated, deterministic commands, transactions, and events;
 - atomic rollback and duplicate-command protection;
-- no gameplay system, save schema, content definition, or production asset yet.
+- versioned Save Manager v1 envelope with SHA-256 integrity validation;
+- staged save activation with one verified active save and one automatic backup;
+- platform-independent storage boundary and an IndexedDB/Web Locks adapter;
+- corruption recovery, quota retry, and idempotent unchanged-state saves;
+- no gameplay system, content definition, or production asset yet.
 
 Run `npm test` to verify the World State contract and `npm run check` for
 JavaScript syntax validation.
 
 The next work package must follow the approved dependency order. It must not
-mix save implementation, vertical-slice gameplay, final art, or deferred
-systems into this World State package.
+mix asset resolution, vertical-slice gameplay, final art, export/import, or
+cloud sync into this Save Manager package.
