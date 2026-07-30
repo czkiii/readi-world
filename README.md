@@ -23,9 +23,13 @@ or art asset is copied into this baseline automatically.
 - deterministic semantic asset resolution with aliases, variants, fallbacks,
   and structured diagnostics;
 - first playable portrait loop with right-side joystick and keyboard movement;
-- proximity gathering, Forester Hut restoration, and persistent resume;
+- proximity gathering, one stable/versioned repair-timber recipe at the field
+  workbench, Forester Hut restoration, and persistent resume;
+- P0-04 save compatibility through an idempotent P0-05 state migration;
+- player maximum movement speed reduced by 20% after mobile play feedback;
 - temporary code-drawn proof visuals with no production asset dependency;
-- no full crafting, inventory, economy, content pack, or production asset yet.
+- no crafting queue, full inventory, economy, content pack, or production
+  asset yet.
 
 Run `npm test` to verify the World State contract and `npm run check` for
 JavaScript syntax validation.
