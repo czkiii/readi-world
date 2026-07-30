@@ -9,7 +9,8 @@ import {
   getMinimalLoopView,
   MINIMAL_LOOP_COMMAND_HANDLERS,
   MINIMAL_LOOP_WORLD,
-  requiresMinimalCraftingMigration
+  requiresMinimalCraftingMigration,
+  requiresResourceLayoutMigration
 } from "./minimal-loop-state.js";
 
 const SAVE_SLOT_ID = "local-world";
@@ -57,6 +58,18 @@ export async function startMinimalLoopRuntime(elements) {
         store.getState(),
         "migration.add-minimal-crafting",
         { migrationId: "migration.p0-05-minimal-crafting.v1" }
+      )
+    );
+  }
+  const resourceLayoutMigrated = requiresResourceLayoutMigration(
+    store.getState()
+  );
+  if (resourceLayoutMigrated) {
+    store.dispatch(
+      createMinimalLoopCommand(
+        store.getState(),
+        "migration.resource-discoverability-v2",
+        { migrationId: "migration.resource-discoverability.v2" }
       )
     );
   }
@@ -283,7 +296,9 @@ export async function startMinimalLoopRuntime(elements) {
       : "Helyi mentés aktív"
     : "Session mód – tartós mentés nem érhető el";
   updateHud();
-  if (craftingMigrated) queueSave("migration.p0-05-minimal-crafting");
+  if (craftingMigrated || resourceLayoutMigrated) {
+    queueSave("migration.p0-05-1-resource-discoverability");
+  }
   requestAnimationFrame(frame);
 }
 
@@ -447,6 +462,11 @@ function drawForest(context) {
 }
 
 function drawWoodNode(context, { x, y }) {
+  context.strokeStyle = "rgb(248 216 128 / 72%)";
+  context.lineWidth = 4;
+  context.beginPath();
+  context.arc(x, y, 52, 0, Math.PI * 2);
+  context.stroke();
   context.fillStyle = "#825634";
   context.strokeStyle = "#4d3526";
   context.lineWidth = 6;
@@ -458,6 +478,10 @@ function drawWoodNode(context, { x, y }) {
   context.beginPath();
   context.arc(x + 33, y, 9, 0, Math.PI * 2);
   context.fill();
+  context.fillStyle = "rgb(20 29 24 / 82%)";
+  context.font = "700 16px system-ui";
+  context.textAlign = "center";
+  context.fillText("Lehullott ágak", x, y - 36);
 }
 
 function drawHut(context, hut) {
@@ -533,7 +557,7 @@ function getObjectiveText(view) {
   if (view.inventory.wood >= view.woodRequired) {
     return "Készíts javítógerendát az erdei munkapadnál";
   }
-  return "Gyűjts 3 fát az erdőben";
+  return "Gyűjts össze 3 világító, lehullott ágat";
 }
 
 function movementKey(code) {
