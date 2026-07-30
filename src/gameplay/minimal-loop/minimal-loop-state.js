@@ -26,6 +26,13 @@ const WOOD_NODE_IDS = Object.freeze([
   "resource.wood-03",
   "resource.wood-04"
 ]);
+const RESOURCE_LAYOUT_VERSION = 2;
+const WOOD_NODE_POSITIONS = Object.freeze([
+  Object.freeze([390, 1120]),
+  Object.freeze([610, 1080]),
+  Object.freeze([380, 850]),
+  Object.freeze([620, 800])
+]);
 
 export function createInitialMinimalLoopState() {
   const state = structuredClone(
@@ -58,15 +65,8 @@ export function createInitialMinimalLoopState() {
     }
   );
 
-  const nodePositions = [
-    [270, 1120],
-    [740, 1080],
-    [300, 820],
-    [720, 780]
-  ];
-
   WOOD_NODE_IDS.forEach((id, index) => {
-    const [x, y] = nodePositions[index];
+    const [x, y] = WOOD_NODE_POSITIONS[index];
     state.entities[id] = createEntity(id, "resource.fallen-branch", x, y, {
       available: true
     });
@@ -75,6 +75,7 @@ export function createInitialMinimalLoopState() {
   state.systems.minimalLoop = {
     inventory: { wood: 0, repairTimber: 0 },
     woodRequired: MINIMAL_LOOP_WORLD.woodRequired,
+    resourceLayoutVersion: RESOURCE_LAYOUT_VERSION,
     unlockedRecipeIds: [REPAIR_TIMBER_RECIPE.id],
     completed: false
   };
@@ -84,6 +85,26 @@ export function createInitialMinimalLoopState() {
 }
 
 export const MINIMAL_LOOP_COMMAND_HANDLERS = Object.freeze({
+  "migration.resource-discoverability-v2"(draft, payload, { emit }) {
+    const loop = requireLoopState(draft);
+
+    if (loop.resourceLayoutVersion >= RESOURCE_LAYOUT_VERSION) {
+      throw loopError("RESOURCE_LAYOUT_ALREADY_CURRENT");
+    }
+
+    WOOD_NODE_IDS.forEach((id, index) => {
+      const node = requireEntity(draft, id, "resource.fallen-branch");
+      if (!node.components.available) return;
+      const [x, y] = WOOD_NODE_POSITIONS[index];
+      node.components.position = { x, y };
+    });
+    loop.resourceLayoutVersion = RESOURCE_LAYOUT_VERSION;
+    emit("migration.resource-layout-updated", {
+      migrationId: payload.migrationId,
+      resourceLayoutVersion: RESOURCE_LAYOUT_VERSION
+    });
+  },
+
   "migration.add-minimal-crafting"(draft, payload, { emit }) {
     const loop = requireLoopState(draft);
 
@@ -261,6 +282,14 @@ export function getMinimalLoopView(state) {
 export function requiresMinimalCraftingMigration(state) {
   validateWorldState(state);
   return !hasMinimalCraftingState(state);
+}
+
+export function requiresResourceLayoutMigration(state) {
+  validateWorldState(state);
+  return (
+    state.systems.minimalLoop?.resourceLayoutVersion !==
+    RESOURCE_LAYOUT_VERSION
+  );
 }
 
 export function createMinimalLoopCommand(state, type, payload = {}) {

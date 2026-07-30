@@ -10,7 +10,8 @@ import {
   createMinimalLoopCommand,
   getMinimalLoopView,
   MINIMAL_LOOP_COMMAND_HANDLERS,
-  requiresMinimalCraftingMigration
+  requiresMinimalCraftingMigration,
+  requiresResourceLayoutMigration
 } from "../src/gameplay/minimal-loop/minimal-loop-state.js";
 import {
   REPAIR_TIMBER_RECIPE,
@@ -39,6 +40,10 @@ test("creates a sparse minimal loop with stable persistent ids", () => {
   assert.equal(view.hut.id, "building.forester-hut");
   assert.equal(view.workbench.id, "workstation.field-bench");
   assert.equal(view.woodNodes.length, 4);
+  assert.deepEqual(
+    view.woodNodes.slice(0, 2).map((node) => node.components.position),
+    [{ x: 390, y: 1120 }, { x: 610, y: 1080 }]
+  );
 });
 
 test("declares one stable and versioned minimal crafting recipe", () => {
@@ -78,7 +83,7 @@ test("rejects an out-of-bounds checkpoint atomically", () => {
 
 test("collects a nearby resource exactly once", () => {
   const store = createStore();
-  dispatch(store, "movement.commit-position", { x: 270, y: 1120 });
+  dispatch(store, "movement.commit-position", { x: 390, y: 1120 });
   dispatch(store, "gather.collect-wood", { targetId: "resource.wood-01" });
   assert.equal(getMinimalLoopView(store.getState()).inventory.wood, 1);
   assert.throws(() =>
@@ -184,11 +189,46 @@ test("migrates a P0-04 save without resetting its progress", () => {
   assert.equal(view.workbench.id, "workstation.field-bench");
 });
 
+test("moves only available resources into the discoverable layout", () => {
+  const legacyState = structuredClone(createInitialMinimalLoopState());
+  delete legacyState.systems.minimalLoop.resourceLayoutVersion;
+  legacyState.entities["resource.wood-01"].components.available = false;
+  legacyState.entities["resource.wood-01"].components.position = {
+    x: 270,
+    y: 1120
+  };
+  legacyState.entities["resource.wood-02"].components.position = {
+    x: 740,
+    y: 1080
+  };
+  legacyState.systems.minimalLoop.inventory.wood = 1;
+  const store = createWorldStateStore({
+    initialState: legacyState,
+    commandHandlers: MINIMAL_LOOP_COMMAND_HANDLERS
+  });
+
+  assert.equal(requiresResourceLayoutMigration(store.getState()), true);
+  dispatch(store, "migration.resource-discoverability-v2", {
+    migrationId: "migration.resource-discoverability.v2"
+  });
+  const view = getMinimalLoopView(store.getState());
+  assert.equal(requiresResourceLayoutMigration(store.getState()), false);
+  assert.equal(view.inventory.wood, 1);
+  assert.deepEqual(view.woodNodes[0].components.position, {
+    x: 270,
+    y: 1120
+  });
+  assert.deepEqual(view.woodNodes[1].components.position, {
+    x: 610,
+    y: 1080
+  });
+});
+
 function collectThreeWood(store) {
   for (const [targetId, position] of [
-    ["resource.wood-01", { x: 270, y: 1120 }],
-    ["resource.wood-02", { x: 740, y: 1080 }],
-    ["resource.wood-03", { x: 300, y: 820 }]
+    ["resource.wood-01", { x: 390, y: 1120 }],
+    ["resource.wood-02", { x: 610, y: 1080 }],
+    ["resource.wood-03", { x: 380, y: 850 }]
   ]) {
     dispatch(store, "movement.commit-position", position);
     dispatch(store, "gather.collect-wood", { targetId });

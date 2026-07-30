@@ -27,6 +27,9 @@ or art asset is copied into this baseline automatically.
   workbench, Forester Hut restoration, and persistent resume;
 - P0-04 save compatibility through an idempotent P0-05 state migration;
 - player maximum movement speed reduced by 20% after mobile play feedback;
+- gatherable fallen branches start inside the first camera view and use a
+  visible semantic highlight; existing saves migrate only still-available
+  resource positions;
 - temporary code-drawn proof visuals with no production asset dependency;
 - no crafting queue, full inventory, economy, content pack, or production
   asset yet.
