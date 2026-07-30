@@ -22,11 +22,14 @@ or art asset is copied into this baseline automatically.
 - versioned asset manifest, validated registry, and controlled role/tag vocabulary;
 - deterministic semantic asset resolution with aliases, variants, fallbacks,
   and structured diagnostics;
-- no gameplay system, content definition, or production asset yet.
+- first playable portrait loop with right-side joystick and keyboard movement;
+- proximity gathering, Forester Hut restoration, and persistent resume;
+- temporary code-drawn proof visuals with no production asset dependency;
+- no full crafting, inventory, economy, content pack, or production asset yet.
 
 Run `npm test` to verify the World State contract and `npm run check` for
 JavaScript syntax validation.
 
-The next work package must follow the approved dependency order. It must not
-mix the first minimal gameplay loop, final art, export/import, or cloud sync
-into this asset contract package.
+The next work package must deepen only one vertical-slice system or introduce
+one approved asset family. It must not combine final art, export/import,
+cloud sync, or unrelated world expansion.

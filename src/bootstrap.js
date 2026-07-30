@@ -1,8 +1,15 @@
 import { RUNTIME_CONFIG } from "./config/runtime-config.js";
+import { startMinimalLoopRuntime } from "./gameplay/minimal-loop/minimal-loop-runtime.js";
 
 const app = document.querySelector("#app");
 const canvas = document.querySelector("#world-canvas");
 const status = document.querySelector("#runtime-status");
+const woodCount = document.querySelector("#wood-count");
+const objective = document.querySelector("#objective-text");
+const prompt = document.querySelector("#context-prompt");
+const toast = document.querySelector("#toast");
+const joystickRoot = document.querySelector("#joystick");
+const joystickKnob = document.querySelector("#joystick-knob");
 
 if (!(app instanceof HTMLElement)) {
   throw new Error("Missing required #app bootstrap root.");
@@ -16,5 +23,31 @@ if (!(status instanceof HTMLElement)) {
   throw new Error("Missing required #runtime-status element.");
 }
 
+for (const [name, element] of [
+  ["wood-count", woodCount],
+  ["objective-text", objective],
+  ["context-prompt", prompt],
+  ["toast", toast],
+  ["joystick", joystickRoot],
+  ["joystick-knob", joystickKnob]
+]) {
+  if (!(element instanceof HTMLElement)) {
+    throw new Error(`Missing required #${name} element.`);
+  }
+}
+
 document.documentElement.dataset.runtimeVersion = RUNTIME_CONFIG.runtimeVersion;
-status.textContent = `Clean runtime ${RUNTIME_CONFIG.runtimeVersion} készen áll.`;
+
+startMinimalLoopRuntime({
+  canvas,
+  status,
+  woodCount,
+  objective,
+  prompt,
+  toast,
+  joystickRoot,
+  joystickKnob
+}).catch((error) => {
+  status.textContent = "A játék indítása sikertelen";
+  console.error("Runtime bootstrap failed", error);
+});
