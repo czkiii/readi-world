@@ -1,22 +1,12 @@
 {
-  "id": "./",
   "name": "Readi World",
   "short_name": "Readi World",
-  "description": "A cozy, portrait-first, progression-focused village world.",
-  "start_url": "./index.html",
+  "description": "A mobile-first cozy world restoration game.",
+  "lang": "hu",
+  "start_url": "./",
   "scope": "./",
   "display": "standalone",
-  "display_override": [
-    "standalone",
-    "fullscreen"
-  ],
   "orientation": "portrait",
-  "background_color": "#0f1714",
-  "theme_color": "#20382c",
-  "lang": "en",
-  "dir": "ltr",
-  "categories": [
-    "games",
-    "entertainment"
-  ]
+  "background_color": "#17231d",
+  "theme_color": "#28382f"
 }
