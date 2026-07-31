@@ -224,6 +224,53 @@ body {
   transform: translate(-50%, 0);
 }
 
+.milestone-banner {
+  position: absolute;
+  z-index: 8;
+  top: 50%;
+  left: 50%;
+  width: min(340px, calc(100% - 32px));
+  padding: 24px 20px;
+  display: grid;
+  gap: 7px;
+  border: 2px solid rgb(244 207 119 / 70%);
+  border-radius: 24px;
+  background:
+    radial-gradient(circle at 50% 0, rgb(118 151 76 / 54%), transparent 55%),
+    rgb(24 46 31 / 95%);
+  box-shadow: 0 24px 70px rgb(8 20 13 / 46%);
+  text-align: center;
+  opacity: 0;
+  pointer-events: none;
+  transform: translate(-50%, -46%) scale(0.84);
+}
+
+.milestone-banner strong {
+  color: #f5d184;
+  font-size: 1.15rem;
+}
+
+.milestone-banner span {
+  color: #e5edda;
+  font-size: 0.8rem;
+  line-height: 1.4;
+}
+
+.milestone-banner .milestone-sparkles {
+  font-size: 1.35rem;
+  letter-spacing: 0.16em;
+}
+
+.milestone-banner.is-visible {
+  animation: milestone-reveal 4.2s ease both;
+}
+
+@keyframes milestone-reveal {
+  0% { opacity: 0; transform: translate(-50%, -42%) scale(0.8); }
+  12%, 75% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+  100% { opacity: 0; transform: translate(-50%, -55%) scale(0.96); }
+}
+
 @media (min-width: 720px) {
   .app-shell {
     width: min(100%, 540px);
@@ -234,4 +281,8 @@ body {
 
 @media (prefers-reduced-motion: reduce) {
   .toast { transition: none; }
+  .milestone-banner.is-visible {
+    animation-duration: 5s;
+    animation-timing-function: linear;
+  }
 }

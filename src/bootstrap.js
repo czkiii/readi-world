@@ -9,6 +9,7 @@ const repairTimberCount = document.querySelector("#repair-timber-count");
 const objective = document.querySelector("#objective-text");
 const prompt = document.querySelector("#context-prompt");
 const toast = document.querySelector("#toast");
+const milestoneBanner = document.querySelector("#milestone-banner");
 const joystickRoot = document.querySelector("#joystick");
 const joystickKnob = document.querySelector("#joystick-knob");
 
@@ -30,6 +31,7 @@ for (const [name, element] of [
   ["objective-text", objective],
   ["context-prompt", prompt],
   ["toast", toast],
+  ["milestone-banner", milestoneBanner],
   ["joystick", joystickRoot],
   ["joystick-knob", joystickKnob]
 ]) {
@@ -48,6 +50,7 @@ startMinimalLoopRuntime({
   objective,
   prompt,
   toast,
+  milestoneBanner,
   joystickRoot,
   joystickKnob
 }).catch((error) => {

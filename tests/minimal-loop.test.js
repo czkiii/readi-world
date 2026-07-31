@@ -11,7 +11,8 @@ import {
   getMinimalLoopView,
   MINIMAL_LOOP_COMMAND_HANDLERS,
   requiresMinimalCraftingMigration,
-  requiresResourceLayoutMigration
+  requiresResourceLayoutMigration,
+  requiresRestorationMilestoneMigration
 } from "../src/gameplay/minimal-loop/minimal-loop-state.js";
 import {
   REPAIR_TIMBER_RECIPE,
@@ -40,6 +41,8 @@ test("creates a sparse minimal loop with stable persistent ids", () => {
   assert.equal(view.hut.id, "building.forester-hut");
   assert.equal(view.workbench.id, "workstation.field-bench");
   assert.equal(view.woodNodes.length, 4);
+  assert.equal(view.progression.villageLevel, 0);
+  assert.deepEqual(view.progression.unlockedAreaIds, []);
   assert.deepEqual(
     view.woodNodes.slice(0, 2).map((node) => node.components.position),
     [{ x: 390, y: 1120 }, { x: 610, y: 1080 }]
@@ -153,6 +156,10 @@ test("restores the Forester Hut only after crafting repair timber", () => {
   assert.equal(view.inventory.wood, 0);
   assert.equal(view.inventory.repairTimber, 0);
   assert.equal(view.hut.components.restorationPhase, "restored");
+  assert.equal(view.progression.villageLevel, 1);
+  assert.deepEqual(view.progression.unlockedAreaIds, [
+    "area.farm-path-preview"
+  ]);
 });
 
 test("raw wood cannot bypass the crafting requirement", () => {
@@ -222,6 +229,30 @@ test("moves only available resources into the discoverable layout", () => {
     x: 610,
     y: 1080
   });
+});
+
+test("recovers the restoration reward for an older completed save", () => {
+  const legacyState = structuredClone(createInitialMinimalLoopState());
+  delete legacyState.systems.minimalLoop.progression;
+  legacyState.systems.minimalLoop.completed = true;
+  legacyState.entities["building.forester-hut"].components.restorationPhase =
+    "restored";
+  const store = createWorldStateStore({
+    initialState: legacyState,
+    commandHandlers: MINIMAL_LOOP_COMMAND_HANDLERS
+  });
+
+  assert.equal(requiresRestorationMilestoneMigration(store.getState()), true);
+  dispatch(store, "migration.add-restoration-milestone-v1", {
+    migrationId: "migration.restoration-milestone.v1"
+  });
+  const view = getMinimalLoopView(store.getState());
+  assert.equal(requiresRestorationMilestoneMigration(store.getState()), false);
+  assert.equal(view.completed, true);
+  assert.equal(view.progression.villageLevel, 1);
+  assert.deepEqual(view.progression.unlockedAreaIds, [
+    "area.farm-path-preview"
+  ]);
 });
 
 function collectThreeWood(store) {

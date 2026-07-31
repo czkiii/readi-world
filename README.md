@@ -30,6 +30,8 @@ or art asset is copied into this baseline automatically.
 - gatherable fallen branches start inside the first camera view and use a
   visible semantic highlight; existing saves migrate only still-available
   resource positions;
+- Forester Hut completion grants Village Level 1, opens a persistent farm-path
+  preview gate, and presents a short milestone celebration;
 - temporary code-drawn proof visuals with no production asset dependency;
 - no crafting queue, full inventory, economy, content pack, or production
   asset yet.

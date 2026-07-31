@@ -10,7 +10,8 @@ import {
   MINIMAL_LOOP_COMMAND_HANDLERS,
   MINIMAL_LOOP_WORLD,
   requiresMinimalCraftingMigration,
-  requiresResourceLayoutMigration
+  requiresResourceLayoutMigration,
+  requiresRestorationMilestoneMigration
 } from "./minimal-loop-state.js";
 
 const SAVE_SLOT_ID = "local-world";
@@ -27,6 +28,7 @@ export async function startMinimalLoopRuntime(elements) {
     objective,
     prompt,
     toast,
+    milestoneBanner,
     joystickRoot,
     joystickKnob
   } = elements;
@@ -73,6 +75,17 @@ export async function startMinimalLoopRuntime(elements) {
       )
     );
   }
+  const restorationMilestoneMigrated =
+    requiresRestorationMilestoneMigration(store.getState());
+  if (restorationMilestoneMigrated) {
+    store.dispatch(
+      createMinimalLoopCommand(
+        store.getState(),
+        "migration.add-restoration-milestone-v1",
+        { migrationId: "migration.restoration-milestone.v1" }
+      )
+    );
+  }
   let view = getMinimalLoopView(store.getState());
   let playerPosition = { ...view.player.components.position };
   let committedPosition = { ...playerPosition };
@@ -96,6 +109,16 @@ export async function startMinimalLoopRuntime(elements) {
     toastTimer = window.setTimeout(
       () => toast.classList.remove("is-visible"),
       2200
+    );
+  };
+
+  const showMilestone = () => {
+    milestoneBanner.classList.remove("is-visible");
+    void milestoneBanner.offsetWidth;
+    milestoneBanner.classList.add("is-visible");
+    window.setTimeout(
+      () => milestoneBanner.classList.remove("is-visible"),
+      4300
     );
   };
 
@@ -163,6 +186,7 @@ export async function startMinimalLoopRuntime(elements) {
     } else {
       dispatch("restoration.restore-forester-hut", { targetId: target.id });
       showToast("A Forester’s Hut helyreállt!");
+      showMilestone();
     }
 
     lockedTargetId = null;
@@ -177,7 +201,7 @@ export async function startMinimalLoopRuntime(elements) {
       lockedTargetId = null;
       interactionProgress = 0;
       prompt.textContent = view.completed
-        ? "A világ emlékszik: a kunyhó helyreállt"
+        ? "Faluszint 1 · A farmösvény megnyílt"
         : "Mozogj közelebb egy kiemelt célponthoz";
       prompt.dataset.state = "idle";
       return;
@@ -296,8 +320,12 @@ export async function startMinimalLoopRuntime(elements) {
       : "Helyi mentés aktív"
     : "Session mód – tartós mentés nem érhető el";
   updateHud();
-  if (craftingMigrated || resourceLayoutMigrated) {
-    queueSave("migration.p0-05-1-resource-discoverability");
+  if (
+    craftingMigrated ||
+    resourceLayoutMigrated ||
+    restorationMilestoneMigrated
+  ) {
+    queueSave("migration.p0-06-restoration-milestone");
   }
   requestAnimationFrame(frame);
 }
@@ -411,6 +439,7 @@ function renderWorld(context, canvas, view) {
   drawGround(context);
   drawPath(context);
   drawForest(context);
+  drawFarmPathGate(context, view);
   drawHut(context, view.hut);
   drawWorkbench(context, view.workbench);
   view.woodNodes
@@ -504,6 +533,39 @@ function drawHut(context, hut) {
   context.fillText(restored ? "Forester’s Hut" : "Romos kunyhó", x, y - 150);
 }
 
+function drawFarmPathGate(context, view) {
+  const unlocked = view.progression.unlockedAreaIds.includes(
+    "area.farm-path-preview"
+  );
+  const x = 500;
+  const y = 92;
+
+  context.fillStyle = unlocked ? "#d5b16c" : "#625344";
+  context.fillRect(x - 92, y - 9, 184, 18);
+  context.fillStyle = unlocked ? "#7b5535" : "#473d34";
+  context.fillRect(x - 100, y - 55, 18, 112);
+  context.fillRect(x + 82, y - 55, 18, 112);
+
+  if (unlocked) {
+    context.clearRect(x - 38, y - 14, 76, 28);
+    context.fillStyle = "#e9cd83";
+    for (const flowerX of [x - 125, x - 112, x + 112, x + 126]) {
+      context.beginPath();
+      context.arc(flowerX, y + 28, 6, 0, Math.PI * 2);
+      context.fill();
+    }
+  }
+
+  context.fillStyle = "rgb(20 29 24 / 82%)";
+  context.font = "700 18px system-ui";
+  context.textAlign = "center";
+  context.fillText(
+    unlocked ? "Farmösvény · feloldva" : "Farmösvény · lezárva",
+    x,
+    y - 72
+  );
+}
+
 function drawWorkbench(context, workbench) {
   const { x, y } = workbench.components.position;
   context.fillStyle = "rgb(20 29 24 / 78%)";
@@ -550,7 +612,9 @@ function combinedMovement(joystick, keys) {
 }
 
 function getObjectiveText(view) {
-  if (view.completed) return "A Forester’s Hut újra áll";
+  if (view.completed) {
+    return "Faluszint 1 · A farmösvény megnyílt";
+  }
   if (view.inventory.repairTimber > 0) {
     return "Vidd a javítógerendát a kunyhóhoz";
   }
