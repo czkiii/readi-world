@@ -27,6 +27,8 @@ const WOOD_NODE_IDS = Object.freeze([
   "resource.wood-04"
 ]);
 const RESOURCE_LAYOUT_VERSION = 2;
+const RESTORATION_MILESTONE_VERSION = 1;
+const FARM_PATH_AREA_ID = "area.farm-path-preview";
 const WOOD_NODE_POSITIONS = Object.freeze([
   Object.freeze([390, 1120]),
   Object.freeze([610, 1080]),
@@ -77,6 +79,11 @@ export function createInitialMinimalLoopState() {
     woodRequired: MINIMAL_LOOP_WORLD.woodRequired,
     resourceLayoutVersion: RESOURCE_LAYOUT_VERSION,
     unlockedRecipeIds: [REPAIR_TIMBER_RECIPE.id],
+    progression: {
+      milestoneVersion: RESTORATION_MILESTONE_VERSION,
+      villageLevel: 0,
+      unlockedAreaIds: []
+    },
     completed: false
   };
 
@@ -85,6 +92,24 @@ export function createInitialMinimalLoopState() {
 }
 
 export const MINIMAL_LOOP_COMMAND_HANDLERS = Object.freeze({
+  "migration.add-restoration-milestone-v1"(draft, payload, { emit }) {
+    const loop = requireLoopState(draft);
+
+    if (hasRestorationMilestoneState(draft)) {
+      throw loopError("RESTORATION_MILESTONE_ALREADY_PRESENT");
+    }
+
+    loop.progression = {
+      milestoneVersion: RESTORATION_MILESTONE_VERSION,
+      villageLevel: loop.completed ? 1 : 0,
+      unlockedAreaIds: loop.completed ? [FARM_PATH_AREA_ID] : []
+    };
+    emit("migration.restoration-milestone-added", {
+      migrationId: payload.migrationId,
+      completedRewardRecovered: loop.completed
+    });
+  },
+
   "migration.resource-discoverability-v2"(draft, payload, { emit }) {
     const loop = requireLoopState(draft);
 
@@ -235,6 +260,7 @@ export const MINIMAL_LOOP_COMMAND_HANDLERS = Object.freeze({
       "building.forester-hut"
     );
     const loop = requireLoopState(draft);
+    const progression = requireProgressionState(loop);
 
     if (hut.components.restorationPhase !== "ruined" || loop.completed) {
       throw loopError("FORESTER_HUT_ALREADY_RESTORED");
@@ -253,10 +279,18 @@ export const MINIMAL_LOOP_COMMAND_HANDLERS = Object.freeze({
 
     loop.inventory.repairTimber -= 1;
     loop.completed = true;
+    progression.villageLevel += 1;
+    if (!progression.unlockedAreaIds.includes(FARM_PATH_AREA_ID)) {
+      progression.unlockedAreaIds.push(FARM_PATH_AREA_ID);
+    }
     hut.components.restorationPhase = "restored";
     emit("restoration.forester-hut-restored", {
       actorId: PLAYER_ID,
-      targetId: hut.id
+      targetId: hut.id,
+      reward: {
+        villageLevel: progression.villageLevel,
+        unlockedAreaId: FARM_PATH_AREA_ID
+      }
     });
   }
 });
@@ -275,6 +309,7 @@ export function getMinimalLoopView(state) {
     inventory: structuredClone(loop.inventory),
     woodRequired: loop.woodRequired,
     recipe: structuredClone(REPAIR_TIMBER_RECIPE),
+    progression: structuredClone(loop.progression),
     completed: loop.completed
   });
 }
@@ -290,6 +325,11 @@ export function requiresResourceLayoutMigration(state) {
     state.systems.minimalLoop?.resourceLayoutVersion !==
     RESOURCE_LAYOUT_VERSION
   );
+}
+
+export function requiresRestorationMilestoneMigration(state) {
+  validateWorldState(state);
+  return !hasRestorationMilestoneState(state);
 }
 
 export function createMinimalLoopCommand(state, type, payload = {}) {
@@ -363,6 +403,32 @@ function hasMinimalCraftingState(state) {
     loop.unlockedRecipeIds.includes(REPAIR_TIMBER_RECIPE.id) &&
     workstation?.definitionId === "workstation.field-bench"
   );
+}
+
+function hasRestorationMilestoneState(state) {
+  const progression = state.systems.minimalLoop?.progression;
+
+  return Boolean(
+    progression &&
+    progression.milestoneVersion === RESTORATION_MILESTONE_VERSION &&
+    Number.isInteger(progression.villageLevel) &&
+    progression.villageLevel >= 0 &&
+    Array.isArray(progression.unlockedAreaIds)
+  );
+}
+
+function requireProgressionState(loop) {
+  const progression = loop.progression;
+
+  if (
+    !progression ||
+    !Number.isInteger(progression.villageLevel) ||
+    !Array.isArray(progression.unlockedAreaIds)
+  ) {
+    throw loopError("RESTORATION_PROGRESSION_MISSING");
+  }
+
+  return progression;
 }
 
 function distance(left, right) {
