@@ -22,7 +22,8 @@ or art asset is copied into this baseline automatically.
 - versioned asset manifest, validated registry, and controlled role/tag vocabulary;
 - deterministic semantic asset resolution with aliases, variants, fallbacks,
   and structured diagnostics;
-- first playable portrait loop with right-side joystick and keyboard movement;
+- first playable portrait loop with a right-side touch-origin floating joystick
+  that hides on release, plus keyboard movement;
 - proximity gathering, one stable/versioned repair-timber recipe at the field
   workbench, Forester Hut restoration, and persistent resume;
 - P0-04 save compatibility through an idempotent P0-05 state migration;
