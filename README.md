@@ -32,9 +32,10 @@ or art asset is copied into this baseline automatically.
   resource positions;
 - Forester Hut completion grants Village Level 1, opens a persistent farm-path
   preview gate, and presents a short milestone celebration;
-- temporary code-drawn proof visuals with no production asset dependency;
-- no crafting queue, full inventory, economy, content pack, or production
-  asset yet.
+- first owner-approved production art family: manifest-driven standing pine,
+  matching stump and contact shadow with pivot-aware canvas rendering;
+- code-drawn pine fallback keeps the loop available if an image cannot load;
+- no crafting queue, full inventory, economy, or broader content pack yet.
 
 Run `npm test` to verify the World State contract and `npm run check` for
 JavaScript syntax validation.
