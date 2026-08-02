@@ -12,7 +12,7 @@ import {
 
 function createManifest() {
   return {
-    schemaVersion: 1,
+    schemaVersion: 2,
     registryVersion: 1,
     id: "test.assets",
     packages: [
@@ -92,11 +92,26 @@ function createSprite({
     geometry: {
       sourceRect: { x: 0, y: 0, width: 64, height: 96 },
       pivot: { x: 0.5, y: 0.9 },
-      drawSize: { width: 64, height: 96 },
+      drawSize: { width: 1, height: 1.5 },
       alphaMode: "straight",
-      hitShape: {
-        type: "rect",
-        size: { width: 32, height: 20 }
+      logicalFootprint: {
+        type: "circle",
+        center: { x: 0, y: 0 },
+        radius: 0.35
+      },
+      interactionAnchor: {
+        type: "radius",
+        point: { x: 0, y: 0 },
+        radius: 1.25
+      },
+      occluderShape: {
+        type: "polygon",
+        points: [
+          { x: -0.4, y: -1.2 },
+          { x: 0.4, y: -1.2 },
+          { x: 0.5, y: -0.2 },
+          { x: -0.5, y: -0.2 }
+        ]
       }
     }
   };
@@ -105,10 +120,79 @@ function createSprite({
 test("accepts a versioned manifest with controlled semantic metadata", () => {
   const manifest = createValidatedAssetManifest(createManifest());
 
-  assert.equal(manifest.schemaVersion, 1);
+  assert.equal(manifest.schemaVersion, 2);
   assert.equal(manifest.registryVersion, 1);
   assert.equal(Object.isFrozen(manifest), true);
   assert.equal(Object.isFrozen(manifest.assets[0].geometry), true);
+  assert.equal(
+    manifest.assets[0].geometry.logicalFootprint.radius,
+    0.35
+  );
+  assert.equal(
+    manifest.assets[0].geometry.interactionAnchor.radius,
+    1.25
+  );
+});
+
+test("rejects schema v1 instead of inventing geometry defaults", () => {
+  const manifest = createManifest();
+  manifest.schemaVersion = 1;
+
+  assert.throws(
+    () => createValidatedAssetManifest(manifest),
+    (error) =>
+      error instanceof AssetManifestError &&
+      error.code === "UNSUPPORTED_MANIFEST_VERSION"
+  );
+});
+
+test("requires footprint interaction and occluder metadata", () => {
+  const manifest = createManifest();
+  delete manifest.assets[0].geometry.logicalFootprint;
+
+  assert.throws(() => createValidatedAssetManifest(manifest));
+});
+
+test("rejects a pivot outside normalized source coordinates", () => {
+  const manifest = createManifest();
+  manifest.assets[0].geometry.pivot = { x: 0.5, y: 1.01 };
+
+  assert.throws(
+    () => createValidatedAssetManifest(manifest),
+    (error) =>
+      error instanceof AssetManifestError &&
+      error.code === "INVALID_NORMALIZED_POINT"
+  );
+});
+
+test("rejects a degenerate occluder polygon", () => {
+  const manifest = createManifest();
+  manifest.assets[0].geometry.occluderShape = {
+    type: "polygon",
+    points: [
+      { x: 0, y: 0 },
+      { x: 1, y: 1 },
+      { x: 2, y: 2 }
+    ]
+  };
+
+  assert.throws(
+    () => createValidatedAssetManifest(manifest),
+    (error) =>
+      error instanceof AssetManifestError && error.code === "INVALID_POLYGON"
+  );
+});
+
+test("accepts explicit non-interactive and non-occluding geometry", () => {
+  const manifest = createManifest();
+  const geometry = manifest.assets[0].geometry;
+  geometry.interactionAnchor = { type: "none" };
+  geometry.occluderShape = { type: "none" };
+
+  const validated = createValidatedAssetManifest(manifest);
+
+  assert.equal(validated.assets[0].geometry.interactionAnchor.type, "none");
+  assert.equal(validated.assets[0].geometry.occluderShape.type, "none");
 });
 
 test("rejects duplicate stable asset ids before activation", () => {
