@@ -5,13 +5,14 @@ import {
   deepFreeze
 } from "../world-state/world-state-contract.js";
 
-export const ASSET_MANIFEST_SCHEMA_VERSION = 1;
+export const ASSET_MANIFEST_SCHEMA_VERSION = 2;
 export const ASSET_REGISTRY_SCHEMA_VERSION = 1;
 
 const ASSET_KINDS = new Set(["sprite", "atlas-frame"]);
 const SOURCE_TYPES = new Set(["image", "atlas"]);
 const ALPHA_MODES = new Set(["straight", "premultiplied", "opaque"]);
-const HIT_SHAPE_TYPES = new Set(["none", "rect", "circle"]);
+const WORLD_SHAPE_TYPES = new Set(["none", "rect", "circle", "polygon"]);
+const INTERACTION_ANCHOR_TYPES = new Set(["none", "radius"]);
 
 export class AssetManifestError extends Error {
   constructor(code, message, options = {}) {
@@ -297,7 +298,7 @@ function validateGeometry(asset) {
   const geometry = asset.geometry;
   assertPlainRecord(geometry, `asset ${asset.id} geometry`);
   assertRect(geometry.sourceRect, `asset ${asset.id} sourceRect`);
-  assertPoint(geometry.pivot, `asset ${asset.id} pivot`);
+  assertNormalizedPoint(geometry.pivot, `asset ${asset.id} pivot`);
   assertSize(geometry.drawSize, `asset ${asset.id} drawSize`);
 
   if (!ALPHA_MODES.has(geometry.alphaMode)) {
@@ -320,25 +321,95 @@ function validateGeometry(asset) {
     );
   }
 
-  assertPlainRecord(geometry.hitShape, `asset ${asset.id} hitShape`);
+  validateWorldShape(
+    geometry.logicalFootprint,
+    `asset ${asset.id} logicalFootprint`
+  );
+  validateInteractionAnchor(
+    geometry.interactionAnchor,
+    `asset ${asset.id} interactionAnchor`
+  );
+  validateWorldShape(
+    geometry.occluderShape,
+    `asset ${asset.id} occluderShape`
+  );
+}
 
-  if (!HIT_SHAPE_TYPES.has(geometry.hitShape.type)) {
+function validateWorldShape(shape, fieldName) {
+  assertPlainRecord(shape, fieldName);
+
+  if (!WORLD_SHAPE_TYPES.has(shape.type)) {
     throw manifestError(
-      "INVALID_HIT_SHAPE",
-      `Asset ${asset.id} has unsupported hit shape ${geometry.hitShape.type}.`
+      "INVALID_WORLD_SHAPE",
+      `${fieldName} has unsupported shape type ${shape.type}.`
     );
   }
 
-  if (geometry.hitShape.type === "rect") {
-    assertSize(geometry.hitShape.size, `asset ${asset.id} hit rect size`);
+  if (shape.type === "none") {
+    return;
   }
 
-  if (geometry.hitShape.type === "circle") {
-    assertPositiveNumber(
-      geometry.hitShape.radius,
-      `asset ${asset.id} hit circle radius`
+  if (shape.type === "rect") {
+    assertPoint(shape.center, `${fieldName}.center`);
+    assertSize(shape.size, `${fieldName}.size`);
+    return;
+  }
+
+  if (shape.type === "circle") {
+    assertPoint(shape.center, `${fieldName}.center`);
+    assertPositiveNumber(shape.radius, `${fieldName}.radius`);
+    return;
+  }
+
+  assertArray(shape.points, `${fieldName}.points`);
+
+  if (shape.points.length < 3) {
+    throw manifestError(
+      "INVALID_POLYGON",
+      `${fieldName} polygon requires at least three points.`
     );
   }
+
+  shape.points.forEach((point, index) =>
+    assertPoint(point, `${fieldName}.points[${index}]`)
+  );
+
+  if (Math.abs(polygonSignedArea(shape.points)) < Number.EPSILON) {
+    throw manifestError(
+      "INVALID_POLYGON",
+      `${fieldName} polygon must enclose a non-zero area.`
+    );
+  }
+}
+
+function validateInteractionAnchor(anchor, fieldName) {
+  assertPlainRecord(anchor, fieldName);
+
+  if (!INTERACTION_ANCHOR_TYPES.has(anchor.type)) {
+    throw manifestError(
+      "INVALID_INTERACTION_ANCHOR",
+      `${fieldName} has unsupported type ${anchor.type}.`
+    );
+  }
+
+  if (anchor.type === "none") {
+    return;
+  }
+
+  assertPoint(anchor.point, `${fieldName}.point`);
+  assertPositiveNumber(anchor.radius, `${fieldName}.radius`);
+}
+
+function polygonSignedArea(points) {
+  let twiceArea = 0;
+
+  for (let index = 0; index < points.length; index += 1) {
+    const current = points[index];
+    const next = points[(index + 1) % points.length];
+    twiceArea += current.x * next.y - next.x * current.y;
+  }
+
+  return twiceArea / 2;
 }
 
 function validateAssetReferences(manifest, assetMap, roleSet, tagSet) {
@@ -519,6 +590,17 @@ function assertPoint(value, fieldName) {
     throw manifestError(
       "INVALID_POINT",
       `${fieldName} coordinates must be finite numbers.`
+    );
+  }
+}
+
+function assertNormalizedPoint(value, fieldName) {
+  assertPoint(value, fieldName);
+
+  if (value.x < 0 || value.x > 1 || value.y < 0 || value.y > 1) {
+    throw manifestError(
+      "INVALID_NORMALIZED_POINT",
+      `${fieldName} coordinates must be between 0 and 1.`
     );
   }
 }
