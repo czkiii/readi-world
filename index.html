@@ -10,7 +10,7 @@
     <meta name="color-scheme" content="dark">
     <title>Readi World</title>
     <link rel="manifest" href="./manifest.json">
-    <link rel="stylesheet" href="./src/styles.css">
+    <link rel="stylesheet" href="./src/styles.css?v=i2-floating-joystick">
   </head>
   <body>
     <main id="app" class="app-shell" aria-label="Readi World">
@@ -43,13 +43,13 @@
         <strong>Forester’s Hut helyreállítva!</strong>
         <span>Faluszint 1 · A farmhoz vezető ösvény megnyílt</span>
       </section>
-      <div class="joystick-zone" aria-label="Mozgásvezérlő">
-        <div id="joystick" class="joystick" role="application" aria-label="Jobb oldali virtuális joystick">
+      <div id="joystick-zone" class="joystick-zone" aria-label="Jobb oldali érintési mozgászóna">
+        <div id="joystick" class="joystick" role="application" aria-label="Floating virtuális joystick" aria-hidden="true">
           <div id="joystick-knob" class="joystick-knob"></div>
         </div>
       </div>
     </main>
     <noscript>A Readi World futtatásához engedélyezni kell a JavaScriptet.</noscript>
-    <script type="module" src="./src/bootstrap.js"></script>
+    <script type="module" src="./src/bootstrap.js?v=i2-floating-joystick"></script>
   </body>
 </html>

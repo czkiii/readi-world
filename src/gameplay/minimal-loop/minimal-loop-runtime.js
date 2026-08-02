@@ -5,7 +5,7 @@ import {
 } from "../../core/assets/asset-image-loader.js";
 import { createSaveManager } from "../../core/save/save-manager.js";
 import { createWorldStateStore } from "../../core/world-state/world-state-store.js";
-import { createVirtualJoystick } from "../../input/virtual-joystick.js";
+import { createVirtualJoystick } from "../../input/virtual-joystick.js?v=i2-floating-joystick";
 import { createIndexedDbSaveStorageAdapter } from "../../platform/web/indexeddb-save-storage-adapter.js";
 import {
   createInitialMinimalLoopState,
@@ -73,6 +73,7 @@ export async function startMinimalLoopRuntime(elements) {
     prompt,
     toast,
     milestoneBanner,
+    joystickZone,
     joystickRoot,
     joystickKnob
   } = elements;
@@ -210,6 +211,7 @@ export async function startMinimalLoopRuntime(elements) {
   };
 
   const joystick = createVirtualJoystick({
+    zone: joystickZone,
     root: joystickRoot,
     knob: joystickKnob,
     onRelease: () => {

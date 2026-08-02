@@ -1,5 +1,5 @@
 import { RUNTIME_CONFIG } from "./config/runtime-config.js";
-import { startMinimalLoopRuntime } from "./gameplay/minimal-loop/minimal-loop-runtime.js";
+import { startMinimalLoopRuntime } from "./gameplay/minimal-loop/minimal-loop-runtime.js?v=i2-floating-joystick";
 
 const app = document.querySelector("#app");
 const canvas = document.querySelector("#world-canvas");
@@ -10,6 +10,7 @@ const objective = document.querySelector("#objective-text");
 const prompt = document.querySelector("#context-prompt");
 const toast = document.querySelector("#toast");
 const milestoneBanner = document.querySelector("#milestone-banner");
+const joystickZone = document.querySelector("#joystick-zone");
 const joystickRoot = document.querySelector("#joystick");
 const joystickKnob = document.querySelector("#joystick-knob");
 
@@ -32,6 +33,7 @@ for (const [name, element] of [
   ["context-prompt", prompt],
   ["toast", toast],
   ["milestone-banner", milestoneBanner],
+  ["joystick-zone", joystickZone],
   ["joystick", joystickRoot],
   ["joystick-knob", joystickKnob]
 ]) {
@@ -51,6 +53,7 @@ startMinimalLoopRuntime({
   prompt,
   toast,
   milestoneBanner,
+  joystickZone,
   joystickRoot,
   joystickKnob
 }).catch((error) => {
