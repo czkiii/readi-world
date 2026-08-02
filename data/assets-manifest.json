@@ -2,12 +2,112 @@
   "schemaVersion": 2,
   "registryVersion": 1,
   "id": "readi-world.assets",
-  "packages": [],
+  "packages": [
+    {
+      "id": "package.p1.forest.core",
+      "version": 1,
+      "dependencies": []
+    }
+  ],
   "vocabulary": {
-    "roles": [],
-    "tags": []
+    "roles": [
+      "world.resource.tree.harvestable",
+      "world.resource.tree.stump",
+      "world.shadow.contact"
+    ],
+    "tags": [
+      "biome.forest",
+      "species.pine",
+      "material.wood",
+      "state.standing",
+      "state.depleted",
+      "variant.standard",
+      "milestone.p1"
+    ]
   },
-  "assets": [],
-  "fallbackChains": {},
+  "assets": [
+    {
+      "id": "world.tree.pine.harvestable.standard",
+      "packageId": "package.p1.forest.core",
+      "kind": "sprite",
+      "roles": ["world.resource.tree.harvestable"],
+      "tags": ["biome.forest", "species.pine", "material.wood", "state.standing", "variant.standard", "milestone.p1"],
+      "priority": 100,
+      "fallbackIds": [],
+      "variants": [],
+      "source": {
+        "type": "image",
+        "uri": "assets/environment/pine/world-tree-pine-harvestable-standard__runtime-e001.webp"
+      },
+      "geometry": {
+        "sourceRect": { "x": 0, "y": 0, "width": 384, "height": 448 },
+        "pivot": { "x": 0.5, "y": 0.928571 },
+        "drawSize": { "width": 6, "height": 7 },
+        "alphaMode": "straight",
+        "logicalFootprint": { "type": "circle", "center": { "x": 0, "y": 0 }, "radius": 0.575 },
+        "interactionAnchor": { "type": "radius", "point": { "x": 0, "y": 0 }, "radius": 1.45 },
+        "occluderShape": {
+          "type": "polygon",
+          "points": [
+            { "x": -0.8, "y": -5.8 }, { "x": 0.8, "y": -5.8 },
+            { "x": 2.2, "y": -3.8 }, { "x": 2, "y": -1.2 },
+            { "x": 0.8, "y": -0.6 }, { "x": -0.8, "y": -0.6 },
+            { "x": -2, "y": -1.2 }, { "x": -2.2, "y": -3.8 }
+          ]
+        }
+      }
+    },
+    {
+      "id": "world.tree.pine.harvestable.standard.stump",
+      "packageId": "package.p1.forest.core",
+      "kind": "sprite",
+      "roles": ["world.resource.tree.stump"],
+      "tags": ["biome.forest", "species.pine", "material.wood", "state.depleted", "variant.standard", "milestone.p1"],
+      "priority": 100,
+      "fallbackIds": [],
+      "variants": [],
+      "source": {
+        "type": "image",
+        "uri": "assets/environment/pine/world-tree-pine-harvestable-standard-stump__runtime-e001.webp"
+      },
+      "geometry": {
+        "sourceRect": { "x": 0, "y": 0, "width": 128, "height": 96 },
+        "pivot": { "x": 0.5, "y": 0.833333 },
+        "drawSize": { "width": 2, "height": 1.5 },
+        "alphaMode": "straight",
+        "logicalFootprint": { "type": "circle", "center": { "x": 0, "y": 0 }, "radius": 0.45 },
+        "interactionAnchor": { "type": "none" },
+        "occluderShape": { "type": "none" }
+      }
+    },
+    {
+      "id": "world.shadow.tree.pine.harvestable.standard",
+      "packageId": "package.p1.forest.core",
+      "kind": "sprite",
+      "roles": ["world.shadow.contact"],
+      "tags": ["biome.forest", "species.pine", "variant.standard", "milestone.p1"],
+      "priority": 100,
+      "fallbackIds": [],
+      "variants": [],
+      "source": {
+        "type": "image",
+        "uri": "assets/environment/pine/world-shadow-tree-pine-harvestable-standard__runtime-e001.webp"
+      },
+      "geometry": {
+        "sourceRect": { "x": 0, "y": 0, "width": 128, "height": 64 },
+        "pivot": { "x": 0.5, "y": 0.75 },
+        "drawSize": { "width": 2, "height": 1 },
+        "alphaMode": "straight",
+        "logicalFootprint": { "type": "none" },
+        "interactionAnchor": { "type": "none" },
+        "occluderShape": { "type": "none" }
+      }
+    }
+  ],
+  "fallbackChains": {
+    "world.resource.tree.harvestable": [],
+    "world.resource.tree.stump": [],
+    "world.shadow.contact": []
+  },
   "aliases": {}
 }

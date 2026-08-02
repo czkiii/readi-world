@@ -1,4 +1,8 @@
 import { createAssetRegistry } from "../../core/assets/asset-registry.js";
+import {
+  drawLoadedAsset,
+  loadAssetImageSet
+} from "../../core/assets/asset-image-loader.js";
 import { createSaveManager } from "../../core/save/save-manager.js";
 import { createWorldStateStore } from "../../core/world-state/world-state-store.js";
 import { createVirtualJoystick } from "../../input/virtual-joystick.js";
@@ -18,6 +22,46 @@ const SAVE_SLOT_ID = "local-world";
 const MOVE_SPEED = 172;
 const GATHER_DURATION = 0.85;
 const RESTORE_DURATION = 1.6;
+const WORLD_PIXELS_PER_UNIT = 32;
+const PINE_ASSET_REQUESTS = Object.freeze({
+  standing: {
+    role: "world.resource.tree.harvestable",
+    tags: ["biome.forest", "species.pine", "variant.standard"],
+    variantTags: []
+  },
+  stump: {
+    role: "world.resource.tree.stump",
+    tags: ["biome.forest", "species.pine", "variant.standard"],
+    variantTags: []
+  },
+  shadow: {
+    role: "world.shadow.contact",
+    tags: ["biome.forest", "species.pine", "variant.standard"],
+    variantTags: []
+  }
+});
+const PINE_SCENE_LAYOUT = Object.freeze([
+  { type: "standing", x: 95, y: 1490 },
+  { type: "standing", x: 190, y: 1320 },
+  { type: "standing", x: 870, y: 1460 },
+  { type: "standing", x: 915, y: 1240 },
+  { type: "standing", x: 105, y: 1050 },
+  { type: "standing", x: 895, y: 980 },
+  { type: "standing", x: 105, y: 745 },
+  { type: "standing", x: 890, y: 690 },
+  { type: "standing", x: 125, y: 475 },
+  { type: "standing", x: 850, y: 455 },
+  { type: "standing", x: 90, y: 220 },
+  { type: "standing", x: 920, y: 250 },
+  { type: "standing", x: 300, y: 190 },
+  { type: "standing", x: 720, y: 190 },
+  { type: "standing", x: 270, y: 820 },
+  { type: "standing", x: 730, y: 780 },
+  { type: "standing", x: 280, y: 1160 },
+  { type: "standing", x: 720, y: 1390 },
+  { type: "stump", x: 305, y: 1450 },
+  { type: "stump", x: 700, y: 1060 }
+]);
 
 export async function startMinimalLoopRuntime(elements) {
   const {
@@ -36,7 +80,11 @@ export async function startMinimalLoopRuntime(elements) {
 
   if (!context) throw new Error("Canvas 2D context is unavailable.");
 
-  await loadAssetRegistry();
+  const assetRegistry = await loadAssetRegistry();
+  const pineAssets = await loadAssetImageSet(
+    assetRegistry,
+    PINE_ASSET_REQUESTS
+  );
   let persistence = createPersistence(status);
   let loaded = { status: "empty", worldState: null };
 
@@ -280,7 +328,7 @@ export async function startMinimalLoopRuntime(elements) {
     );
     view = transientPlayerView(view, playerPosition);
     updateInteraction(deltaTime);
-    renderWorld(context, canvas, view);
+    renderWorld(context, canvas, view, pineAssets);
     requestAnimationFrame(frame);
   };
 
@@ -406,7 +454,7 @@ function selectTarget(view, playerPosition, lockedTargetId) {
     )[0] ?? null;
 }
 
-function renderWorld(context, canvas, view) {
+function renderWorld(context, canvas, view, pineAssets) {
   const width = canvas.clientWidth;
   const height = canvas.clientHeight;
   const ratio = Math.min(2, window.devicePixelRatio || 1);
@@ -438,7 +486,11 @@ function renderWorld(context, canvas, view) {
   context.translate(-cameraX, -cameraY);
   drawGround(context);
   drawPath(context);
-  drawForest(context);
+  drawPineLayer(
+    context,
+    pineAssets,
+    (item) => item.y < view.player.components.position.y
+  );
   drawFarmPathGate(context, view);
   drawHut(context, view.hut);
   drawWorkbench(context, view.workbench);
@@ -446,6 +498,11 @@ function renderWorld(context, canvas, view) {
     .filter((node) => node.components.available)
     .forEach((node) => drawWoodNode(context, node.components.position));
   drawPlayer(context, view.player.components.position);
+  drawPineLayer(
+    context,
+    pineAssets,
+    (item) => item.y >= view.player.components.position.y
+  );
   context.restore();
 }
 
@@ -472,22 +529,42 @@ function drawPath(context) {
   context.stroke();
 }
 
-function drawForest(context) {
-  const trees = [
-    [110, 1450], [190, 1310], [850, 1420], [900, 1240], [120, 1030],
-    [880, 970], [120, 700], [850, 650], [160, 430], [820, 420],
-    [110, 180], [900, 220], [300, 210], [720, 180]
-  ];
-  for (const [x, y] of trees) {
-    context.fillStyle = "#31593d";
-    context.beginPath();
-    context.arc(x, y, 54, 0, Math.PI * 2);
-    context.fill();
-    context.fillStyle = "#47744a";
-    context.beginPath();
-    context.arc(x - 12, y - 16, 39, 0, Math.PI * 2);
-    context.fill();
+function drawPineLayer(context, pineAssets, predicate) {
+  for (const item of PINE_SCENE_LAYOUT.filter(predicate)) {
+    const target = pineAssets[item.type];
+
+    if (target?.image) {
+      drawLoadedAsset(
+        context,
+        pineAssets.shadow,
+        item,
+        WORLD_PIXELS_PER_UNIT
+      );
+      drawLoadedAsset(context, target, item, WORLD_PIXELS_PER_UNIT);
+      continue;
+    }
+
+    drawPineFallback(context, item);
   }
+}
+
+function drawPineFallback(context, { type, x, y }) {
+  if (type === "stump") {
+    context.fillStyle = "#6f4a2d";
+    context.beginPath();
+    context.ellipse(x, y - 6, 24, 14, 0, 0, Math.PI * 2);
+    context.fill();
+    return;
+  }
+
+  context.fillStyle = "#31593d";
+  context.beginPath();
+  context.arc(x, y - 46, 54, 0, Math.PI * 2);
+  context.fill();
+  context.fillStyle = "#47744a";
+  context.beginPath();
+  context.arc(x - 12, y - 62, 39, 0, Math.PI * 2);
+  context.fill();
 }
 
 function drawWoodNode(context, { x, y }) {
