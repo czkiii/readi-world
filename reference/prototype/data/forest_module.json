@@ -1,0 +1,80 @@
+{
+  "schemaVersion": 1,
+  "version": "0.3.0",
+  "description": "Forest module gameplay rules for village-adjacent harvest nodes",
+  "biome": "temperate_forest",
+  "nodeTypes": {
+    "tree_oak_common": {
+      "role": "harvestable_tree",
+      "tags": ["temperate", "oak", "common"],
+      "harvestable": true,
+      "harvestDurationMs": 850,
+      "interactionRange": 70,
+      "respawnMs": 300000,
+      "lootTableId": "wood_tree_common",
+      "stumpSpriteId": "tree_stump",
+      "fallbackShape": "tree"
+    },
+    "tree_pine_uncommon": {
+      "role": "harvestable_tree",
+      "tags": ["temperate", "pine", "uncommon"],
+      "harvestable": true,
+      "harvestDurationMs": 950,
+      "interactionRange": 72,
+      "respawnMs": 360000,
+      "lootTableId": "wood_tree_pine",
+      "stumpSpriteId": "tree_stump",
+      "fallbackShape": "tree"
+    },
+    "bush_common": {
+      "role": "foliage",
+      "tags": ["temperate", "bush", "ground_cover"],
+      "harvestable": false,
+      "fallbackShape": "bush"
+    }
+  },
+  "lootTables": {
+    "wood_tree_common": {
+      "drops": [
+        {
+          "resourceKey": "wood",
+          "variantId": "resource.wood.common",
+          "amountMin": 3,
+          "amountMax": 4,
+          "chance": 1
+        }
+      ]
+    },
+    "wood_tree_pine": {
+      "drops": [
+        {
+          "resourceKey": "wood",
+          "variantId": "resource.wood.common",
+          "amountMin": 4,
+          "amountMax": 5,
+          "chance": 1
+        }
+      ]
+    }
+  },
+  "spawnRules": [
+    {
+      "id": "forest_trees",
+      "nodeTypes": ["tree_oak_common", "tree_oak_common", "tree_pine_uncommon"],
+      "count": 58,
+      "origin": { "x": 70, "y": 120 },
+      "step": { "x": 173, "y": 257 },
+      "bounds": { "width": 1200, "height": 1680 },
+      "clearRadiusPadding": 34
+    },
+    {
+      "id": "forest_bushes",
+      "nodeTypes": ["bush_common"],
+      "count": 24,
+      "origin": { "x": 120, "y": 180 },
+      "step": { "x": 211, "y": 149 },
+      "bounds": { "width": 1120, "height": 1580 },
+      "clearRadiusPadding": 20
+    }
+  ]
+}

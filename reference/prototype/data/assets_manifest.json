@@ -1,0 +1,47 @@
+{
+  "schemaVersion": 1,
+  "version": "0.3.0",
+  "description": "Asset activation manifest for Readi World",
+  "modules": {
+    "village_buildings": {
+      "enabled": true,
+      "required": true,
+      "fallback": "procedural_building_shapes",
+      "registry": "data/sprite_registry.json",
+      "file": "assets/buildings/village_buildings.png",
+      "role": "buildings"
+    },
+    "forest_environment": {
+      "enabled": true,
+      "required": true,
+      "fallback": "procedural_tree_shapes",
+      "registry": "data/sprite_registry.json",
+      "file": "assets/environment/forest_atlas.png",
+      "role": "environment"
+    },
+    "ground_tiles": {
+      "enabled": true,
+      "required": false,
+      "fallback": "flat_ground_fill",
+      "registry": "data/sprite_registry.json",
+      "file": "assets/environment/ground_tiles.png",
+      "role": "terrain"
+    },
+    "tool_overlays": {
+      "enabled": true,
+      "required": false,
+      "fallback": "vector_tool_overlay",
+      "registry": "data/sprite_registry.json",
+      "file": "assets/characters/tool_overlays.png",
+      "role": "effects"
+    },
+    "effects": {
+      "enabled": true,
+      "required": false,
+      "fallback": "simple_particle_feedback",
+      "registry": "data/sprite_registry.json",
+      "file": "assets/effects/effects_atlas.png",
+      "role": "effects"
+    }
+  }
+}
