@@ -1,0 +1,100 @@
+READI WORLD
+ENGINE & DESIGN BIBLE — VERSION 0.3
+Mobile-first web engine and native packaging foundation
+
+CORE PROMISE
+“A small world that remembers you, visibly grows with you, and always feels good to return to.”
+
+PURPOSE
+This is the governing source of truth for future Readi World conversations. The current GitHub files define the implementation baseline. The Bible defines how changes must integrate.
+
+NEW CONVERSATION CONTRACT
+- Upload this Bible and the current working project files.
+- Change one system or one asset family at a time.
+- State goal, allowed files, protected files and acceptance tests before editing.
+- Preserve gameplay, save compatibility, filenames and folder paths unless explicitly approved.
+- Do not mass-replace atlases.
+- New content should normally require data and assets, not an index.html rewrite.
+
+LOCKED PLATFORM DECISION
+Readi World remains an HTML/CSS/JavaScript Canvas web application during mobile-first development. GitHub Pages and Home Screen PWA are the daily testing route. The same codebase is intended for later packaging with Capacitor into Android and iOS applications.
+
+LOCKED ARCHITECTURE DECISION
+index.html is a stable runtime shell. assets_manifest.json declares enabled/required/optional modules and fallbacks. sprite_registry.json declares atlas geometry, sprite metadata, roles and tags. AssetManager loads modules generically. AtlasValidator rejects invalid assets. RoleResolver selects compatible sprites. StageGenerator produces deterministic world data, not a painted background image.
+
+CORE SERVICES
+Bootstrap, AssetManager, AtlasValidator, RoleResolver, Renderer, StageGenerator, SceneManager, ObjectManager, CollisionSystem, InteractionSystem, InputManager, Camera, TimeSystem, SaveManager, AudioManager and DebugTools.
+
+ASSET MANIFEST RULE
+The browser does not scan folders. A file is only considered for activation when its module is declared in data/assets_manifest.json. The loader then verifies the registry entry and file.
+
+ATLAS CONTRACT
+- Atlas dimensions and grid are declared in data.
+- The current 1536×1024, 3×2 profile is supported but not universal.
+- Object/effect atlases normally use real alpha transparency.
+- Full-cell terrain tiles are normally opaque.
+- Metadata includes cell, pivot, draw size, roles, tags, collision and clear radius where applicable.
+- Invalid assets are rejected and use declared fallbacks.
+
+ROLE-BASED CONTENT
+Stages request semantic roles and tags where visual variation is acceptable, e.g. role=harvestable_tree and tags=[temperate, common]. Exact sprite IDs are reserved for authored landmarks or exact animation states.
+
+STAGE GENERATION
+Stage generation creates seeds, terrain roles, zones, paths, objects, spawn points and interactions. It is deterministic and rule-driven. Important buildings, paths and interaction points define clear zones.
+
+GAMEPLAY FOUNDATIONS RETAINED
+- One persistent home village and compact activity scenes.
+- Portrait-first B+ HUD.
+- Floating joystick.
+- No permanent ACT button.
+- Automatic proximity harvesting where appropriate.
+- One contextual building prompt at a time.
+- Four-hour real-time world day.
+- Automatic versioned save, backup and migration.
+- Automatic categorized inventory.
+- Optional combat only.
+
+ART DIRECTION
+Warm, cozy, hand-painted, clean silhouettes, soft 3D volume, lightly tilted top-down view, soft shadows, limited outlines and no neon or harsh pixel-art look.
+
+ASSET PIPELINE
+1. Define one asset family.
+2. Write exact specification and cell map.
+3. Approve a visual reference.
+4. Generate/draw individual elements.
+5. Normalize transparency, scale and pivot.
+6. Assemble atlas.
+7. Validate.
+8. Integrate only that family.
+9. Test on the actual phone.
+10. Approve or revert.
+
+WORKFLOW RULE
+Do not combine architecture refactoring with art replacement. Do not combine save changes with unrelated rendering changes. Project files keep stable base names. Version history belongs in Git and the Decision Log, not in filenames.
+
+CURRENT PRIORITY
+M0: Freeze and identify the deployed baseline.
+M1: Implement Asset Loader v1: data/assets_manifest.json, generic AssetManager, AtlasValidator, module states, fallbacks and asset report. No art replacement in this milestone.
+M2: Add role/tag resolver.
+M3: Redesign and approve the ground system only.
+M4: Forest module only.
+M5: Buildings module only.
+M6: Stage Generator v1.
+M7: Save export/import.
+M8: Capacitor proof build.
+
+STABLE PROJECT PATHS
+readi-world/
+  index.html
+  manifest.json
+  data/assets_manifest.json
+  data/sprite_registry.json
+  data/village_layout.json
+  assets/buildings/village_buildings.png
+  assets/environment/forest_atlas.png
+  assets/environment/ground_tiles.png
+  assets/characters/tool_overlays.png
+  assets/effects/effects_atlas.png
+
+FOUNDATION STATEMENT
+Build the engine contract once. Let new stages grow through data, validated assets and deterministic rules. Preserve working systems, change one thing at a time and keep the same web codebase ready for later native packaging.

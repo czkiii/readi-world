@@ -1,0 +1,9 @@
+Use Readi_World_Engine_Design_Bible_v0.3 as the governing source of truth for this conversation.
+
+The current GitHub project files are the implementation baseline. Do not modify multiple systems or asset families at once. Before making any change, first state:
+1. the single goal,
+2. files allowed to change,
+3. files that must not change,
+4. acceptance and regression tests.
+
+Preserve current gameplay, save compatibility, standard filenames and folder paths unless explicitly approved. The current architectural priority is Asset Loader v1: assets_manifest.json, generic module loading, AtlasValidator, fallbacks and an asset report. Do not replace art during that milestone.
