@@ -1,46 +1,50 @@
-# Readi World — clean runtime
+# Readi World — projektmunkatér
 
-This branch is the clean P0 runtime baseline for Readi World.
+Ez a repository a Readi World közös projektmunkatere: a jelenlegi clean runtime, a kanonikus dokumentáció, az art/asset előkészítés, a fejlesztői eszközök és a referenciaanyagok egy helyen kezelhetők.
 
-The previous monolithic prototype is preserved by Git history and the
-`prototype-reference-2026-07-20` tag. No legacy runtime code, gameplay data,
-or art asset is copied into this baseline automatically.
+A korábbi monolitikus prototípus referencia marad; nem kötelező technikai alapja a jelenlegi clean runtime-nak.
 
-## Current scope
+## Fő projektterületek
 
-- thin `index.html` bootstrap shell;
-- mobile-first portrait presentation;
-- installable-web-app manifest;
-- versioned runtime configuration;
-- versioned World State v1 contract and immutable state snapshots;
-- validated, deterministic commands, transactions, and events;
-- atomic rollback and duplicate-command protection;
-- versioned Save Manager v1 envelope with SHA-256 integrity validation;
-- staged save activation with one verified active save and one automatic backup;
-- platform-independent storage boundary and an IndexedDB/Web Locks adapter;
-- corruption recovery, quota retry, and idempotent unchanged-state saves;
-- versioned asset manifest, validated registry, and controlled role/tag vocabulary;
-- deterministic semantic asset resolution with aliases, variants, fallbacks,
-  and structured diagnostics;
-- first playable portrait loop with a right-side touch-origin floating joystick
-  that hides on release, plus keyboard movement;
-- proximity gathering, one stable/versioned repair-timber recipe at the field
-  workbench, Forester Hut restoration, and persistent resume;
-- P0-04 save compatibility through an idempotent P0-05 state migration;
-- player maximum movement speed reduced by 20% after mobile play feedback;
-- gatherable fallen branches start inside the first camera view and use a
-  visible semantic highlight; existing saves migrate only still-available
-  resource positions;
-- Forester Hut completion grants Village Level 1, opens a persistent farm-path
-  preview gate, and presents a short milestone celebration;
-- first owner-approved production art family: manifest-driven standing pine,
-  matching stump and contact shadow with pivot-aware canvas rendering;
-- code-drawn pine fallback keeps the loop available if an image cannot load;
-- no crafting queue, full inventory, economy, or broader content pack yet.
+- `index.html`, `src/`, `data/`, `assets/`, `tests/` — az aktív clean runtime a repository gyökerében.
+- `RUNTIME_README.md` — a clean runtime aktuális technikai összefoglalója.
+- `docs/` — kanonikus tervezési, audit-, implementációs és art dokumentáció.
+- `art-source/` — forrás- és munkapéldányok az asset pipeline számára.
+- `tools/` — projekt- és assetelőkészítő eszközök, köztük Photoshop workflow-k.
+- `reference/` — történeti prototípusok és összehasonlító referenciaanyagok.
+- `PROJECT_CONTEXT.md` — rövid folytatási állapot és technikai kontextus.
+- `AGENTS.md` — agent/Codex munkaszabályok.
 
-Run `npm test` to verify the World State contract and `npm run check` for
-JavaScript syntax validation.
+## Aktív dokumentumok
 
-The next work package must deepen only one vertical-slice system or introduce
-one approved asset family. It must not combine final art, export/import,
-cloud sync, or unrelated world expansion.
+- [`docs/Dokumentumaudit.txt`](docs/Dokumentumaudit.txt) — az egyetlen kanonikus auditfájl; mindig ezt frissítjük.
+- [`docs/Audit-terkep.txt`](docs/Audit-terkep.txt) — az audit témáinak és sorrendjének térképe.
+- [`docs/Gameplay-bible.txt`](docs/Gameplay-bible.txt) — gameplay- és progression-forrás.
+- [`docs/Fajl-es-kep-protokoll.txt`](docs/Fajl-es-kep-protokoll.txt) — biztonságos fájl- és assetmunkafolyamat.
+- [`docs/Engine-design-bible-felulvizsgalat.md`](docs/Engine-design-bible-felulvizsgalat.md) — a történeti Engine & Design Bible tételes audit-összevetése.
+- [`docs/implementation-control/Readi_World_Mobile_Progress_Mode.md`](docs/implementation-control/Readi_World_Mobile_Progress_Mode.md) — laptop nélküli, production-safe placeholder munkamód.
+
+## Történeti dokumentumok
+
+- [`docs/history/Engine-design-bible.txt`](docs/history/Engine-design-bible.txt) — korábbi technikai elképzelések; nem irányadó.
+- [`docs/history/Beszelgetesindito.txt`](docs/history/Beszelgetesindito.txt) — elavult beszélgetésindító; nem irányadó.
+
+Ezeket csak előzményként őrizzük.
+
+## Referenciaanyagok
+
+- `reference/prototype/` — a korábbi prototípus kibontott runtime-munkapéldánya.
+- `reference/prototype.zip` — az érintetlen eredeti archívum.
+- `reference/candidate/index.html` — később kapott HTML-jelölt összehasonlításhoz; nem aktív runtime és önmagában nem teljes projekt.
+
+## Clean runtime
+
+A clean runtime közvetlenül a repository gyökerében marad, így a GitHub Pages és a meglévő runtime fájlútvonalak nem változnak. A technikai runtime-leírás a [`RUNTIME_README.md`](RUNTIME_README.md) fájlban található.
+
+A projektmunkatér és a runtime Git verziózása mostantól ugyanabban a repositoryban történik; külön helyi `runtime/.git` repositoryt nem kell projektforrásként kezelni.
+
+## Stabil fájlnevek
+
+Az aktív dokumentumok nevében nincs szükség folyamatos `final`, `v2`, `v3` jelölésekre. A dokumentumok belső fejléce jelzi az aktuális állapotot, a változástörténetet pedig Git kezeli.
+
+Nagyobb implementáció továbbra is csak a szükséges audit- és architektúraszerződések lezárása után indul, és egyszerre egy jól körülhatárolt rendszer- vagy assetcsalád-változás legyen aktív.
