@@ -1,0 +1,25 @@
+{
+  "schemaVersion": 1,
+  "profileId": "profile.family.environment.harvest-tree.pine.v1",
+  "familyId": "family.environment.harvest-tree.pine",
+  "packageId": "package.p1.forest.core",
+  "outputKey": "shadow",
+  "assetId": "world.shadow.tree.pine.harvestable.standard",
+  "role": "world.shadow.contact",
+  "revision": "r001",
+  "tags": ["biome.forest", "species.pine", "variant.standard", "milestone.p1"],
+  "state": "presentation",
+  "canvasPx": { "width": 128, "height": 64 },
+  "pivotPx": { "x": 64, "y": 48 },
+  "pivotNormalized": { "x": 0.5, "y": 0.75 },
+  "drawSizeWU": { "width": 2, "height": 1 },
+  "sourceDensityPxPerWU": 64,
+  "safePaddingPx": { "top": 8, "right": 16, "bottom": 16, "left": 16 },
+  "decodedRgbaMiB": 0.031,
+  "logicalFootprint": { "type": "none" },
+  "interactionAnchor": { "type": "none" },
+  "occluderShape": { "type": "none" },
+  "geometrySchema": "readi.geometry-sidecar.v1",
+  "groundContactConfirmed": true
+}
+
