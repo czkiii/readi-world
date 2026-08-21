@@ -24,6 +24,11 @@ const MOVE_SPEED = 172;
 const GATHER_DURATION = 0.85;
 const RESTORE_DURATION = 1.6;
 const WORLD_PIXELS_PER_UNIT = 32;
+const NORMAL_CAMERA_CSS_PIXELS_PER_WU = 20;
+const PLAYER_SCREEN_ANCHOR_Y = 0.6;
+const CHARACTER_DRAW_SIZE_WU = Object.freeze({ width: 1.5, height: 2.35 });
+const WORKBENCH_DRAW_SIZE_WU = Object.freeze({ width: 3, height: 2.3 });
+const HUT_DRAW_SIZE_WU = Object.freeze({ width: 10.5, height: 12 });
 const PINE_ASSET_REQUESTS = Object.freeze({
   standing: {
     role: "world.resource.tree.harvestable",
@@ -451,16 +456,18 @@ function renderWorld(context, canvas, view, pineAssets, layout) {
 
   context.setTransform(ratio, 0, 0, ratio, 0, 0);
   context.clearRect(0, 0, width, height);
-  const zoom = clamp(Math.min(width / 430, height / 840), 0.78, 1.08);
+  const zoom = NORMAL_CAMERA_CSS_PIXELS_PER_WU / WORLD_PIXELS_PER_UNIT;
+  const visibleWorldWidth = width / zoom;
+  const visibleWorldHeight = height / zoom;
   const cameraX = clamp(
-    view.player.components.position.x - width / (2 * zoom),
+    view.player.components.position.x - visibleWorldWidth / 2,
     0,
-    MINIMAL_LOOP_WORLD.width - width / zoom
+    Math.max(0, MINIMAL_LOOP_WORLD.width - visibleWorldWidth)
   );
   const cameraY = clamp(
-    view.player.components.position.y - height / (2 * zoom),
+    view.player.components.position.y - visibleWorldHeight * PLAYER_SCREEN_ANCHOR_Y,
     0,
-    MINIMAL_LOOP_WORLD.height - height / zoom
+    Math.max(0, MINIMAL_LOOP_WORLD.height - visibleWorldHeight)
   );
 
   context.save();
@@ -585,21 +592,34 @@ function drawWoodNode(context, { x, y }) {
 function drawHut(context, hut) {
   const { x, y } = hut.components.position;
   const restored = hut.components.restorationPhase === "restored";
+  const width = HUT_DRAW_SIZE_WU.width * WORLD_PIXELS_PER_UNIT;
+  const height = HUT_DRAW_SIZE_WU.height * WORLD_PIXELS_PER_UNIT;
+  const wallWidth = width * 0.78;
+  const wallHeight = height * 0.52;
+  const roofHeight = height - wallHeight;
+  const wallTop = y - wallHeight;
+  const doorWidth = 1.1 * WORLD_PIXELS_PER_UNIT;
+  const doorHeight = 2.3 * WORLD_PIXELS_PER_UNIT;
+
   context.fillStyle = restored ? "#9b693e" : "#675340";
-  context.fillRect(x - 82, y - 55, 164, 112);
+  context.fillRect(x - wallWidth / 2, wallTop, wallWidth, wallHeight);
   context.fillStyle = restored ? "#d08b45" : "#4d443c";
   context.beginPath();
-  context.moveTo(x - 105, y - 50);
-  context.lineTo(x, y - 130);
-  context.lineTo(x + 105, y - 50);
+  context.moveTo(x - width / 2, wallTop + 8);
+  context.lineTo(x, wallTop - roofHeight);
+  context.lineTo(x + width / 2, wallTop + 8);
   context.closePath();
   context.fill();
   context.fillStyle = restored ? "#f3c978" : "#262c28";
-  context.fillRect(x - 22, y + 2, 44, 55);
+  context.fillRect(x - doorWidth / 2, y - doorHeight, doorWidth, doorHeight);
   context.fillStyle = "rgb(20 29 24 / 78%)";
-  context.font = "700 20px system-ui";
+  context.font = "700 18px system-ui";
   context.textAlign = "center";
-  context.fillText(restored ? "Forester’s Hut" : "Romos kunyhó", x, y - 150);
+  context.fillText(
+    restored ? "Forester’s Hut" : "Romos kunyhó",
+    x,
+    wallTop - roofHeight - 16
+  );
 }
 
 function drawFarmPathGate(context, view, gate) {
@@ -637,35 +657,63 @@ function drawFarmPathGate(context, view, gate) {
 
 function drawWorkbench(context, workbench) {
   const { x, y } = workbench.components.position;
+  const width = WORKBENCH_DRAW_SIZE_WU.width * WORLD_PIXELS_PER_UNIT;
+  const height = WORKBENCH_DRAW_SIZE_WU.height * WORLD_PIXELS_PER_UNIT;
+  const topThickness = 0.36 * WORLD_PIXELS_PER_UNIT;
+  const topY = y - height * 0.58;
+  const legWidth = 0.28 * WORLD_PIXELS_PER_UNIT;
+
   context.fillStyle = "rgb(20 29 24 / 78%)";
-  context.font = "700 18px system-ui";
+  context.font = "700 16px system-ui";
   context.textAlign = "center";
-  context.fillText("Erdei munkapad", x, y - 62);
+  context.fillText("Erdei munkapad", x, topY - 18);
   context.fillStyle = "#765033";
-  context.fillRect(x - 55, y - 32, 110, 25);
+  context.fillRect(x - width / 2, topY, width, topThickness);
   context.fillStyle = "#4d3526";
-  context.fillRect(x - 45, y - 7, 12, 48);
-  context.fillRect(x + 33, y - 7, 12, 48);
+  context.fillRect(x - width * 0.36, topY + topThickness, legWidth, y - topY - topThickness);
+  context.fillRect(x + width * 0.36 - legWidth, topY + topThickness, legWidth, y - topY - topThickness);
   context.fillStyle = "#d29a4c";
-  context.fillRect(x - 20, y - 47, 42, 11);
+  context.fillRect(x - width * 0.18, topY - 0.28 * WORLD_PIXELS_PER_UNIT, width * 0.36, 0.22 * WORLD_PIXELS_PER_UNIT);
 }
 
 function drawPlayer(context, { x, y }) {
+  const width = CHARACTER_DRAW_SIZE_WU.width * WORLD_PIXELS_PER_UNIT;
+  const height = CHARACTER_DRAW_SIZE_WU.height * WORLD_PIXELS_PER_UNIT;
+  const headRadius = 0.34 * WORLD_PIXELS_PER_UNIT;
+  const bodyTop = y - height * 0.57;
+  const bodyHeight = height * 0.5;
+  const bodyWidth = width * 0.68;
+
   context.fillStyle = "rgb(0 0 0 / 18%)";
   context.beginPath();
-  context.ellipse(x, y + 23, 25, 12, 0, 0, Math.PI * 2);
+  context.ellipse(
+    x,
+    y + 0.06 * WORLD_PIXELS_PER_UNIT,
+    0.425 * WORLD_PIXELS_PER_UNIT,
+    0.19 * WORLD_PIXELS_PER_UNIT,
+    0,
+    0,
+    Math.PI * 2
+  );
   context.fill();
   context.fillStyle = "#2b5f67";
   context.beginPath();
-  context.roundRect(x - 18, y - 10, 36, 45, 15);
+  context.roundRect(
+    x - bodyWidth / 2,
+    bodyTop,
+    bodyWidth,
+    bodyHeight,
+    0.3 * WORLD_PIXELS_PER_UNIT
+  );
   context.fill();
+  const headY = y - height + headRadius;
   context.fillStyle = "#e7b886";
   context.beginPath();
-  context.arc(x, y - 21, 17, 0, Math.PI * 2);
+  context.arc(x, headY, headRadius, 0, Math.PI * 2);
   context.fill();
   context.fillStyle = "#5a3528";
   context.beginPath();
-  context.arc(x, y - 26, 18, Math.PI, Math.PI * 2);
+  context.arc(x, headY - 0.12 * WORLD_PIXELS_PER_UNIT, headRadius * 1.04, Math.PI, Math.PI * 2);
   context.fill();
 }
 
