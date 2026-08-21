@@ -1,0 +1,58 @@
+﻿{
+    "schemaVersion":  1,
+    "reportId":  "style-report.world.tree.pine.harvestable.standard.stump.r001",
+    "generatedUtc":  "2026-08-02T20:28:44.8652322Z",
+    "status":  "WITHIN_MEASURED_FAMILY_RANGE",
+    "disclaimer":  "Numeric style signals are warnings, not artistic approval.",
+    "candidate":  {
+                      "path":  "C:\\Users\\bobaa\\Documents\\ReadiWorldGameDeskopt\\art-source\\30_normalized\\environment\\world-tree-pine-harvestable-standard-stump\\world-tree-pine-harvestable-standard-stump__r001__normalized.png",
+                      "width":  128,
+                      "height":  96,
+                      "aspectRatio":  1.3333,
+                      "alphaOccupancy":  0.1602,
+                      "visibleBoundsRatio":  {
+                                                 "width":  0.4922,
+                                                 "height":  0.5104
+                                             },
+                      "averageRgb":  {
+                                         "r":  141.87,
+                                         "g":  97.47,
+                                         "b":  34.46
+                                     },
+                      "averageLuminance":  102.36,
+                      "averageSaturation":  0.7661,
+                      "edgeDensity":  0.2424
+                  },
+    "references":  [
+                       {
+                           "path":  "C:\\Users\\bobaa\\Documents\\ReadiWorldGameDeskopt\\art-source\\30_normalized\\environment\\world-tree-pine-harvestable-standard\\world-tree-pine-harvestable-standard__r001__normalized.png",
+                           "width":  384,
+                           "height":  448,
+                           "aspectRatio":  0.8571,
+                           "alphaOccupancy":  0.3234,
+                           "visibleBoundsRatio":  {
+                                                      "width":  0.6953,
+                                                      "height":  0.8549
+                                                  },
+                           "averageRgb":  {
+                                              "r":  69.07,
+                                              "g":  82.95,
+                                              "b":  32.69
+                                          },
+                           "averageLuminance":  76.37,
+                           "averageSaturation":  0.6203,
+                           "edgeDensity":  0.1147
+                       }
+                   ],
+    "comparisons":  [
+                        {
+                            "reference":  "C:\\Users\\bobaa\\Documents\\ReadiWorldGameDeskopt\\art-source\\30_normalized\\environment\\world-tree-pine-harvestable-standard\\world-tree-pine-harvestable-standard__r001__normalized.png",
+                            "distance":  0.1266,
+                            "signal":  "REVIEW"
+                        }
+                    ],
+    "thresholds":  {
+                       "closeMax":  0.08,
+                       "reviewMax":  0.16
+                   }
+}
