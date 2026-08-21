@@ -7,6 +7,7 @@ import { createSaveManager } from "../../core/save/save-manager.js";
 import { createWorldStateStore } from "../../core/world-state/world-state-store.js";
 import { createVirtualJoystick } from "../../input/virtual-joystick.js?v=i2-floating-joystick";
 import { createIndexedDbSaveStorageAdapter } from "../../platform/web/indexeddb-save-storage-adapter.js";
+import { loadVerticalSliceLayout } from "../vertical-slice/vertical-slice-layout.js";
 import {
   createInitialMinimalLoopState,
   createMinimalLoopCommand,
@@ -40,28 +41,6 @@ const PINE_ASSET_REQUESTS = Object.freeze({
     variantTags: []
   }
 });
-const PINE_SCENE_LAYOUT = Object.freeze([
-  { type: "standing", x: 95, y: 1490 },
-  { type: "standing", x: 190, y: 1320 },
-  { type: "standing", x: 870, y: 1460 },
-  { type: "standing", x: 915, y: 1240 },
-  { type: "standing", x: 105, y: 1050 },
-  { type: "standing", x: 895, y: 980 },
-  { type: "standing", x: 105, y: 745 },
-  { type: "standing", x: 890, y: 690 },
-  { type: "standing", x: 125, y: 475 },
-  { type: "standing", x: 850, y: 455 },
-  { type: "standing", x: 90, y: 220 },
-  { type: "standing", x: 920, y: 250 },
-  { type: "standing", x: 300, y: 190 },
-  { type: "standing", x: 720, y: 190 },
-  { type: "standing", x: 270, y: 820 },
-  { type: "standing", x: 730, y: 780 },
-  { type: "standing", x: 280, y: 1160 },
-  { type: "standing", x: 720, y: 1390 },
-  { type: "stump", x: 305, y: 1450 },
-  { type: "stump", x: 700, y: 1060 }
-]);
 
 export async function startMinimalLoopRuntime(elements) {
   const {
@@ -81,6 +60,7 @@ export async function startMinimalLoopRuntime(elements) {
 
   if (!context) throw new Error("Canvas 2D context is unavailable.");
 
+  const layout = await loadVerticalSliceLayout();
   const assetRegistry = await loadAssetRegistry();
   const pineAssets = await loadAssetImageSet(
     assetRegistry,
@@ -330,7 +310,7 @@ export async function startMinimalLoopRuntime(elements) {
     );
     view = transientPlayerView(view, playerPosition);
     updateInteraction(deltaTime);
-    renderWorld(context, canvas, view, pineAssets);
+    renderWorld(context, canvas, view, pineAssets, layout);
     requestAnimationFrame(frame);
   };
 
@@ -456,7 +436,7 @@ function selectTarget(view, playerPosition, lockedTargetId) {
     )[0] ?? null;
 }
 
-function renderWorld(context, canvas, view, pineAssets) {
+function renderWorld(context, canvas, view, pineAssets, layout) {
   const width = canvas.clientWidth;
   const height = canvas.clientHeight;
   const ratio = Math.min(2, window.devicePixelRatio || 1);
@@ -486,14 +466,15 @@ function renderWorld(context, canvas, view, pineAssets) {
   context.save();
   context.scale(zoom, zoom);
   context.translate(-cameraX, -cameraY);
-  drawGround(context);
-  drawPath(context);
+  drawGround(context, layout);
+  drawPaths(context, layout);
   drawPineLayer(
     context,
     pineAssets,
+    layout.scenery.pines,
     (item) => item.y < view.player.components.position.y
   );
-  drawFarmPathGate(context, view);
+  drawFarmPathGate(context, view, layout.landmarks.farmGate);
   drawHut(context, view.hut);
   drawWorkbench(context, view.workbench);
   view.woodNodes
@@ -503,16 +484,17 @@ function renderWorld(context, canvas, view, pineAssets) {
   drawPineLayer(
     context,
     pineAssets,
+    layout.scenery.pines,
     (item) => item.y >= view.player.components.position.y
   );
   context.restore();
 }
 
-function drawGround(context) {
+function drawGround(context, layout) {
   context.fillStyle = "#78965e";
-  context.fillRect(0, 0, MINIMAL_LOOP_WORLD.width, MINIMAL_LOOP_WORLD.height);
-  for (let y = 0; y < MINIMAL_LOOP_WORLD.height; y += 80) {
-    for (let x = 0; x < MINIMAL_LOOP_WORLD.width; x += 80) {
+  context.fillRect(0, 0, layout.world.width, layout.world.height);
+  for (let y = 0; y < layout.world.height; y += 80) {
+    for (let x = 0; x < layout.world.width; x += 80) {
       context.fillStyle = (x / 80 + y / 80) % 2 === 0
         ? "rgb(255 255 255 / 2.5%)"
         : "rgb(31 65 35 / 3%)";
@@ -521,18 +503,26 @@ function drawGround(context) {
   }
 }
 
-function drawPath(context) {
-  context.strokeStyle = "#c9aa72";
-  context.lineWidth = 118;
+function drawPaths(context, layout) {
+  drawPolylinePath(context, layout.paths.spine, "#c9aa72");
+  drawPolylinePath(context, layout.paths.forestLoop, "#b99d69");
+  drawPolylinePath(context, layout.paths.farmBranch, "#c3a46d");
+}
+
+function drawPolylinePath(context, path, color) {
+  if (!path?.points?.length) return;
+  context.strokeStyle = color;
+  context.lineWidth = path.width;
   context.lineCap = "round";
+  context.lineJoin = "round";
   context.beginPath();
-  context.moveTo(500, 1500);
-  context.bezierCurveTo(420, 1180, 560, 850, 500, 350);
+  context.moveTo(path.points[0][0], path.points[0][1]);
+  for (const [x, y] of path.points.slice(1)) context.lineTo(x, y);
   context.stroke();
 }
 
-function drawPineLayer(context, pineAssets, predicate) {
-  for (const item of PINE_SCENE_LAYOUT.filter(predicate)) {
+function drawPineLayer(context, pineAssets, pineLayout, predicate) {
+  for (const item of pineLayout.filter(predicate)) {
     const target = pineAssets[item.type];
 
     if (target?.image) {
@@ -612,12 +602,12 @@ function drawHut(context, hut) {
   context.fillText(restored ? "Forester’s Hut" : "Romos kunyhó", x, y - 150);
 }
 
-function drawFarmPathGate(context, view) {
+function drawFarmPathGate(context, view, gate) {
   const unlocked = view.progression.unlockedAreaIds.includes(
     "area.farm-path-preview"
   );
-  const x = 500;
-  const y = 92;
+  const x = gate.x;
+  const y = gate.y;
 
   context.fillStyle = unlocked ? "#d5b16c" : "#625344";
   context.fillRect(x - 92, y - 9, 184, 18);
