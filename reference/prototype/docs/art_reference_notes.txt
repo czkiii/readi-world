@@ -1,0 +1,4 @@
+# Art Reference Notes
+
+Placeholder for art direction and visual reference documentation.
+This file will contain approved visual direction, style guidelines, and asset specifications.

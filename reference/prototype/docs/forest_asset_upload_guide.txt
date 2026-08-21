@@ -1,0 +1,97 @@
+FOREST ASSET UPLOAD GUIDE
+
+Goal
+This file is the quick reminder for where forest PNG assets go, what size they must use, and which data files must be updated after upload.
+
+CURRENT FOREST RUNTIME FILES
+
+1. Main forest atlas image
+Path:
+assets/environment/forest_atlas.png
+
+Used by:
+data/assets_manifest.json
+data/sprite_registry.json
+data/forest_module.json
+
+Required format:
+- PNG
+- Current supported profile: 1536 x 1024 pixels
+- Grid: 3 columns x 2 rows
+- Cell size: 512 x 512 pixels per sprite cell
+- Preferred background: transparent
+- If transparency is not possible, use a clean light background only if the runtime removal policy is still appropriate
+
+What belongs here:
+- harvestable trees
+- bushes and foliage
+- future forest props that share the same visual family
+
+CURRENT CELL EXPECTATION FOR forest_atlas.png
+
+- row 0 col 0: oak_tree_01
+- row 0 col 1: oak_tree_02
+- row 1 col 0: pine_tree_01
+- row 1 col 2: bush_01
+
+If you replace or add sprites:
+1. Upload the new PNG to assets/environment/forest_atlas.png if you are replacing the existing atlas.
+2. If the layout of cells changes, update data/sprite_registry.json.
+3. If the gameplay meaning changes, update data/forest_module.json.
+
+DATA FILE RESPONSIBILITIES
+
+data/assets_manifest.json
+- Turns the forest module on or off.
+- Declares whether the module is required.
+- Declares fallback behavior.
+
+data/sprite_registry.json
+- Declares atlas file path.
+- Declares atlas dimensions and grid.
+- Declares sprite cell position.
+- Declares pivot and drawSize.
+- Declares role and tags such as harvestable_tree or foliage.
+
+data/forest_module.json
+- Declares which forest node types exist.
+- Declares which role/tags should be used to pick the sprite.
+- Declares loot tables.
+- Declares harvest duration, respawn, and spawn rules.
+
+WHEN TO MAKE A NEW ATLAS VS REUSE forest_atlas.png
+
+Reuse assets/environment/forest_atlas.png when:
+- the asset is a tree, bush, or normal forest prop
+- it still fits the 3x2 1536 x 1024 profile
+
+Consider a new atlas only when:
+- the forest family outgrows 6 cells
+- animation or effect needs a separate atlas family
+- the profile must change intentionally
+
+GROUND AND NON-FOREST FILES
+
+Forest ground textures go here:
+assets/environment/ground_tiles.png
+
+Required format:
+- PNG
+- 1536 x 1024 pixels
+- 3 x 2 grid
+- 512 x 512 per cell
+
+Tool overlays go here:
+assets/characters/tool_overlays.png
+
+Effects go here:
+assets/effects/effects_atlas.png
+
+CHECKLIST AFTER EVERY PNG UPLOAD
+
+1. Put the PNG in the correct assets folder.
+2. Confirm the size matches the expected atlas profile.
+3. Update data/sprite_registry.json if cell positions, pivots, roles, or drawSize changed.
+4. Update data/forest_module.json if spawn rules, node types, harvest rules, or loot changed.
+5. Keep data/assets_manifest.json enabled for the module.
+6. Run the game and confirm the forest still loads, harvest works, and fallback is not unexpectedly active.
