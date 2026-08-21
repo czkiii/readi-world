@@ -4,17 +4,17 @@ import fs from "node:fs/promises";
 
 import { validateVerticalSliceLayout } from "../src/gameplay/vertical-slice/vertical-slice-layout.js";
 
-test("validates the I3 vertical-slice authored layout", async () => {
+test("validates the I3.1A expanded vertical-slice authored layout", async () => {
   const layout = validateVerticalSliceLayout(JSON.parse(
     await fs.readFile(new URL("../data/vertical-slice-layout.json", import.meta.url), "utf8")
   ));
 
-  assert.equal(layout.id, "layout.main-village.vertical-slice.i3");
-  assert.deepEqual(layout.world, { width: 1000, height: 1600 });
-  assert.equal(layout.paths.spine.points.length, 6);
+  assert.equal(layout.id, "layout.main-village.vertical-slice.i3-1a");
+  assert.deepEqual(layout.world, { width: 1600, height: 2800 });
+  assert.equal(layout.paths.spine.points.length, 7);
   assert.equal(layout.paths.forestLoop.points.length, 6);
-  assert.equal(layout.paths.farmBranch.points.at(-1)[0], 850);
-  assert.ok(layout.scenery.pines.length >= 18);
+  assert.equal(layout.paths.farmBranch.points.at(-1)[0], 1380);
+  assert.ok(layout.scenery.pines.length >= 20);
 });
 
 test("rejects out-of-bounds authored points", () => {

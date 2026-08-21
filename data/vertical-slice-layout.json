@@ -1,34 +1,36 @@
 {
   "schemaVersion": 1,
-  "id": "layout.main-village.vertical-slice.i3",
-  "world": { "width": 1000, "height": 1600 },
+  "id": "layout.main-village.vertical-slice.i3-1a",
+  "world": { "width": 1600, "height": 2800 },
   "zones": [
-    { "id": "ZONE-P1-ARRIVAL", "label": "Arrival", "rect": [360, 1320, 330, 250] },
-    { "id": "ZONE-P1-VILLAGE", "label": "Village Clearing", "rect": [250, 1040, 610, 360] },
-    { "id": "ZONE-P1-WORKYARD", "label": "Workyard", "rect": [360, 590, 300, 330] },
-    { "id": "ZONE-P1-FOREST-EDGE", "label": "Forest Edge", "rect": [120, 650, 570, 410] },
-    { "id": "ZONE-P1-FOREST-GROVE", "label": "Forest Grove", "rect": [40, 250, 500, 520] },
-    { "id": "ZONE-P1-HUT", "label": "Forester Hut", "rect": [350, 80, 360, 390] },
-    { "id": "ZONE-P1-FARM-GATE", "label": "Farm Gate", "rect": [700, 430, 270, 390] }
+    { "id": "ZONE-P1-ARRIVAL", "label": "Arrival", "rect": [570, 2350, 520, 380] },
+    { "id": "ZONE-P1-VILLAGE", "label": "Village Clearing", "rect": [390, 1880, 930, 620] },
+    { "id": "ZONE-P1-WORKYARD", "label": "Workyard", "rect": [570, 1450, 520, 520] },
+    { "id": "ZONE-P1-FOREST-EDGE", "label": "Forest Edge", "rect": [180, 1180, 900, 700] },
+    { "id": "ZONE-P1-FOREST-GROVE", "label": "Forest Grove", "rect": [70, 500, 820, 900] },
+    { "id": "ZONE-P1-HUT", "label": "Forester Hut", "rect": [520, 120, 620, 720] },
+    { "id": "ZONE-P1-FARM-GATE", "label": "Farm Gate", "rect": [1120, 850, 430, 720] }
   ],
   "paths": {
-    "spine": { "width": 112, "points": [[500, 1500], [520, 1280], [500, 1040], [500, 820], [500, 600], [500, 350]] },
-    "forestLoop": { "width": 74, "points": [[500, 920], [350, 880], [245, 720], [290, 540], [420, 470], [500, 600]] },
-    "farmBranch": { "width": 74, "points": [[500, 760], [650, 720], [760, 670], [850, 610]] }
+    "spine": { "width": 128, "points": [[800, 2580], [760, 2290], [835, 1990], [810, 1660], [720, 1370], [730, 1040], [760, 650]] },
+    "forestLoop": { "width": 82, "points": [[810, 1660], [560, 1570], [360, 1350], [390, 1030], [570, 820], [730, 1040]] },
+    "farmBranch": { "width": 82, "points": [[720, 1370], [980, 1310], [1180, 1240], [1380, 1170]] }
   },
-  "landmarks": { "farmGate": { "x": 850, "y": 610, "approachX": 775, "approachY": 655 } },
+  "landmarks": { "farmGate": { "x": 1380, "y": 1170, "approachX": 1260, "approachY": 1210 } },
   "scenery": {
     "pines": [
-      { "type": "standing", "x": 90, "y": 1490 }, { "type": "standing", "x": 190, "y": 1370 },
-      { "type": "standing", "x": 870, "y": 1460 }, { "type": "standing", "x": 915, "y": 1260 },
-      { "type": "standing", "x": 105, "y": 1090 }, { "type": "standing", "x": 895, "y": 1030 },
-      { "type": "standing", "x": 95, "y": 810 }, { "type": "standing", "x": 900, "y": 860 },
-      { "type": "standing", "x": 125, "y": 565 }, { "type": "standing", "x": 800, "y": 500 },
-      { "type": "standing", "x": 80, "y": 270 }, { "type": "standing", "x": 900, "y": 270 },
-      { "type": "standing", "x": 270, "y": 180 }, { "type": "standing", "x": 735, "y": 180 },
-      { "type": "standing", "x": 235, "y": 680 }, { "type": "standing", "x": 325, "y": 505 },
-      { "type": "standing", "x": 410, "y": 425 }, { "type": "standing", "x": 245, "y": 930 },
-      { "type": "stump", "x": 305, "y": 1450 }, { "type": "stump", "x": 690, "y": 1010 }
+      { "type": "standing", "x": 130, "y": 2580 }, { "type": "standing", "x": 310, "y": 2390 },
+      { "type": "standing", "x": 1440, "y": 2530 }, { "type": "standing", "x": 1490, "y": 2210 },
+      { "type": "standing", "x": 160, "y": 2060 }, { "type": "standing", "x": 1450, "y": 1920 },
+      { "type": "standing", "x": 130, "y": 1690 }, { "type": "standing", "x": 1470, "y": 1600 },
+      { "type": "standing", "x": 180, "y": 1320 }, { "type": "standing", "x": 1320, "y": 1410 },
+      { "type": "standing", "x": 150, "y": 930 }, { "type": "standing", "x": 1470, "y": 930 },
+      { "type": "standing", "x": 190, "y": 500 }, { "type": "standing", "x": 1410, "y": 500 },
+      { "type": "standing", "x": 430, "y": 310 }, { "type": "standing", "x": 1180, "y": 300 },
+      { "type": "standing", "x": 390, "y": 1180 }, { "type": "standing", "x": 520, "y": 900 },
+      { "type": "standing", "x": 670, "y": 760 }, { "type": "standing", "x": 350, "y": 1510 },
+      { "type": "standing", "x": 1020, "y": 980 }, { "type": "standing", "x": 1120, "y": 720 },
+      { "type": "stump", "x": 430, "y": 2320 }, { "type": "stump", "x": 1110, "y": 1770 }
     ]
   }
 }

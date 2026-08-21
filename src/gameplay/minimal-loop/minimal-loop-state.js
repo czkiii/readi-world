@@ -9,8 +9,8 @@ import {
 } from "./minimal-crafting-contract.js";
 
 export const MINIMAL_LOOP_WORLD = Object.freeze({
-  width: 1000,
-  height: 1600,
+  width: 1600,
+  height: 2800,
   gatherRadius: 92,
   craftingRadius: 112,
   restorationRadius: 122,
@@ -26,14 +26,18 @@ const WOOD_NODE_IDS = Object.freeze([
   "resource.wood-03",
   "resource.wood-04"
 ]);
-const RESOURCE_LAYOUT_VERSION = 2;
+const RESOURCE_LAYOUT_VERSION = 3;
 const RESTORATION_MILESTONE_VERSION = 1;
 const FARM_PATH_AREA_ID = "area.farm-path-preview";
+const PREVIOUS_WORLD_SIZE = Object.freeze({ width: 1000, height: 1600 });
+const PLAYER_START_POSITION = Object.freeze([800, 2460]);
+const HUT_POSITION = Object.freeze([760, 520]);
+const WORKBENCH_POSITION = Object.freeze([810, 1660]);
 const WOOD_NODE_POSITIONS = Object.freeze([
-  Object.freeze([390, 1120]),
-  Object.freeze([610, 1080]),
-  Object.freeze([380, 850]),
-  Object.freeze([620, 800])
+  Object.freeze([650, 2220]),
+  Object.freeze([930, 2130]),
+  Object.freeze([610, 1900]),
+  Object.freeze([1010, 1840])
 ]);
 
 export function createInitialMinimalLoopState() {
@@ -44,22 +48,22 @@ export function createInitialMinimalLoopState() {
   state.entities[PLAYER_ID] = createEntity(
     PLAYER_ID,
     "player.avatar",
-    500,
-    1160,
+    PLAYER_START_POSITION[0],
+    PLAYER_START_POSITION[1],
     { safeAnchorId: "anchor.village-entry" }
   );
   state.entities[HUT_ID] = createEntity(
     HUT_ID,
     "building.forester-hut",
-    500,
-    350,
+    HUT_POSITION[0],
+    HUT_POSITION[1],
     { restorationPhase: "ruined" }
   );
   state.entities[WORKBENCH_ID] = createEntity(
     WORKBENCH_ID,
     "workstation.field-bench",
-    500,
-    700,
+    WORKBENCH_POSITION[0],
+    WORKBENCH_POSITION[1],
     {
       capabilities: [
         REPAIR_TIMBER_RECIPE.requirements.workstationCapability
@@ -117,11 +121,23 @@ export const MINIMAL_LOOP_COMMAND_HANDLERS = Object.freeze({
       throw loopError("RESOURCE_LAYOUT_ALREADY_CURRENT");
     }
 
+    const player = requireEntity(draft, PLAYER_ID, "player.avatar");
+    player.components.position = scaleLegacyPosition(player.components.position);
+
+    const hut = requireEntity(draft, HUT_ID, "building.forester-hut");
+    hut.components.position = toPosition(HUT_POSITION);
+
+    const workbench = requireEntity(
+      draft,
+      WORKBENCH_ID,
+      "workstation.field-bench"
+    );
+    workbench.components.position = toPosition(WORKBENCH_POSITION);
+
     WOOD_NODE_IDS.forEach((id, index) => {
       const node = requireEntity(draft, id, "resource.fallen-branch");
       if (!node.components.available) return;
-      const [x, y] = WOOD_NODE_POSITIONS[index];
-      node.components.position = { x, y };
+      node.components.position = toPosition(WOOD_NODE_POSITIONS[index]);
     });
     loop.resourceLayoutVersion = RESOURCE_LAYOUT_VERSION;
     emit("migration.resource-layout-updated", {
@@ -142,8 +158,8 @@ export const MINIMAL_LOOP_COMMAND_HANDLERS = Object.freeze({
     draft.entities[WORKBENCH_ID] = createEntity(
       WORKBENCH_ID,
       "workstation.field-bench",
-      500,
-      700,
+      WORKBENCH_POSITION[0],
+      WORKBENCH_POSITION[1],
       {
         capabilities: [
           REPAIR_TIMBER_RECIPE.requirements.workstationCapability
@@ -429,6 +445,23 @@ function requireProgressionState(loop) {
   }
 
   return progression;
+}
+
+function toPosition([x, y]) {
+  return { x, y };
+}
+
+function scaleLegacyPosition(position) {
+  return {
+    x: Math.min(
+      MINIMAL_LOOP_WORLD.width,
+      Math.max(0, position.x / PREVIOUS_WORLD_SIZE.width * MINIMAL_LOOP_WORLD.width)
+    ),
+    y: Math.min(
+      MINIMAL_LOOP_WORLD.height,
+      Math.max(0, position.y / PREVIOUS_WORLD_SIZE.height * MINIMAL_LOOP_WORLD.height)
+    )
+  };
 }
 
 function distance(left, right) {
