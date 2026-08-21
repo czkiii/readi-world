@@ -1,0 +1,54 @@
+{
+  "schemaVersion": 1,
+  "id": "spatial.main-village.i3-1b",
+  "unit": {
+    "id": "WU",
+    "sourcePixelsPerWU": 64,
+    "status": "locked-by-d4"
+  },
+  "anchors": {
+    "character": {
+      "referenceHeightWU": 2.0,
+      "status": "locked-reference"
+    },
+    "productionPine": {
+      "assetId": "world.tree.pine.harvestable.standard",
+      "drawSizeWU": { "width": 6.0, "height": 7.0 },
+      "logicalFootprint": { "type": "circle", "radiusWU": 0.575 },
+      "interactionRadiusWU": 1.45,
+      "status": "production-anchor"
+    }
+  },
+  "placeholderContract": {
+    "requiredGeometry": [
+      "logicalFootprint",
+      "pivot",
+      "expectedDrawSize",
+      "interactionAnchor"
+    ],
+    "buildingAdditionalGeometry": [
+      "entrancePoint",
+      "clearRadius"
+    ],
+    "rule": "placeholder-must-represent-future-gameplay-footprint"
+  },
+  "paths": {
+    "approvalStatus": "prototype-required",
+    "finalWidthLocked": false,
+    "finalRoutingLocked": false,
+    "representativeAssetRequired": "path-or-terrain-transition",
+    "currentTuningOnly": {
+      "runtimePixelsPerWU": 32,
+      "mainPathWidthWU": 4.0,
+      "secondaryPathWidthWU": 2.5625,
+      "source": "I3.1A runtime values",
+      "approved": false
+    }
+  },
+  "composition": {
+    "finalBuildingSpacingLocked": false,
+    "finalForestDensityLocked": false,
+    "finalCameraFramingLocked": false,
+    "productionRepresentativeRequiredBeforeLock": true
+  }
+}
