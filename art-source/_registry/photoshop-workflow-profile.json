@@ -1,0 +1,51 @@
+{
+  "schemaVersion": 1,
+  "profileId": "readi.photoshop.workflow.ps2020.v1",
+  "workspace": {
+    "name": "Readi World",
+    "requiredPanels": ["Layers", "Properties", "Actions", "History", "Navigator"],
+    "installationOwner": "OWNER_ONCE",
+    "localSetupStatus": "CONFIRMED_2026-08-02",
+    "usageMode": "MAXIMIZED_WINDOW"
+  },
+  "action": {
+    "setName": "Readi World",
+    "name": "ReadiWorldScript",
+    "dispatcher": "tools/photoshop/ReadiWorldScript.jsx",
+    "recommendedShortcut": "Ctrl+Shift+F12",
+    "confirmedShortcutDisplay": "Shift+Ctrl+F12",
+    "verifyConflictBeforeAssignment": true,
+    "localSetupStatus": "CONFIRMED_2026-08-02",
+    "backupPath": "tools/photoshop/actions/Readi-World-PS2020.atn"
+  },
+  "dailyShortcuts": [
+    { "keys": "Ctrl+0", "purpose": "FIT_AND_SILHOUETTE_REVIEW" },
+    { "keys": "Ctrl+1", "purpose": "PIXEL_AND_ALPHA_EDGE_REVIEW" },
+    { "keys": "Ctrl+J", "purpose": "NON_DESTRUCTIVE_DUPLICATE" },
+    { "keys": "Ctrl+G", "purpose": "GROUP_LAYERS" },
+    { "keys": "Ctrl+T", "purpose": "MANUAL_TRANSFORM" },
+    { "keys": "F7", "purpose": "LAYERS_PANEL" },
+    { "keys": "F9", "purpose": "ACTIONS_PANEL" }
+  ],
+  "automation": {
+    "codexOwns": [
+      "PATH_AND_NAME_PLANNING",
+      "PROMPT_MASTER_EXPORT_LINKAGE",
+      "GEOMETRY_AND_PASSPORT_DRAFT",
+      "FILE_LEVEL_PREFLIGHT_AND_POSTFLIGHT",
+      "CONTACT_AND_QA_SHEET_PREPARATION"
+    ],
+    "ownerOwns": ["ARTISTIC_EDITS", "VARIANT_SELECTION", "OWNER_APPROVAL"],
+    "forbiddenAutomaticMutations": [
+      "SAVE_EVENT_EXPORT",
+      "SILENT_MASTER_OVERWRITE",
+      "RUNTIME_ACTIVATION",
+      "UNREVIEWED_CANONICAL_RENAME"
+    ]
+  },
+  "review": {
+    "backgrounds": ["TRANSPARENT", "LIGHT", "DARK", "CHROMA_GREEN", "CHROMA_MAGENTA"],
+    "views": ["FIT", "ONE_HUNDRED_PERCENT", "SILHOUETTE", "PIVOT_AND_BOUNDS"],
+    "maxOwnerDecisionPacketImages": 1
+  }
+}

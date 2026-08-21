@@ -1,0 +1,48 @@
+{
+  "schemaVersion": 1,
+  "policyId": "readi.asset-prep.optimization.v1",
+  "productionLaunch": {
+    "actionName": "ReadiWorldScript",
+    "dispatcher": "tools/photoshop/ReadiWorldScript.jsx",
+    "allowBrowseDuringProduction": false
+  },
+  "weeklyBudget": {
+    "maxGuiScreenshotsPerAssetRun": 3,
+    "maxFullPipelineRetries": 1,
+    "requireIsolatedProofAfterFirstFailure": true,
+    "preferFileChecksOverGuiChecks": true
+  },
+  "photoshop2020": {
+    "clipboardPixelTransferAllowed": false,
+    "numericTranslationUnit": "px-explicit",
+    "masterAlpha": "binary-compatible",
+    "releaseAlpha": "soft-lossless-local-normalization",
+    "nativeFolderPickerForCanonicalPaths": false
+  },
+  "paths": {
+    "createBeforePhotoshop": true,
+    "canonicalPlanRoot": "art-source/_registry/path-plans",
+    "scaffoldTool": "tools/art-pipeline/asset-prep-scaffold.ps1",
+    "requireResolvedPathMap": true
+  },
+  "delegation": {
+    "profile": "art-source/_registry/photoshop-workflow-profile.json",
+    "preferCodexFilePreparation": true,
+    "ownerInputOnlyForVisualDecisionOrOneTimeSetup": true,
+    "requireSingleOwnerDecisionPacket": true
+  },
+  "controlPacket": {
+    "tool": "tools/art-pipeline/asset-prep-control-packet.ps1",
+    "qaContactSheet": true,
+    "measuredStyleSignal": true,
+    "resumeSession": true,
+    "ownerAbsenceDoesNotBlockSafeAutonomousSteps": true
+  },
+  "readiness": {
+    "technicalPassDoesNotActivateRuntime": true,
+    "requireArtQa": true,
+    "requireOwnerApproval": true,
+    "requireSeparateRuntimeIntegrationPackage": true
+  },
+  "protectedRoots": ["runtime"]
+}
