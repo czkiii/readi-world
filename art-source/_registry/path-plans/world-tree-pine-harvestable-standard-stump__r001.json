@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 1,
+  "planId": "path-plan.world.tree.pine.harvestable.standard.stump.r001",
+  "assetId": "world.tree.pine.harvestable.standard.stump",
+  "familyId": "family.environment.harvest-tree.pine",
+  "revision": "r001",
+  "promptRunId": "PRUN-20260802-002",
+  "directories": {
+    "inboxRun": "art-source/00_inbox/environment/family-environment-harvest-tree-pine/PRUN-20260802-002",
+    "briefs": "art-source/10_briefs/environment/family-environment-harvest-tree-pine",
+    "masters": "art-source/20_masters/environment/world-tree-pine-harvestable-standard-stump",
+    "normalized": "art-source/30_normalized/environment/world-tree-pine-harvestable-standard-stump",
+    "review": "art-source/40_review/environment/world-tree-pine-harvestable-standard-stump",
+    "archive": "art-source/90_archive/environment/world-tree-pine-harvestable-standard-stump"
+  },
+  "files": {
+    "sourceChroma": "art-source/00_inbox/environment/family-environment-harvest-tree-pine/PRUN-20260802-002/world-tree-pine-harvestable-standard-stump__exploration-prun-20260802-002-a-magenta.png",
+    "sourceCutout": "art-source/00_inbox/environment/family-environment-harvest-tree-pine/PRUN-20260802-002/world-tree-pine-harvestable-standard-stump__exploration-prun-20260802-002-a-cutout.png",
+    "photoshop2020Cutout": "art-source/00_inbox/environment/family-environment-harvest-tree-pine/PRUN-20260802-002/world-tree-pine-harvestable-standard-stump__exploration-prun-20260802-002-a-cutout-ps2020.png",
+    "runLog": "art-source/00_inbox/environment/family-environment-harvest-tree-pine/PRUN-20260802-002/RUN-LOG.md",
+    "promptSnapshot": "art-source/10_briefs/environment/family-environment-harvest-tree-pine/PRUN-20260802-002-prompt-snapshot.md",
+    "master": "art-source/20_masters/environment/world-tree-pine-harvestable-standard-stump/world-tree-pine-harvestable-standard-stump__master-r001.psd",
+    "normalized": "art-source/30_normalized/environment/world-tree-pine-harvestable-standard-stump/world-tree-pine-harvestable-standard-stump__r001__normalized.png",
+    "geometry": "art-source/30_normalized/environment/world-tree-pine-harvestable-standard-stump/world-tree-pine-harvestable-standard-stump__r001__geometry.json",
+    "passport": "art-source/30_normalized/environment/world-tree-pine-harvestable-standard-stump/world-tree-pine-harvestable-standard-stump__r001__passport-draft.json",
+    "review": "art-source/40_review/environment/world-tree-pine-harvestable-standard-stump/world-tree-pine-harvestable-standard-stump__r001__review.png"
+  },
+  "resolvedMap": "art-source/00_inbox/environment/family-environment-harvest-tree-pine/PRUN-20260802-002/PATH-MAP.json"
+}
