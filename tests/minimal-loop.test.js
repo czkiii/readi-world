@@ -45,7 +45,7 @@ test("creates a sparse minimal loop with stable persistent ids", () => {
   assert.deepEqual(view.progression.unlockedAreaIds, []);
   assert.deepEqual(
     view.woodNodes.slice(0, 2).map((node) => node.components.position),
-    [{ x: 390, y: 1120 }, { x: 610, y: 1080 }]
+    [{ x: 650, y: 2220 }, { x: 930, y: 2130 }]
   );
 });
 
@@ -65,10 +65,10 @@ test("declares one stable and versioned minimal crafting recipe", () => {
 
 test("commits a validated player position checkpoint", () => {
   const store = createStore();
-  dispatch(store, "movement.commit-position", { x: 270, y: 1120 });
+  dispatch(store, "movement.commit-position", { x: 432, y: 1960 });
   assert.deepEqual(
     getMinimalLoopView(store.getState()).player.components.position,
-    { x: 270, y: 1120 }
+    { x: 432, y: 1960 }
   );
 });
 
@@ -86,7 +86,7 @@ test("rejects an out-of-bounds checkpoint atomically", () => {
 
 test("collects a nearby resource exactly once", () => {
   const store = createStore();
-  dispatch(store, "movement.commit-position", { x: 390, y: 1120 });
+  dispatch(store, "movement.commit-position", { x: 650, y: 2220 });
   dispatch(store, "gather.collect-wood", { targetId: "resource.wood-01" });
   assert.equal(getMinimalLoopView(store.getState()).inventory.wood, 1);
   assert.throws(() =>
@@ -113,7 +113,7 @@ test("rejects gathering outside the proximity radius", () => {
 test("crafts one repair timber atomically after three valid collections", () => {
   const store = createStore();
   collectThreeWood(store);
-  dispatch(store, "movement.commit-position", { x: 500, y: 700 });
+  dispatch(store, "movement.commit-position", { x: 810, y: 1660 });
   dispatch(store, "crafting.craft-repair-timber", {
     targetId: "workstation.field-bench",
     recipeId: REPAIR_TIMBER_RECIPE.id,
@@ -126,7 +126,7 @@ test("crafts one repair timber atomically after three valid collections", () => 
 
 test("cannot craft before all recipe inputs are available", () => {
   const store = createStore();
-  dispatch(store, "movement.commit-position", { x: 500, y: 700 });
+  dispatch(store, "movement.commit-position", { x: 810, y: 1660 });
   assert.throws(() =>
     dispatch(store, "crafting.craft-repair-timber", {
       targetId: "workstation.field-bench",
@@ -140,14 +140,14 @@ test("cannot craft before all recipe inputs are available", () => {
 test("restores the Forester Hut only after crafting repair timber", () => {
   const store = createStore();
   collectThreeWood(store);
-  dispatch(store, "movement.commit-position", { x: 500, y: 700 });
+  dispatch(store, "movement.commit-position", { x: 810, y: 1660 });
   dispatch(store, "crafting.craft-repair-timber", {
     targetId: "workstation.field-bench",
     recipeId: REPAIR_TIMBER_RECIPE.id,
     recipeVersion: REPAIR_TIMBER_RECIPE.contentVersion
   });
 
-  dispatch(store, "movement.commit-position", { x: 500, y: 430 });
+  dispatch(store, "movement.commit-position", { x: 760, y: 630 });
   dispatch(store, "restoration.restore-forester-hut", {
     targetId: "building.forester-hut"
   });
@@ -165,7 +165,7 @@ test("restores the Forester Hut only after crafting repair timber", () => {
 test("raw wood cannot bypass the crafting requirement", () => {
   const store = createStore();
   collectThreeWood(store);
-  dispatch(store, "movement.commit-position", { x: 500, y: 430 });
+  dispatch(store, "movement.commit-position", { x: 760, y: 630 });
   assert.throws(() =>
     dispatch(store, "restoration.restore-forester-hut", {
       targetId: "building.forester-hut"
@@ -196,7 +196,7 @@ test("migrates a P0-04 save without resetting its progress", () => {
   assert.equal(view.workbench.id, "workstation.field-bench");
 });
 
-test("moves only available resources into the discoverable layout", () => {
+test("migrates the legacy map into the expanded I3.1A world", () => {
   const legacyState = structuredClone(createInitialMinimalLoopState());
   delete legacyState.systems.minimalLoop.resourceLayoutVersion;
   legacyState.entities["resource.wood-01"].components.available = false;
@@ -208,6 +208,7 @@ test("moves only available resources into the discoverable layout", () => {
     x: 740,
     y: 1080
   };
+  legacyState.entities["player.main"].components.position = { x: 500, y: 800 };
   legacyState.systems.minimalLoop.inventory.wood = 1;
   const store = createWorldStateStore({
     initialState: legacyState,
@@ -226,9 +227,12 @@ test("moves only available resources into the discoverable layout", () => {
     y: 1120
   });
   assert.deepEqual(view.woodNodes[1].components.position, {
-    x: 610,
-    y: 1080
+    x: 930,
+    y: 2130
   });
+  assert.deepEqual(view.player.components.position, { x: 800, y: 1400 });
+  assert.deepEqual(view.workbench.components.position, { x: 810, y: 1660 });
+  assert.deepEqual(view.hut.components.position, { x: 760, y: 520 });
 });
 
 test("recovers the restoration reward for an older completed save", () => {
@@ -257,9 +261,9 @@ test("recovers the restoration reward for an older completed save", () => {
 
 function collectThreeWood(store) {
   for (const [targetId, position] of [
-    ["resource.wood-01", { x: 390, y: 1120 }],
-    ["resource.wood-02", { x: 610, y: 1080 }],
-    ["resource.wood-03", { x: 380, y: 850 }]
+    ["resource.wood-01", { x: 650, y: 2220 }],
+    ["resource.wood-02", { x: 930, y: 2130 }],
+    ["resource.wood-03", { x: 610, y: 1900 }]
   ]) {
     dispatch(store, "movement.commit-position", position);
     dispatch(store, "gather.collect-wood", { targetId });
