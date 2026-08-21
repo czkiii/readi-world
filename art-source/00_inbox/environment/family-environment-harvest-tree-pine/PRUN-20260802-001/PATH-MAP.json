@@ -1,0 +1,30 @@
+﻿{
+    "schemaVersion":  1,
+    "planId":  "path-plan.world.tree.pine.harvestable.standard.r001",
+    "assetId":  "world.tree.pine.harvestable.standard",
+    "familyId":  "family.environment.harvest-tree.pine",
+    "revision":  "r001",
+    "promptRunId":  "PRUN-20260802-001",
+    "generatedUtc":  "2026-08-02T18:51:08.6601087Z",
+    "sourcePlan":  "C:\\Users\\bobaa\\Documents\\ReadiWorldGameDeskopt\\art-source\\_registry\\path-plans\\world-tree-pine-harvestable-standard__r001.json",
+    "directories":  {
+                        "inboxRun":  "C:\\Users\\bobaa\\Documents\\ReadiWorldGameDeskopt\\art-source\\00_inbox\\environment\\family-environment-harvest-tree-pine\\PRUN-20260802-001",
+                        "briefs":  "C:\\Users\\bobaa\\Documents\\ReadiWorldGameDeskopt\\art-source\\10_briefs\\environment\\family-environment-harvest-tree-pine",
+                        "masters":  "C:\\Users\\bobaa\\Documents\\ReadiWorldGameDeskopt\\art-source\\20_masters\\environment\\world-tree-pine-harvestable-standard",
+                        "normalized":  "C:\\Users\\bobaa\\Documents\\ReadiWorldGameDeskopt\\art-source\\30_normalized\\environment\\world-tree-pine-harvestable-standard",
+                        "review":  "C:\\Users\\bobaa\\Documents\\ReadiWorldGameDeskopt\\art-source\\40_review\\environment\\world-tree-pine-harvestable-standard",
+                        "archive":  "C:\\Users\\bobaa\\Documents\\ReadiWorldGameDeskopt\\art-source\\90_archive\\environment\\world-tree-pine-harvestable-standard"
+                    },
+    "files":  {
+                  "sourceCutout":  "C:\\Users\\bobaa\\Documents\\ReadiWorldGameDeskopt\\art-source\\00_inbox\\environment\\family-environment-harvest-tree-pine\\PRUN-20260802-001\\world-tree-pine-harvestable-standard__exploration-prun-20260802-001-d-cutout.png",
+                  "photoshop2020Cutout":  "C:\\Users\\bobaa\\Documents\\ReadiWorldGameDeskopt\\art-source\\00_inbox\\environment\\family-environment-harvest-tree-pine\\PRUN-20260802-001\\world-tree-pine-harvestable-standard__exploration-prun-20260802-001-d-cutout-ps2020.png",
+                  "runLog":  "C:\\Users\\bobaa\\Documents\\ReadiWorldGameDeskopt\\art-source\\00_inbox\\environment\\family-environment-harvest-tree-pine\\PRUN-20260802-001\\RUN-LOG.md",
+                  "promptSnapshot":  "C:\\Users\\bobaa\\Documents\\ReadiWorldGameDeskopt\\art-source\\10_briefs\\environment\\family-environment-harvest-tree-pine\\PRUN-20260802-001-prompt-snapshot.md",
+                  "master":  "C:\\Users\\bobaa\\Documents\\ReadiWorldGameDeskopt\\art-source\\20_masters\\environment\\world-tree-pine-harvestable-standard\\world-tree-pine-harvestable-standard__master-r001.psd",
+                  "normalized":  "C:\\Users\\bobaa\\Documents\\ReadiWorldGameDeskopt\\art-source\\30_normalized\\environment\\world-tree-pine-harvestable-standard\\world-tree-pine-harvestable-standard__r001__normalized.png",
+                  "geometry":  "C:\\Users\\bobaa\\Documents\\ReadiWorldGameDeskopt\\art-source\\30_normalized\\environment\\world-tree-pine-harvestable-standard\\world-tree-pine-harvestable-standard__r001__geometry.json",
+                  "passport":  "C:\\Users\\bobaa\\Documents\\ReadiWorldGameDeskopt\\art-source\\30_normalized\\environment\\world-tree-pine-harvestable-standard\\world-tree-pine-harvestable-standard__r001__passport-draft.json",
+                  "review":  "C:\\Users\\bobaa\\Documents\\ReadiWorldGameDeskopt\\art-source\\40_review\\environment\\world-tree-pine-harvestable-standard\\world-tree-pine-harvestable-standard__r001__review.png"
+              },
+    "protectedRuntime":  "C:\\Users\\bobaa\\Documents\\ReadiWorldGameDeskopt\\runtime"
+}
