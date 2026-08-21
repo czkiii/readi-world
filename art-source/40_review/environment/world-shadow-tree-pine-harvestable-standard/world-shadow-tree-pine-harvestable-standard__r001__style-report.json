@@ -1,0 +1,36 @@
+﻿{
+    "schemaVersion":  1,
+    "reportId":  "style-report.world.shadow.tree.pine.harvestable.standard.r001",
+    "generatedUtc":  "2026-08-02T20:36:45.2165816Z",
+    "status":  "BASELINE_ESTABLISHED",
+    "disclaimer":  "Numeric style signals are warnings, not artistic approval.",
+    "candidate":  {
+                      "path":  "C:\\Users\\bobaa\\Documents\\ReadiWorldGameDeskopt\\art-source\\30_normalized\\environment\\world-shadow-tree-pine-harvestable-standard\\world-shadow-tree-pine-harvestable-standard__r001__normalized.png",
+                      "width":  128,
+                      "height":  64,
+                      "aspectRatio":  2,
+                      "alphaOccupancy":  0.2354,
+                      "visibleBoundsRatio":  {
+                                                 "width":  0.6953,
+                                                 "height":  0.4219
+                                             },
+                      "averageRgb":  {
+                                         "r":  35,
+                                         "g":  42,
+                                         "b":  38
+                                     },
+                      "averageLuminance":  40.22,
+                      "averageSaturation":  0.1667,
+                      "edgeDensity":  0
+                  },
+    "references":  [
+
+                   ],
+    "comparisons":  [
+
+                    ],
+    "thresholds":  {
+                       "closeMax":  0.08,
+                       "reviewMax":  0.16
+                   }
+}

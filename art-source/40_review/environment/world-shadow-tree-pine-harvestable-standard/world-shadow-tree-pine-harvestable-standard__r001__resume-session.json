@@ -1,0 +1,64 @@
+﻿{
+    "schemaVersion":  1,
+    "sessionId":  "asset-prep.world.shadow.tree.pine.harvestable.standard.r001",
+    "updatedUtc":  "2026-08-02T20:36:45.2782712Z",
+    "pathPlan":  "C:\\Users\\bobaa\\Documents\\ReadiWorldGameDeskopt\\art-source\\_registry\\path-plans\\world-shadow-tree-pine-harvestable-standard__r001.json",
+    "assetId":  "world.shadow.tree.pine.harvestable.standard",
+    "familyId":  "family.environment.harvest-tree.pine",
+    "revision":  "r001",
+    "promptRunId":  "AUTHOR-20260802-SHADOW-001",
+    "stage":  "PENDING_ART_AND_TECH_QA",
+    "runtimeActivation":  "NOT_AUTHORIZED_BY_THIS_PACKET",
+    "ownerReviewRequired":  true,
+    "styleSignal":  "BASELINE_ESTABLISHED",
+    "files":  {
+                  "sourceCutout":  {
+                                       "path":  "C:\\Users\\bobaa\\Documents\\ReadiWorldGameDeskopt\\art-source\\00_inbox\\environment\\family-environment-harvest-tree-pine\\AUTHOR-20260802-SHADOW-001\\world-shadow-tree-pine-harvestable-standard__procedural-source-r001.png",
+                                       "exists":  true
+                                   },
+                  "runLog":  {
+                                 "path":  "C:\\Users\\bobaa\\Documents\\ReadiWorldGameDeskopt\\art-source\\00_inbox\\environment\\family-environment-harvest-tree-pine\\AUTHOR-20260802-SHADOW-001\\RUN-LOG.md",
+                                 "exists":  true
+                             },
+                  "promptSnapshot":  {
+                                         "path":  "C:\\Users\\bobaa\\Documents\\ReadiWorldGameDeskopt\\art-source\\10_briefs\\environment\\family-environment-harvest-tree-pine\\AUTHOR-20260802-SHADOW-001-authoring-snapshot.md",
+                                         "exists":  true
+                                     },
+                  "master":  {
+                                 "path":  "C:\\Users\\bobaa\\Documents\\ReadiWorldGameDeskopt\\art-source\\20_masters\\environment\\world-shadow-tree-pine-harvestable-standard\\world-shadow-tree-pine-harvestable-standard__master-r001.psd",
+                                 "exists":  true
+                             },
+                  "normalized":  {
+                                     "path":  "C:\\Users\\bobaa\\Documents\\ReadiWorldGameDeskopt\\art-source\\30_normalized\\environment\\world-shadow-tree-pine-harvestable-standard\\world-shadow-tree-pine-harvestable-standard__r001__normalized.png",
+                                     "exists":  true
+                                 },
+                  "geometry":  {
+                                   "path":  "C:\\Users\\bobaa\\Documents\\ReadiWorldGameDeskopt\\art-source\\30_normalized\\environment\\world-shadow-tree-pine-harvestable-standard\\world-shadow-tree-pine-harvestable-standard__r001__geometry.json",
+                                   "exists":  true
+                               },
+                  "passport":  {
+                                   "path":  "C:\\Users\\bobaa\\Documents\\ReadiWorldGameDeskopt\\art-source\\30_normalized\\environment\\world-shadow-tree-pine-harvestable-standard\\world-shadow-tree-pine-harvestable-standard__r001__passport-draft.json",
+                                   "exists":  true
+                               },
+                  "review":  {
+                                 "path":  "C:\\Users\\bobaa\\Documents\\ReadiWorldGameDeskopt\\art-source\\40_review\\environment\\world-shadow-tree-pine-harvestable-standard\\world-shadow-tree-pine-harvestable-standard__r001__review.png",
+                                 "exists":  false
+                             }
+              },
+    "generatedArtifacts":  {
+                               "qaContactSheet":  "C:\\Users\\bobaa\\Documents\\ReadiWorldGameDeskopt\\art-source\\40_review\\environment\\world-shadow-tree-pine-harvestable-standard\\world-shadow-tree-pine-harvestable-standard__r001__qa-contact-sheet.png",
+                               "styleReport":  "C:\\Users\\bobaa\\Documents\\ReadiWorldGameDeskopt\\art-source\\40_review\\environment\\world-shadow-tree-pine-harvestable-standard\\world-shadow-tree-pine-harvestable-standard__r001__style-report.json",
+                               "resumeSession":  "C:\\Users\\bobaa\\Documents\\ReadiWorldGameDeskopt\\art-source\\40_review\\environment\\world-shadow-tree-pine-harvestable-standard\\world-shadow-tree-pine-harvestable-standard__r001__resume-session.json",
+                               "controlPacket":  "C:\\Users\\bobaa\\Documents\\ReadiWorldGameDeskopt\\art-source\\40_review\\environment\\world-shadow-tree-pine-harvestable-standard\\world-shadow-tree-pine-harvestable-standard__r001__control-packet.md"
+                           },
+    "autonomousNextSteps":  [
+                                "READ_STYLE_REPORT",
+                                "VERIFY_FILE_LEVEL_POSTFLIGHT",
+                                "PREPARE_OWNER_DECISION_ONLY_IF_VISUAL_JUDGMENT_REMAINS"
+                            ],
+    "blockedOnlyByOwnerIf":  [
+                                 "ARTISTIC_SELECTION",
+                                 "ARTISTIC_CORRECTION",
+                                 "OWNER_APPROVAL_REQUIRED_BY_PASSPORT"
+                             ]
+}
