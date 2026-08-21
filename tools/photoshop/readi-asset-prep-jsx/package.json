@@ -1,0 +1,9 @@
+{
+  "name": "readi-asset-prep-photoshop-2020-jsx",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "test": "node --test --test-isolation=none"
+  }
+}
+
