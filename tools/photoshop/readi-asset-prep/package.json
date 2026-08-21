@@ -1,0 +1,10 @@
+{
+  "name": "readi-asset-prep",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Host-independent contract tests for the Readi Asset Prep Photoshop UXP plugin.",
+  "scripts": {
+    "test": "node --test --test-isolation=none",
+    "check": "node --check index.js && node --check src/core.js && node --check src/photoshop-adapter.js && node --check src/storage-adapter.js"
+  }
+}
