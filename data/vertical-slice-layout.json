@@ -1,22 +1,22 @@
 {
   "schemaVersion": 1,
-  "id": "layout.main-village.vertical-slice.i3-1a",
+  "id": "layout.main-village.vertical-slice.d3-remap",
   "world": { "width": 1600, "height": 2800 },
   "zones": [
-    { "id": "ZONE-P1-ARRIVAL", "label": "Arrival", "rect": [570, 2350, 520, 380] },
-    { "id": "ZONE-P1-VILLAGE", "label": "Village Clearing", "rect": [390, 1880, 930, 620] },
-    { "id": "ZONE-P1-WORKYARD", "label": "Workyard", "rect": [570, 1450, 520, 520] },
-    { "id": "ZONE-P1-FOREST-EDGE", "label": "Forest Edge", "rect": [180, 1180, 900, 700] },
-    { "id": "ZONE-P1-FOREST-GROVE", "label": "Forest Grove", "rect": [70, 500, 820, 900] },
-    { "id": "ZONE-P1-HUT", "label": "Forester Hut", "rect": [520, 120, 620, 720] },
-    { "id": "ZONE-P1-FARM-GATE", "label": "Farm Gate", "rect": [1120, 850, 430, 720] }
+    { "id": "ZONE-P1-ARRIVAL", "label": "Arrival", "rect": [613, 2333, 529, 436] },
+    { "id": "ZONE-P1-VILLAGE", "label": "Village Clearing", "rect": [458, 1898, 933, 591] },
+    { "id": "ZONE-P1-WORKYARD", "label": "Workyard", "rect": [644, 1524, 592, 498] },
+    { "id": "ZONE-P1-FOREST-EDGE", "label": "Forest Edge", "rect": [240, 1120, 871, 622] },
+    { "id": "ZONE-P1-FOREST-GROVE", "label": "Forest Grove", "rect": [116, 560, 777, 809] },
+    { "id": "ZONE-P1-HUT", "label": "Forester Hut", "rect": [613, 124, 654, 592] },
+    { "id": "ZONE-P1-FARM-GATE", "label": "Farm Gate", "rect": [1204, 902, 374, 716] }
   ],
   "paths": {
-    "spine": { "width": 128, "points": [[800, 2580], [720, 2300], [780, 2040], [650, 1760], [640, 1450], [690, 1050], [760, 650]] },
-    "forestLoop": { "width": 82, "points": [[650, 1760], [470, 1650], [300, 1470], [290, 1240], [450, 1030], [690, 1050]] },
-    "farmBranch": { "width": 82, "points": [[640, 1450], [820, 1390], [1020, 1280], [1210, 1200], [1380, 1170]] }
+    "spine": { "width": 128, "points": [[878, 2582], [909, 2302], [956, 1960], [878, 1649], [800, 1369], [909, 996], [940, 607]] },
+    "forestLoop": { "width": 82, "points": [[878, 1649], [613, 1571], [427, 1307], [473, 949], [722, 840], [909, 996]] },
+    "farmBranch": { "width": 82, "points": [[909, 1493], [1142, 1416], [1298, 1369], [1407, 1291], [1578, 1291]] }
   },
-  "landmarks": { "farmGate": { "x": 1380, "y": 1170, "approachX": 1260, "approachY": 1210 } },
+  "landmarks": { "farmGate": { "x": 1407, "y": 1291, "approachX": 1298, "approachY": 1369 } },
   "scenery": {
     "pines": [
       { "type": "standing", "x": 130, "y": 2580 }, { "type": "standing", "x": 310, "y": 2390 },

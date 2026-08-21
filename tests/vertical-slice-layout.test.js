@@ -4,16 +4,27 @@ import fs from "node:fs/promises";
 
 import { validateVerticalSliceLayout } from "../src/gameplay/vertical-slice/vertical-slice-layout.js";
 
-test("validates the I3.1A expanded vertical-slice authored layout", async () => {
+test("validates the canonical D3 remap in the expanded world", async () => {
   const layout = validateVerticalSliceLayout(JSON.parse(
     await fs.readFile(new URL("../data/vertical-slice-layout.json", import.meta.url), "utf8")
   ));
 
-  assert.equal(layout.id, "layout.main-village.vertical-slice.i3-1a");
+  assert.equal(layout.id, "layout.main-village.vertical-slice.d3-remap");
   assert.deepEqual(layout.world, { width: 1600, height: 2800 });
-  assert.equal(layout.paths.spine.points.length, 7);
-  assert.equal(layout.paths.forestLoop.points.length, 6);
-  assert.equal(layout.paths.farmBranch.points.at(-1)[0], 1380);
+  assert.deepEqual(layout.paths.spine.points, [
+    [878, 2582], [909, 2302], [956, 1960], [878, 1649],
+    [800, 1369], [909, 996], [940, 607]
+  ]);
+  assert.deepEqual(layout.paths.forestLoop.points.at(0), [878, 1649]);
+  assert.deepEqual(layout.paths.forestLoop.points.at(-1), [909, 996]);
+  assert.deepEqual(layout.paths.farmBranch.points.at(0), [909, 1493]);
+  assert.deepEqual(layout.paths.farmBranch.points.at(-2), [1407, 1291]);
+  assert.deepEqual(layout.landmarks.farmGate, {
+    x: 1407,
+    y: 1291,
+    approachX: 1298,
+    approachY: 1369
+  });
   assert.ok(layout.scenery.pines.length >= 20);
 });
 

@@ -26,13 +26,13 @@ const WOOD_NODE_IDS = Object.freeze([
   "resource.wood-03",
   "resource.wood-04"
 ]);
-const RESOURCE_LAYOUT_VERSION = 3;
+const RESOURCE_LAYOUT_VERSION = 4;
 const RESTORATION_MILESTONE_VERSION = 1;
 const FARM_PATH_AREA_ID = "area.farm-path-preview";
 const PREVIOUS_WORLD_SIZE = Object.freeze({ width: 1000, height: 1600 });
-const PLAYER_START_POSITION = Object.freeze([800, 2460]);
-const HUT_POSITION = Object.freeze([760, 520]);
-const WORKBENCH_POSITION = Object.freeze([810, 1660]);
+const PLAYER_START_POSITION = Object.freeze([878, 2582]);
+const HUT_POSITION = Object.freeze([940, 404]);
+const WORKBENCH_POSITION = Object.freeze([987, 1804]);
 const WOOD_NODE_POSITIONS = Object.freeze([
   Object.freeze([650, 2220]),
   Object.freeze([930, 2130]),
@@ -121,8 +121,11 @@ export const MINIMAL_LOOP_COMMAND_HANDLERS = Object.freeze({
       throw loopError("RESOURCE_LAYOUT_ALREADY_CURRENT");
     }
 
+    const previousLayoutVersion = loop.resourceLayoutVersion ?? 0;
     const player = requireEntity(draft, PLAYER_ID, "player.avatar");
-    player.components.position = scaleLegacyPosition(player.components.position);
+    if (previousLayoutVersion < 3) {
+      player.components.position = scaleLegacyPosition(player.components.position);
+    }
 
     const hut = requireEntity(draft, HUT_ID, "building.forester-hut");
     hut.components.position = toPosition(HUT_POSITION);
