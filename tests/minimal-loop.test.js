@@ -113,7 +113,7 @@ test("rejects gathering outside the proximity radius", () => {
 test("crafts one repair timber atomically after three valid collections", () => {
   const store = createStore();
   collectThreeWood(store);
-  dispatch(store, "movement.commit-position", { x: 810, y: 1660 });
+  dispatch(store, "movement.commit-position", { x: 987, y: 1804 });
   dispatch(store, "crafting.craft-repair-timber", {
     targetId: "workstation.field-bench",
     recipeId: REPAIR_TIMBER_RECIPE.id,
@@ -126,7 +126,7 @@ test("crafts one repair timber atomically after three valid collections", () => 
 
 test("cannot craft before all recipe inputs are available", () => {
   const store = createStore();
-  dispatch(store, "movement.commit-position", { x: 810, y: 1660 });
+  dispatch(store, "movement.commit-position", { x: 987, y: 1804 });
   assert.throws(() =>
     dispatch(store, "crafting.craft-repair-timber", {
       targetId: "workstation.field-bench",
@@ -140,14 +140,14 @@ test("cannot craft before all recipe inputs are available", () => {
 test("restores the Forester Hut only after crafting repair timber", () => {
   const store = createStore();
   collectThreeWood(store);
-  dispatch(store, "movement.commit-position", { x: 810, y: 1660 });
+  dispatch(store, "movement.commit-position", { x: 987, y: 1804 });
   dispatch(store, "crafting.craft-repair-timber", {
     targetId: "workstation.field-bench",
     recipeId: REPAIR_TIMBER_RECIPE.id,
     recipeVersion: REPAIR_TIMBER_RECIPE.contentVersion
   });
 
-  dispatch(store, "movement.commit-position", { x: 760, y: 630 });
+  dispatch(store, "movement.commit-position", { x: 940, y: 510 });
   dispatch(store, "restoration.restore-forester-hut", {
     targetId: "building.forester-hut"
   });
@@ -165,7 +165,7 @@ test("restores the Forester Hut only after crafting repair timber", () => {
 test("raw wood cannot bypass the crafting requirement", () => {
   const store = createStore();
   collectThreeWood(store);
-  dispatch(store, "movement.commit-position", { x: 760, y: 630 });
+  dispatch(store, "movement.commit-position", { x: 940, y: 510 });
   assert.throws(() =>
     dispatch(store, "restoration.restore-forester-hut", {
       targetId: "building.forester-hut"
@@ -196,7 +196,7 @@ test("migrates a P0-04 save without resetting its progress", () => {
   assert.equal(view.workbench.id, "workstation.field-bench");
 });
 
-test("migrates the legacy map into the expanded I3.1A world", () => {
+test("migrates the legacy map into the expanded D3-remapped world", () => {
   const legacyState = structuredClone(createInitialMinimalLoopState());
   delete legacyState.systems.minimalLoop.resourceLayoutVersion;
   legacyState.entities["resource.wood-01"].components.available = false;
@@ -217,7 +217,7 @@ test("migrates the legacy map into the expanded I3.1A world", () => {
 
   assert.equal(requiresResourceLayoutMigration(store.getState()), true);
   dispatch(store, "migration.resource-discoverability-v2", {
-    migrationId: "migration.resource-discoverability.v2"
+    migrationId: "migration.resource-discoverability.v4"
   });
   const view = getMinimalLoopView(store.getState());
   assert.equal(requiresResourceLayoutMigration(store.getState()), false);
@@ -231,8 +231,34 @@ test("migrates the legacy map into the expanded I3.1A world", () => {
     y: 2130
   });
   assert.deepEqual(view.player.components.position, { x: 800, y: 1400 });
-  assert.deepEqual(view.workbench.components.position, { x: 810, y: 1660 });
-  assert.deepEqual(view.hut.components.position, { x: 760, y: 520 });
+  assert.deepEqual(view.workbench.components.position, { x: 987, y: 1804 });
+  assert.deepEqual(view.hut.components.position, { x: 940, y: 404 });
+});
+
+test("preserves an I3.1A player position while remapping D3 landmarks", () => {
+  const previousState = structuredClone(createInitialMinimalLoopState());
+  previousState.systems.minimalLoop.resourceLayoutVersion = 3;
+  previousState.entities["player.main"].components.position = { x: 415, y: 1735 };
+  previousState.entities["workstation.field-bench"].components.position = {
+    x: 810,
+    y: 1660
+  };
+  previousState.entities["building.forester-hut"].components.position = {
+    x: 760,
+    y: 520
+  };
+  const store = createWorldStateStore({
+    initialState: previousState,
+    commandHandlers: MINIMAL_LOOP_COMMAND_HANDLERS
+  });
+
+  dispatch(store, "migration.resource-discoverability-v2", {
+    migrationId: "migration.resource-discoverability.v4"
+  });
+  const view = getMinimalLoopView(store.getState());
+  assert.deepEqual(view.player.components.position, { x: 415, y: 1735 });
+  assert.deepEqual(view.workbench.components.position, { x: 987, y: 1804 });
+  assert.deepEqual(view.hut.components.position, { x: 940, y: 404 });
 });
 
 test("recovers the restoration reward for an older completed save", () => {
