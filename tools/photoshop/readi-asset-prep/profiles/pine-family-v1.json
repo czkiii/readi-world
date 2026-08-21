@@ -1,0 +1,61 @@
+{
+  "schemaVersion": 1,
+  "profileId": "profile.family.environment.harvest-tree.pine.v1",
+  "familyId": "family.environment.harvest-tree.pine",
+  "packageId": "package.p1.forest.core",
+  "displayName": "D8 Harvest Pine Family v1",
+  "ownerReviewRequired": true,
+  "sourceDensityPxPerWU": 64,
+  "outputs": [
+    {
+      "key": "standing",
+      "assetId": "world.tree.pine.harvestable.standard",
+      "role": "world.resource.tree.harvestable",
+      "tags": ["biome.forest", "species.pine", "material.wood", "state.standing", "variant.standard", "milestone.p1"],
+      "state": "available",
+      "canvasPx": { "width": 384, "height": 448 },
+      "pivotPx": { "x": 192, "y": 416 },
+      "drawSizeWU": { "width": 6, "height": 7 },
+      "safePaddingPx": { "top": 32, "right": 48, "bottom": 32, "left": 48 },
+      "logicalFootprint": { "type": "circle", "center": { "x": 0, "y": 0 }, "radius": 0.575 },
+      "interactionAnchor": { "type": "radius", "point": { "x": 0, "y": 0 }, "radius": 1.45 },
+      "occluderShape": {
+        "type": "polygon",
+        "points": [
+          { "x": -0.8, "y": -5.8 }, { "x": 0.8, "y": -5.8 },
+          { "x": 2.2, "y": -3.8 }, { "x": 2.0, "y": -1.2 },
+          { "x": 0.8, "y": -0.6 }, { "x": -0.8, "y": -0.6 },
+          { "x": -2.0, "y": -1.2 }, { "x": -2.2, "y": -3.8 }
+        ]
+      }
+    },
+    {
+      "key": "stump",
+      "assetId": "world.tree.pine.harvestable.standard.stump",
+      "role": "world.resource.tree.stump",
+      "tags": ["biome.forest", "species.pine", "material.wood", "state.depleted", "variant.standard", "milestone.p1"],
+      "state": "depleted",
+      "canvasPx": { "width": 128, "height": 96 },
+      "pivotPx": { "x": 64, "y": 80 },
+      "drawSizeWU": { "width": 2, "height": 1.5 },
+      "safePaddingPx": { "top": 16, "right": 25, "bottom": 16, "left": 26 },
+      "logicalFootprint": { "type": "circle", "center": { "x": 0, "y": 0 }, "radius": 0.45 },
+      "interactionAnchor": { "type": "none" },
+      "occluderShape": { "type": "none" }
+    },
+    {
+      "key": "shadow",
+      "assetId": "world.shadow.tree.pine.harvestable.standard",
+      "role": "world.shadow.contact",
+      "tags": ["biome.forest", "species.pine", "variant.standard", "milestone.p1"],
+      "state": "presentation",
+      "canvasPx": { "width": 128, "height": 64 },
+      "pivotPx": { "x": 64, "y": 48 },
+      "drawSizeWU": { "width": 2, "height": 1 },
+      "safePaddingPx": { "top": 8, "right": 16, "bottom": 16, "left": 16 },
+      "logicalFootprint": { "type": "none" },
+      "interactionAnchor": { "type": "none" },
+      "occluderShape": { "type": "none" }
+    }
+  ]
+}
