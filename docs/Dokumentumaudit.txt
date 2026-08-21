@@ -1,0 +1,3677 @@
+READI WORLD
+DOKUMENTUMAUDIT — KANONIKUS DÖNTÉSI NYILVÁNTARTÁS
+Tartomány: 1–299; a lezárt és nyitott sorszámokat az AKTUÁLIS ÁLLAPOT rögzíti
+Verzió: 1.14
+Dátum: 2026-07-30
+
+DOKUMENTUM SZEREPE
+Ez a fájl a Readi World dokumentumaudit lezárt döntéseinek kanonikus nyilvántartása.
+A további audit során mindig ezt az egy fájlt kell frissíteni. A fájlnév stabil; a verzió és az aktuális tartomány a dokumentum fejlécében, a változástörténet pedig később Gitben követhető.
+
+EGYSÉGES BEJEGYZÉSFORMA
+Kérdés
+Választott döntés
+Rövid indoklás
+Státusz
+
+============================================================
+
+1. AUDITDÖNTÉS
+
+Kérdés: Hogyan kezeljük a(z) „dokumentumhierarchia” tervezési területét?
+
+Választott döntés:
+1A — ELFOGADVA
+
+Rövid indoklás:
+Az Engine Bible nem marad a legfelső, mindent felülíró dokumentum.
+
+Új szerepek:
+- Gameplay Bible: mit tudjon a játék, és milyen élményt adjon;
+- Engine & Architecture Bible: hogyan építjük meg technikailag;
+- Project Constitution: melyik dokumentum milyen kérdésben elsődleges.
+
+Státusz: Locked Decision — lezárt döntés.
+
+------------------------------------------------------------
+
+2. AUDITDÖNTÉS
+
+Kérdés: Hogyan kezeljük a(z) „a jelenlegi kód szerepe” tervezési területét?
+
+Választott döntés:
+2A — ELFOGADVA
+
+Rövid indoklás:
+A jelenlegi kód reference prototype, vagyis referencia-prototípus.
+
+Ez azt jelenti:
+- tanulási és összehasonlítási alap;
+- nem kötelező technikai kiindulópont;
+- működő ötletek átvehetők;
+- hibás vagy nehezen bővíthető részeket nem kell megtartani.
+
+Státusz: Locked Decision.
+
+------------------------------------------------------------
+
+3. AUDITDÖNTÉS
+
+Kérdés: Hogyan kezeljük a(z) „az index.html szerepe” tervezési területét?
+
+Választott döntés:
+3A — ELFOGADVA
+
+Rövid indoklás:
+Az új index.html thin bootstrap shell, vagyis vékony indítófájl lesz.
+
+Feladata:
+- a játék elindítása;
+- alap HTML-környezet biztosítása;
+- a szükséges modulok betöltése.
+
+Nem tartalmazza majd a teljes játéklogikát.
+
+Státusz: Locked Decision.
+
+------------------------------------------------------------
+
+4. AUDITDÖNTÉS
+
+Kérdés: Hogyan kezeljük a(z) „clean runtime stratégia” tervezési területét?
+
+Választott döntés:
+4C — ELFOGADVA, FONTOS SZABÁLLYAL
+
+Rövid indoklás:
+Külön clean runtime, vagyis új, tiszta futó játékrendszer készül.
+
+A régi prototípus:
+- érintetlen referencia marad;
+- nem kerül automatikusan át az új rendszerbe.
+
+Átvételi szabály:
+Semmit nem emelünk át automatikusan.
+
+Minden átvett résznél külön vizsgáljuk:
+- jól működik-e;
+- illik-e az új architektúrába;
+- egyszerűbb-e átvenni, mint újraírni;
+- nem hoz-e magával régi hibát vagy korlátozást.
+
+Státusz: Locked Decision.
+
+------------------------------------------------------------
+
+5. AUDITDÖNTÉS
+
+Kérdés: Hogyan kezeljük a(z) „régi mentések kompatibilitása” tervezési területét?
+
+Választott döntés:
+5C — ELFOGADVA
+
+Rövid indoklás:
+A jelenlegi prototípus mentéseinek átvitele nem kötelező.
+
+A jelenlegi mentés csak kevés adatot tartalmaz:
+- játékos pozíciója;
+- néhány nyersanyag;
+- időállapot.
+
+Az új játék saját:
+- verziózott;
+- részletes;
+- validálható;
+- visszaállítható;
+- migrálható
+
+mentési rendszert kap.
+
+A régi mentésekhez csak akkor készül migráció, ha annak később valódi értelme lesz.
+
+Státusz: Locked Decision.
+
+------------------------------------------------------------
+
+6. AUDITDÖNTÉS
+
+Kérdés: Hogyan kezeljük a(z) „platformirány” tervezési területét?
+
+Választott döntés:
+6A — ELFOGADVA
+
+Rövid indoklás:
+A Readi World továbbra is:
+- HTML;
+- CSS;
+- JavaScript;
+- mobil-first webes technológia
+
+alapján készül.
+
+Előnyök:
+- számítógépen fejleszthető;
+- telefonon tesztelhető;
+- böngészőben fut;
+- később Capacitorral mobilalkalmazássá csomagolható.
+
+Capacitor:
+Olyan eszköz, amellyel a webes játékból telepíthető Android- és iOS-alkalmazás készíthető.
+
+Státusz: Locked Decision.
+
+------------------------------------------------------------
+
+7. AUDITDÖNTÉS
+
+Kérdés: Hogyan kezeljük a(z) „canvas és megjelenítési technológia” tervezési területét?
+
+Választott döntés:
+7C — ELFOGADVA
+
+Rövid indoklás:
+Most csak azt zárjuk le, hogy a játék webes és Canvas-jellegű megjelenítésű marad.
+
+Később döntjük el:
+- teljesen saját Canvas-rendszer készül;
+- könnyű JavaScript-játékkönyvtárat használunk;
+- vagy vegyes megoldás készül.
+
+A döntés előtt össze kell írni, mit kell tudnia a megjelenítési, kamera-, objektum- és szerkesztési rendszernek.
+
+Státusz: Locked irány, nyitott konkrét technológiai választás.
+
+------------------------------------------------------------
+
+8. AUDITDÖNTÉS
+
+Kérdés: Hogyan kezeljük a(z) „elhelyezési rendszer” tervezési területét?
+
+Választott döntés:
+8C — ELFOGADVA
+
+Rövid indoklás:
+Hibrid elhelyezési rendszer készül.
+
+Ez azt jelenti:
+- nagyobb épületek és funkcionális objektumok szabályozott területekre vagy rejtett rácsra kerülnek;
+- kisebb dekorációk szabadabban mozgathatók;
+- az elhelyezés szabadnak érződik, de technikailag rendezett marad.
+
+Státusz: Locked Decision.
+
+------------------------------------------------------------
+
+9. AUDITDÖNTÉS
+
+Kérdés: Hogyan kezeljük a(z) „világstruktúra” tervezési területét?
+
+Választott döntés:
+9C — ELFOGADVA
+
+Rövid indoklás:
+Hibrid világstruktúra készül.
+
+A fő falu és közvetlen környezete:
+- egy összefüggő;
+- tartós;
+- folyamatosan megőrzött fő világ.
+
+A nagyobb aktivitási területek és távoli régiók:
+- külön betöltődő jelenetek;
+- külön mentett állapotokkal.
+
+Példák:
+- bánya;
+- expedíciós terület;
+- távoli régió;
+- speciális aktivitási helyszín.
+
+Státusz: Locked Decision.
+
+------------------------------------------------------------
+
+10. AUDITDÖNTÉS
+
+Kérdés: Hogyan kezeljük a(z) „jelenetek közötti átjárás” tervezési területét?
+
+Választott döntés:
+10C — ELFOGADVA, A 10B HANGULATÁVAL
+
+Rövid indoklás:
+A gyakori átjárások gyorsak lesznek.
+
+Fontos első belépések, feloldások és mérföldkövek rövid látványos átvezetést kapnak.
+
+Példák:
+- bánya első megnyitása;
+- hajó első indulása;
+- új régió első elérése.
+
+Ismételt belépéskor a váltás gyorsabb lehet.
+
+Státusz: Locked Decision.
+
+------------------------------------------------------------
+
+11. AUDITDÖNTÉS
+
+Kérdés: Hogyan kezeljük a(z) „kamera” tervezési területét?
+
+Választott döntés:
+11C — ELFOGADVA
+
+Rövid indoklás:
+Hibrid kamera készül.
+
+Normál játékban:
+- stabil követő kamera;
+- kiszámítható nézet;
+- mobilbarát irányítás.
+
+Építési és dekorációs módban:
+- szabadabb kameramozgatás;
+- zoom;
+- jobb területáttekintés.
+
+Státusz: Locked Decision.
+
+------------------------------------------------------------
+
+12. AUDITDÖNTÉS
+
+Kérdés: Hogyan kezeljük a(z) „építési és dekorációs mód alatti világállapot” tervezési területét?
+
+Választott döntés:
+12C — ELFOGADVA, PONTOSÍTÁSSAL
+
+Rövid indoklás:
+A világ részlegesen szünetel.
+
+Tovább fut:
+- világidő;
+- napszak;
+- időjárás;
+- háttérhangulat.
+
+Szünetel:
+- termelési folyamatok;
+- olyan aktív rendszerek, amelyek szerkesztés közben hibát okozhatnának.
+
+Aktívan működő vagy termelő épületet nem lehet azonnal mozgatni.
+
+Mozgatás előtt szükséges lehet:
+- folyamat befejezése;
+- kézi leállítás;
+- alapanyagok kezelése;
+- késztermékek kezelése;
+- biztonságos inaktív állapot.
+
+Státusz: Locked Decision.
+
+------------------------------------------------------------
+
+13. AUDITDÖNTÉS
+
+Kérdés: Hogyan kezeljük a(z) „mozgatható objektumok” tervezési területét?
+
+Választott döntés:
+13B — ELFOGADVA
+
+Rövid indoklás:
+Fix helyen maradnak:
+- fő történeti vagy világfontosságú épületek;
+- kikötő;
+- bánya;
+- fontos nevezetességek;
+- authored landmarkok, vagyis előre megtervezett fő helyszínek.
+
+Mozgathatók:
+- játékos saját kisebb épületei;
+- műhelyek;
+- tárolók;
+- állattartó épületek;
+- dekorációk.
+
+Aktívan működő épület csak biztonságos leállítás után mozgatható.
+
+Státusz: Locked Decision.
+
+------------------------------------------------------------
+
+14. AUDITDÖNTÉS
+
+Kérdés: Hogyan kezeljük a(z) „épületelhelyezési szabályok” tervezési területét?
+
+Választott döntés:
+14C — ELFOGADVA
+
+Rövid indoklás:
+Az épületek elhelyezése alapvetően szabad, de minden funkcionális épületnek saját feltételei vannak.
+
+Példák:
+- vízparti épülethez partvonal kell;
+- állattartó épülethez elegendő környező hely kell;
+- bejárat nem torlaszolható el;
+- gépnek működési terület kell;
+- bizonyos épületek út-, víz- vagy tárolókapcsolatot kérhetnek.
+
+A játék nem engedi jóváhagyni a működésképtelen elhelyezést.
+
+Státusz: Locked Decision.
+
+------------------------------------------------------------
+
+15. AUDITDÖNTÉS
+
+Kérdés: Hogyan kezeljük a(z) „épületforgatás” tervezési területét?
+
+Választott döntés:
+15B — ELFOGADVA
+
+Rövid indoklás:
+Csak bizonyos épületek és tárgyak forgathatók.
+
+2D képeknél az egyszerű forgatás problémákat okozhat:
+- elromolhat a perspektíva;
+- rossz irányba kerülhet az árnyék;
+- hibás lehet a bejárat;
+- kilóghat a vizuális stílusból.
+
+Nagyobb épület csak akkor forgatható több irányba, ha:
+- külön megfelelő grafika készült hozzá;
+- működési szabályai támogatják.
+
+Kisebb egyszerű tárgyaknál több szabadság lehet.
+
+Státusz: Locked Decision.
+
+------------------------------------------------------------
+
+16. AUDITDÖNTÉS
+
+Kérdés: Hogyan kezeljük a(z) „elhelyezési pontosság” tervezési területét?
+
+Választott döntés:
+16C — ELFOGADVA
+
+Rövid indoklás:
+Rejtett rács és automatikus illesztési segítség működik.
+
+A játékos szabadnak érzi az elhelyezést, de a háttérben:
+- finom rács;
+- pozícióigazítás;
+- kapcsolódási segítség;
+- rendezett elhelyezés
+
+működik.
+
+A rács szerkesztés közben opcionálisan láthatóvá válhat.
+
+Státusz: Locked Decision.
+
+------------------------------------------------------------
+
+17. AUDITDÖNTÉS
+
+Kérdés: Hogyan kezeljük a(z) „egymáshoz kapcsolódó elemek” tervezési területét?
+
+Választott döntés:
+17C — ELFOGADVA
+
+Rövid indoklás:
+A kompatibilis elemek alapból automatikusan egymáshoz igazodnak.
+
+Példák:
+- kerítés;
+- út;
+- sövény;
+- szegély;
+- későbbi cső- vagy hálózati elemek.
+
+A játékos kézzel felülírhatja az automatikus eredményt, ha más kinézetet szeretne.
+
+Státusz: Locked Decision.
+
+------------------------------------------------------------
+
+18. AUDITDÖNTÉS
+
+Kérdés: Hogyan kezeljük a(z) „objektumok átfedése” tervezési területét?
+
+Választott döntés:
+18C — ELFOGADVA
+
+Rövid indoklás:
+Szabályozott átfedés működik.
+
+Megengedhető:
+- virág fa mellett;
+- virág kerítés mellett;
+- szőnyeg bútor alatt;
+- kisebb tárgy asztalon;
+- vizuálisan értelmes dekorációs kombináció.
+
+Tiltott:
+- nagy épületek egymásba csúszása;
+- bejárat blokkolása;
+- működési terület eltakarása;
+- ütközést vagy hibát okozó átfedés.
+
+Státusz: Locked Decision.
+
+------------------------------------------------------------
+
+19. AUDITDÖNTÉS
+
+Kérdés: Hogyan kezeljük a(z) „visszavonás funkció” tervezési területét?
+
+Választott döntés:
+19A — ELFOGADVA
+
+Rövid indoklás:
+Az első verzióban nincs külön általános Visszavonás gomb.
+
+Indok:
+- az objektumok szabadon újramozgathatók;
+- a visszavonás zavaróbb lehet, mint hasznos;
+- előre kell megakadályozni a hibás elhelyezést.
+
+Alapelv:
+A játék előre akadályozza meg a hibás elhelyezést, ne utólag próbálja visszacsinálni.
+
+Státusz: Locked Decision.
+
+------------------------------------------------------------
+
+20. AUDITDÖNTÉS
+
+Kérdés: Hogyan kezeljük a(z) „elhelyezés megerősítése” tervezési területét?
+
+Választott döntés:
+20C — ELFOGADVA
+
+Rövid indoklás:
+Hibrid megerősítés működik.
+
+Kisebb dekoráció:
+- elengedéskor azonnal elhelyezhető.
+
+Funkcionális épület:
+- külön jóváhagyást kér.
+
+A döntéshez kapcsolódik a külön Tereprendezési mód bevezetése.
+
+Státusz: Locked Decision.
+
+------------------------------------------------------------
+
+21. AUDITDÖNTÉS
+
+Kérdés: Hogyan kezeljük a(z) „tereprendezési mód elérése” tervezési területét?
+
+Választott döntés:
+21C — ELFOGADVA
+
+Rövid indoklás:
+A Tereprendezési mód:
+- a menüből mindig elérhető;
+- bizonyos épület- vagy dekorációs menükből közvetlenül is megnyitható.
+
+Normál játék közben:
+- egy épület megérintése nem mozgatja el;
+- a tárgyak nem húzhatók el véletlenül;
+- mozgatás csak tudatosan megnyitott szerkesztési módban történhet.
+
+Státusz: Locked Decision.
+
+------------------------------------------------------------
+
+22. AUDITDÖNTÉS
+
+Kérdés: Hogyan kezeljük a(z) „egyszerre szerkeszthető objektumok” tervezési területét?
+
+Választott döntés:
+22C — ELFOGADVA
+
+Rövid indoklás:
+Az első verzióban egyszerre egy objektum szerkeszthető.
+
+Későbbi bővítés lehet:
+- csoportos kijelölés;
+- kerítésszakasz mozgatása;
+- útszakasz mozgatása;
+- dekorációs csoport mozgatása.
+
+Státusz: Locked Decision.
+
+------------------------------------------------------------
+
+23. AUDITDÖNTÉS
+
+Kérdés: Hogyan kezeljük a(z) „objektum kijelölése” tervezési területét?
+
+Választott döntés:
+23C — ELFOGADVA
+
+Rövid indoklás:
+Tereprendezési módban:
+- egy érintés kijelöli az objektumot;
+- külön fogóponttal vagy gombbal kezdhető a mozgatás.
+
+Ez elválasztja:
+- kijelölést;
+- kameramozgatást;
+- tényleges objektummozgatást.
+
+Státusz: Locked Decision.
+
+------------------------------------------------------------
+
+24. AUDITDÖNTÉS
+
+Kérdés: Hogyan kezeljük a(z) „objektum mozgatása” tervezési területét?
+
+Választott döntés:
+24C — ELFOGADVA
+
+Rövid indoklás:
+Hibrid mozgatási mód készül.
+
+Kisebb dekoráció:
+- közvetlenül húzható.
+
+Nagyobb épület:
+- külön mozgatóvezérlőt kap.
+
+Ennek mobilos előnye:
+- az ujj nem takarja ki a nagy objektumot;
+- kisebb a véletlen elmozdítás esélye;
+- a kis tárgyak kezelése továbbra is gyors.
+
+Státusz: Locked Decision.
+
+------------------------------------------------------------
+
+25. AUDITDÖNTÉS
+
+Kérdés: Hogyan kezeljük a(z) „mozgatás közbeni előnézet” tervezési területét?
+
+Választott döntés:
+25C — ELFOGADVA
+
+Rövid indoklás:
+Részletes, helyzetfüggő elhelyezési előnézet készül.
+
+Alapjelzések:
+- zöld: elhelyezhető;
+- piros: nem helyezhető el.
+
+Funkcionális épületnél szükség szerint látható:
+- bejárat;
+- működési terület;
+- ütközés;
+- szükséges vízkapcsolat;
+- szükséges útkapcsolat;
+- szükséges tárolókapcsolat.
+
+Egyszerű dekoráció nem kap felesleges technikai jelzéseket.
+
+Státusz: Locked Decision.
+
+------------------------------------------------------------
+
+26. AUDITDÖNTÉS
+
+Kérdés: Hogyan kezeljük a(z) „a régi hely mozgatás közben” tervezési területét?
+
+Választott döntés:
+26A — ELFOGADVA
+
+Rövid indoklás:
+Mozgatás kezdetekor az objektum azonnal elhagyja a régi helyét.
+
+Nem készül:
+- szellemkép;
+- külön előnézeti másolat;
+- kettős ideiglenes objektumállapot.
+
+Indok:
+- egyszerűbb kód;
+- kevesebb hibalehetőség;
+- a projekt szempontjából elegendő megoldás.
+
+Biztonsági szabály:
+Megszakításkor visszakerül az eredeti helyére.
+
+Státusz: Locked Decision.
+
+------------------------------------------------------------
+
+27. AUDITDÖNTÉS
+
+Kérdés: Hogyan kezeljük a(z) „mozgatás megszakítása” tervezési területét?
+
+Választott döntés:
+27A — ELFOGADVA
+
+Rövid indoklás:
+Ha a játékos megszakítja a mozgatást:
+- az objektum automatikusan visszakerül az eredeti helyére.
+
+Nem maradhat:
+- érvénytelen helyen;
+- félbehagyott állapotban;
+- mentetlen ideiglenes pozícióban.
+
+Státusz: Locked Decision.
+
+------------------------------------------------------------
+
+28. AUDITDÖNTÉS
+
+Kérdés: Hogyan kezeljük a(z) „appmegszakítás mozgatás közben” tervezési területét?
+
+Választott döntés:
+28A — ELFOGADVA
+
+Rövid indoklás:
+Ha mozgatás közben:
+- háttérbe kerül az app;
+- hívás érkezik;
+- bezáródik az oldal;
+- újratölt a játék;
+- megszakad a folyamat,
+
+akkor:
+- az áthelyezés nem kerül mentésre;
+- az objektum az eredeti helyén marad.
+
+Státusz: Locked Decision.
+
+------------------------------------------------------------
+
+29. AUDITDÖNTÉS
+
+Kérdés: Hogyan kezeljük a(z) „tereprendezési mód mentése” tervezési területét?
+
+Választott döntés:
+29C — ELFOGADVA
+
+Rövid indoklás:
+Hibrid mentés működik.
+
+A sikeres elhelyezés:
+- azonnal bekerül az aktuális játékállapotba;
+- a játékos rögtön látja a változást.
+
+A tartós mentés:
+- rövid késleltetéssel;
+- a Tereprendezési mód bezárásakor;
+- vagy appmegszakításkor
+
+történik.
+
+A félbehagyott mozgatás nem mentődik el.
+
+Státusz: Locked Decision.
+
+------------------------------------------------------------
+
+30. AUDITDÖNTÉS
+
+Kérdés: Hogyan kezeljük a(z) „több egymás utáni mozgatás” tervezési területét?
+
+Választott döntés:
+30C — ELFOGADVA
+
+Rövid indoklás:
+A Tereprendezési mód folyamatos szerkesztést támogat.
+
+Ez azt jelenti:
+- egy objektum elhelyezése után újabb objektum választható;
+- nem kell minden tárgy után kilépni;
+- a játékos bármikor visszatérhet normál játékba.
+
+Státusz: Locked Decision.
+
+------------------------------------------------------------
+
+31. AUDITDÖNTÉS
+
+Kérdés: Hogyan kezeljük a(z) „tereprendezési mód lezárása” tervezési területét?
+
+Választott döntés:
+31C — külön „Kész” gomb, plusz biztonságos automatikus kilépés speciális helyzetekben.
+
+Rövid indoklás:
+A jóváhagyott változások megmaradnak; a félbehagyott mozgatás visszaáll az eredeti helyre.
+
+Státusz: Locked Decision.
+
+------------------------------------------------------------
+
+32. AUDITDÖNTÉS
+
+Kérdés: Hogyan kezeljük a(z) „tereprendezési mód kezelőfelülete” tervezési területét?
+
+Választott döntés:
+- 32C — hibrid kezelőfelület.
+- 32.1C — rövid hibaüzenet + vizuális kiemelés.
+- 32.2C — nincs teljes lerakottobjektum-lista az első verzióban, de van tárgykatalógus.
+- 32.3C — a normál HUD nagy része eltűnik, csak a szerkesztéshez szükséges elemek maradnak.
+
+Rövid indoklás:
+A 32.1 a 25C kiegészítése, nem külön új irány.
+
+Státusz: Locked Decision.
+
+------------------------------------------------------------
+
+33. AUDITDÖNTÉS
+
+Kérdés: Hogyan kezeljük a(z) „új objektumok lerakása a katalógusból” tervezési területét?
+
+Választott döntés:
+- 33.1B — kategóriák szerint rendezett katalógus.
+- 33.2C — zárolt tárgyak látszanak és mutatják a feloldás módját.
+- 33.3C — a költség előnézetben látszik, levonás csak jóváhagyáskor.
+- 33.4C — kapcsolható többszörös lerakási mód.
+
+Rövid indoklás:
+A döntés a korábbi auditban rögzített rendszerlogika alapján került lezárásra.
+
+Státusz: Locked Decision.
+
+------------------------------------------------------------
+
+34. AUDITDÖNTÉS
+
+Kérdés: Hogyan kezeljük a(z) „katalógusból lerakott tárgyak kezelése” tervezési területét?
+
+Választott döntés:
+- 34.1C — funkcionális épület előnézetként, egyszerű dekoráció közvetlen mozgatással.
+- 34.2C — tárgytípusonként eltérő készlet- és darabszabály.
+- 34.3C — az adat határozza meg, egyedi vagy többszörözhető.
+- 34.4B — birtokolt tárgy áthelyezése ingyenes.
+
+Rövid indoklás:
+A döntés a korábbi auditban rögzített rendszerlogika alapján került lezárásra.
+
+Státusz: Locked Decision.
+
+------------------------------------------------------------
+
+35. AUDITDÖNTÉS
+
+Kérdés: Hogyan kezeljük a(z) „objektum eltávolítása és tárolása” tervezési területét?
+
+Választott döntés:
+- 35.1B — dekoráció visszakerül a dekorációs készletbe.
+- 35.2C — kisebb játékosi épület elrakható, fontos vagy aktív épület csak áthelyezhető.
+- 35.3C — dekoráció bármikor, funkcionális épület csak biztonságos leállítás után.
+- 35.4C — tartós fejlődés megmarad, aktív folyamatok lezáródnak.
+
+Rövid indoklás:
+A döntés a korábbi auditban rögzített rendszerlogika alapján került lezárásra.
+
+Státusz: Locked Decision.
+
+------------------------------------------------------------
+
+36. AUDITDÖNTÉS
+
+Kérdés: Hogyan kezeljük a(z) „elrakott épületek és dekorációk tárolása” tervezési területét?
+
+Választott döntés:
+- 36.1C — dekoráció külön készletben, épületek külön építési listában.
+- 36.2C — dekorációnál alapból korlátlan, nagyobb épületnél külön szabály.
+- 36.3C — visszahelyezés csak megfelelő feltételekkel.
+- 36.4C — egyszerű tárgyak darabszámmal, egyedi állapotú tárgyak külön.
+
+Rövid indoklás:
+A döntés a korábbi auditban rögzített rendszerlogika alapján került lezárásra.
+
+Státusz: Locked Decision.
+
+------------------------------------------------------------
+
+37. AUDITDÖNTÉS
+
+Kérdés: Hogyan kezeljük a(z) „épületek lebontása és visszatérítés” tervezési területét?
+
+Választott döntés:
+- 37.1C — kisebb épületek elrakhatók vagy lebonthatók, egyedi/ritka csak elrakható.
+- 37.2C — előre látható, épülettípusonként eltérő visszatérítés.
+- 37.3C — tartós feloldások megmaradnak, anyagok részben járnak vissza.
+- 37.4C — egyszerű tárgynál gyors, fontos vagy fejlesztett épületnél részletes megerősítés.
+
+Rövid indoklás:
+A döntés a korábbi auditban rögzített rendszerlogika alapján került lezárásra.
+
+Státusz: Locked Decision.
+
+------------------------------------------------------------
+
+38. AUDITDÖNTÉS
+
+Kérdés: Hogyan kezeljük a(z) „tereprendezési jogosultságok és területek” tervezési területét?
+
+Választott döntés:
+- 38.1C — területtípusonként eltérő szabályok.
+- 38.2C — alap dekorálás korán, komolyabb mozgatás fokozatosan.
+- 38.3C — fontos falurészeken csak kijelölt személyre szabható zónák.
+- 38.4C — a saját terület fokozatosan bővül, a kezdőzóna korán használható.
+
+Rövid indoklás:
+A döntés a korábbi auditban rögzített rendszerlogika alapján került lezárásra.
+
+Státusz: Locked Decision.
+
+------------------------------------------------------------
+
+39. AUDITDÖNTÉS
+
+Kérdés: Hogyan kezeljük a(z) „tereprendezés és világfejlődés” tervezési területét?
+
+Választott döntés:
+- 39.1C — új területek több feltétel kombinációjával nyílnak meg.
+- 39.2C — természetes elemek eltávolítása, átültetése, újratelepítése fokozatos.
+- 39.3C — nincs külön tereprendezési szint; eszközök, professionök és világfejlődés oldanak fel lehetőségeket.
+- 39.4C — végjátékban nagyobb szabadság, a fontos helyek és működési szabályok védettek.
+
+Rövid indoklás:
+A döntés a korábbi auditban rögzített rendszerlogika alapján került lezárásra.
+
+Státusz: Locked Decision.
+
+------------------------------------------------------------
+
+40. AUDITDÖNTÉS
+
+Kérdés: Hogyan kezeljük a(z) „következő auditblokk” tervezési területét?
+
+Választott döntés:
+40A — mentési rendszer.
+
+Rövid indoklás:
+A döntés a korábbi auditban rögzített rendszerlogika alapján került lezárásra.
+
+Státusz: Locked Decision.
+
+------------------------------------------------------------
+
+41. AUDITDÖNTÉS
+
+Kérdés: Hogyan kezeljük a(z) „a mentési rendszer alapmodellje” tervezési területét?
+
+Választott döntés:
+- 41.1B — egy fő mentés és egy automatikus biztonsági mentés.
+- 41.2C — fontos eseményeknél azonnali mentés, kisebb változásoknál rövid késleltetés.
+- 41.3B — „Mentés most” gomb.
+- 41.4C — időnként és fontos állapotváltások előtt backup.
+
+Rövid indoklás:
+A döntés a korábbi auditban rögzített rendszerlogika alapján került lezárásra.
+
+Státusz: Locked Decision.
+
+------------------------------------------------------------
+
+42. AUDITDÖNTÉS
+
+Kérdés: Hogyan kezeljük a(z) „mentési adatok felépítése” tervezési területét?
+
+Választott döntés:
+- 42.1C — egy közös mentés több belső, külön ellenőrizhető adatrésszel.
+- 42.2C — tartós jelenetek saját állapottal, ideiglenesek csak szükséges adatokkal.
+- 42.3C — globális mentésverzió, szükség esetén adatrész-verziók.
+- 42.4C — szerkezet-, mező-, verzió- és hivatkozás-ellenőrzés betöltéskor.
+
+Rövid indoklás:
+A döntés a korábbi auditban rögzített rendszerlogika alapján került lezárásra.
+
+Státusz: Locked Decision.
+
+------------------------------------------------------------
+
+43. AUDITDÖNTÉS
+
+Kérdés: Hogyan kezeljük a(z) „hibás mentés és helyreállítás” tervezési területét?
+
+Választott döntés:
+- 43.1C — először fő mentés javítása, utána backup.
+- 43.2C — részleges hiba esetén csak a hibás adatrész javítása vagy biztonságos alapérték.
+- 43.3C — rövid üzenet, opcionális részletes hibainformáció.
+- 43.4C — külön Recovery Mode súlyos hibánál.
+
+Rövid indoklás:
+A döntés a korábbi auditban rögzített rendszerlogika alapján került lezárásra.
+
+Státusz: Locked Decision.
+
+------------------------------------------------------------
+
+44. AUDITDÖNTÉS
+
+Kérdés: Hogyan kezeljük a(z) „mentés és jelenetváltás” tervezési területét?
+
+Választott döntés:
+- 44.1C — fontos vagy tartós állapotú jelenetváltás előtt mentés.
+- 44.2C — hiba esetén utolsó biztonságos jelenetállapot.
+- 44.3C — aktív folyamatok sorsát folyamattípusonként külön szabály dönti el.
+- 44.4C — alapból utolsó pozíció, hibánál biztonságos pont.
+
+Rövid indoklás:
+A döntés a korábbi auditban rögzített rendszerlogika alapján került lezárásra.
+
+Státusz: Locked Decision.
+
+------------------------------------------------------------
+
+45. AUDITDÖNTÉS
+
+Kérdés: Hogyan kezeljük a(z) „offline folyamatok mentése” tervezési területét?
+
+Választott döntés:
+- 45.1B — kezdési és befejezési időpont mentése.
+- 45.2C — gyanús időugrás felismerése és korlátozása büntetés nélkül.
+- 45.3C — rendszerenként eltérő természetes offline korlát.
+- 45.4C — eredmény a saját kimeneti helyére kerül kapacitáskorláttal.
+
+Rövid indoklás:
+A döntés a korábbi auditban rögzített rendszerlogika alapján került lezárásra.
+
+Státusz: Locked Decision.
+
+------------------------------------------------------------
+
+46. AUDITDÖNTÉS
+
+Kérdés: Hogyan kezeljük a(z) „offline visszatérés” tervezési területét?
+
+Választott döntés:
+- 46.1C — rövid, bezárható összefoglaló.
+- 46.2C — csak fontos változások.
+- 46.3C — eredmények alapból a saját rendszerükben várnak.
+- 46.4C — megtelt kimenetnél biztonságos leállás, veszteség nélkül.
+
+Rövid indoklás:
+A döntés a korábbi auditban rögzített rendszerlogika alapján került lezárásra.
+
+Státusz: Locked Decision.
+
+------------------------------------------------------------
+
+47. AUDITDÖNTÉS
+
+Kérdés: Hogyan kezeljük a(z) „mentésexport és átvitel” tervezési területét?
+
+Választott döntés:
+- 47.1C — alap mentési rendszer után, de nyilvános demó előtt.
+- 47.2C — letölthető fájl, szükség esetén másolható biztonsági kód.
+- 47.3C — import előtt ellenőrzés és fő adatok megjelenítése.
+- 47.4C — import előtt automatikus backup, hiba esetén visszaállítás.
+
+Rövid indoklás:
+A döntés a korábbi auditban rögzített rendszerlogika alapján került lezárásra.
+
+Státusz: Locked Decision.
+
+------------------------------------------------------------
+
+48. AUDITDÖNTÉS
+
+Kérdés: Hogyan kezeljük a(z) „mentés mérete és régi adatok” tervezési területét?
+
+Választott döntés:
+- 48.1C — egyedi objektumok teljes állapota, tömeges természetes elemeknél csak változások.
+- 48.2C — állandó világelemek törlésének nyilvántartása.
+- 48.3C — elavult adatok eltávolítása biztonságos verzióváltáskor.
+- 48.4C — mentésméret figyelése és felesleges adatok tisztítása.
+
+Rövid indoklás:
+A döntés a korábbi auditban rögzített rendszerlogika alapján került lezárásra.
+
+Státusz: Locked Decision.
+
+------------------------------------------------------------
+
+49. AUDITDÖNTÉS
+
+Kérdés: Hogyan kezeljük a(z) „játékosprofil és fejlődés” tervezési területét?
+
+Választott döntés:
+- 49.1C — külön rendezett profiladatok.
+- 49.2C — skill/profession szint, XP, feloldások, specializációk.
+- 49.3C — ideiglenes bónuszok viselkedését a típusuk határozza meg.
+- 49.4C — kiválasztott eszköz, gyorselérés, presetek, játékosbeállítások megmaradnak.
+
+Rövid indoklás:
+A döntés a korábbi auditban rögzített rendszerlogika alapján került lezárásra.
+
+Státusz: Locked Decision.
+
+------------------------------------------------------------
+
+50. AUDITDÖNTÉS
+
+Kérdés: Hogyan kezeljük a(z) „inventory, tárgyak és tárolók” tervezési területét?
+
+Választott döntés:
+- 50.1C — egyszerű tárgynál azonosító + darabszám, egyedinél példányadat.
+- 50.2C — minden tartós tároló saját tartalommal, kapacitással, állapottal.
+- 50.3C — tárgymozgatás csak teljes jóváhagyás után végleges.
+- 50.4C — megszűnt tárgyazonosítót helyettesítő tárgy, visszatérítés vagy ismeretlen régi tárgy kezeli.
+
+Rövid indoklás:
+A döntés a korábbi auditban rögzített rendszerlogika alapján került lezárásra.
+
+Státusz: Locked Decision.
+
+------------------------------------------------------------
+
+51. AUDITDÖNTÉS
+
+Kérdés: Hogyan kezeljük a(z) „crafting és termelés mentése” tervezési területét?
+
+Választott döntés:
+- 51.1C — minden hosszabb crafting külön állapottal.
+- 51.2C — alapanyagok indításkor lefoglalva; megszakítási szabály dönt a visszatérítésről.
+- 51.3C — teljes véges termelési sor mentése.
+- 51.4C — elindított folyamat a mentett receptverzió szerint fejeződik be.
+
+Rövid indoklás:
+A döntés a korábbi auditban rögzített rendszerlogika alapján került lezárásra.
+
+Státusz: Locked Decision.
+
+------------------------------------------------------------
+
+52. AUDITDÖNTÉS
+
+Kérdés: Hogyan kezeljük a(z) „épületek és világfejlődés mentése” tervezési területét?
+
+Választott döntés:
+- 52.1C — azonosító, hely, szint, restauráció, működés, egyedi beállítások.
+- 52.2C — restaurációs szakasz, beadott anyagok, teljesített feladatok.
+- 52.3C — alap környezeti változások állapotból, játékosi módosítások külön.
+- 52.4C — érvénytelen hely esetén közeli megfelelő hely vagy biztonságos elrakás.
+
+Rövid indoklás:
+A döntés a korábbi auditban rögzített rendszerlogika alapján került lezárásra.
+
+Státusz: Locked Decision.
+
+------------------------------------------------------------
+
+53. AUDITDÖNTÉS
+
+Kérdés: Hogyan kezeljük a(z) „állatok, farm és növekedés” tervezési területét?
+
+Választott döntés:
+- 53.1C — növénytípus, hely, ültetési idő, növekedés, vízállapot, módosítók.
+- 53.2C — fontos egyedi állatok külön, egyszerűbb csoportos állatok összevonhatók.
+- 53.3C — saját kimeneti állapot kapacitással és várakozó termékkel.
+- 53.4C — távollét alatt nincs fontos negatív következmény.
+
+Rövid indoklás:
+A döntés a korábbi auditban rögzített rendszerlogika alapján került lezárásra.
+
+Státusz: Locked Decision.
+
+------------------------------------------------------------
+
+54. AUDITDÖNTÉS
+
+Kérdés: Hogyan kezeljük a(z) „küldetések, world path és feloldások” tervezési területét?
+
+Választott döntés:
+- 54.1C — aktív, teljesített, elutasított, halasztott és újra elérhető állapotok.
+- 54.2C — érdemi részfeladatok külön állapottal.
+- 54.3C — World Path csomópontállapotok: feloldott, ismert, részben ismert, zárolt, teljesített.
+- 54.4C — a feloldás eredménye mindig mentődik, az útvonal csak ha később számít.
+
+Rövid indoklás:
+A döntés a korábbi auditban rögzített rendszerlogika alapján került lezárásra.
+
+Státusz: Locked Decision.
+
+------------------------------------------------------------
+
+55. AUDITDÖNTÉS
+
+Kérdés: Hogyan kezeljük a(z) „beállítások és eszközfüggő adatok” tervezési területét?
+
+Választott döntés:
+- 55.1C — minden fontos játékbeállítás megmarad.
+- 55.2C — játékoshoz tartozó beállítások a profilhoz, eszközfüggők külön.
+- 55.3C — eszközváltáskor csak játékoshoz tartozó beállítások kerülnek át.
+- 55.4C — nem támogatott beállítás biztonságos alapértékre áll.
+
+Rövid indoklás:
+A döntés a korábbi auditban rögzített rendszerlogika alapján került lezárásra.
+
+Státusz: Locked Decision.
+
+------------------------------------------------------------
+
+56. AUDITDÖNTÉS
+
+Kérdés: Hogyan kezeljük a(z) „mentési rendszer tesztelése” tervezési területét?
+
+Választott döntés:
+- 56.1C — automatikus tesztek mentésre, betöltésre, backupra, migrációra és hibás adatokra.
+- 56.2C — háttérbe kerülés, bezárás, újratöltés, hívás és félbehagyott művelet tesztelése.
+- 56.3C — fejlesztői mentési napló, játékosnak érthető hibaüzenet.
+- 56.4C — Save Manager csak teljes helyreállítási és megszakításbiztonsággal kész.
+
+Rövid indoklás:
+A döntés a korábbi auditban rögzített rendszerlogika alapján került lezárásra.
+
+Státusz: Locked Decision.
+
+------------------------------------------------------------
+
+57. AUDITDÖNTÉS
+
+Kérdés: Hogyan kezeljük a(z) „mentési blokk lezárása” tervezési területét?
+
+Választott döntés:
+- 57.1C — finom mentésjelző, hiba esetén egyértelmű figyelmeztetés.
+- 57.2C — háttérben történő mentés, kritikus váltásoknál rövid várakozás.
+- 57.3C — sikertelen mentés újrapróbálása, nem mentett változások megőrzése.
+- 57.4C — teljes értékű helyi mentés, felhőmentés későbbi lehetőség.
+
+Rövid indoklás:
+A döntés a korábbi auditban rögzített rendszerlogika alapján került lezárásra.
+
+Státusz: Locked Decision.
+
+------------------------------------------------------------
+
+58. AUDITDÖNTÉS
+
+Kérdés: Melyik nagy rendszert auditáljuk a mentési blokk után?
+
+Választott döntés:
+58A — Jelenetek és világállapot.
+
+Rövid indoklás:
+Ez a blokk határozza meg, hogyan kapcsolódnak egymáshoz a jelenetek, a tartós világállapot, az idő és a háttérfolyamatok.
+
+Státusz: Locked Decision.
+
+------------------------------------------------------------
+
+59. AUDITDÖNTÉS
+
+Kérdés: Milyen jelenetek állapota maradjon tartós, és mi történjen eltávolított jelenetekkel?
+
+Választott döntés:
+59.1C — A fontos jelenetek tartós állapotúak.
+59.2C — A fontos változások megmaradnak, a megújuló erőforrások szabály szerint regenerálódnak.
+59.3C — A jelenetek stabil Scene ID-t használnak.
+59.4C — Eltávolított jelenetnél biztonságos migráció történik.
+
+Rövid indoklás:
+Csak a játékmenet szempontjából fontos állapotokat kell tartósan őrizni; a stabil azonosítók és migrációk megakadályozzák a mentések sérülését.
+
+Státusz: Locked Decision.
+
+------------------------------------------------------------
+
+60. AUDITDÖNTÉS
+
+Kérdés: Hogyan történjen a jelenetek közötti átmenet és betöltés?
+
+Választott döntés:
+60.1C — Kontextusfüggő átmenetek.
+60.2C — Vizuális átvezetés és betöltés.
+60.3C — A játékos csak a kritikus állapot betöltése után kapja vissza az irányítást.
+60.4C — Sikertelen betöltéskor visszatérés az előző jelenetbe.
+
+Rövid indoklás:
+A látványos, de biztonságos átmenet elrejti a technikai betöltést, miközben nem enged félkész világállapotba lépni.
+
+Státusz: Locked Decision.
+
+------------------------------------------------------------
+
+61. AUDITDÖNTÉS
+
+Kérdés: Hogyan kezeljük a jelenetek belépési pontjait és átjáróit?
+
+Választott döntés:
+61.1C — Stabil belépési pontok.
+61.2C — Érvénytelen pontnál biztonságos fallback spawn.
+61.3C — Az átmenet tárolja a forrásjelenetet és az átjáró ID-ját.
+61.4C — Egyszerre csak egy átmenet lehet aktív.
+
+Rövid indoklás:
+A stabil kapuazonosítók és a biztonságos spawn megakadályozzák az elveszett, duplikált vagy párhuzamos átmeneti állapotokat.
+
+Státusz: Locked Decision.
+
+------------------------------------------------------------
+
+62. AUDITDÖNTÉS
+
+Kérdés: Hogyan regenerálódjanak a jelenetek erőforrásai és hogyan tároljuk az állapotukat?
+
+Választott döntés:
+62.1C — A megújuló erőforrások szabály szerint regenerálódnak.
+62.2C — A regeneráció jelenet- vagy objektumspecifikus.
+62.3C — A félbehagyott aktivitást a saját szabálya kezeli.
+62.4C — Csak delták, időbélyegek és tartós változások mentődnek; az alap a seedből épül újra.
+
+Rövid indoklás:
+A deltaalapú tárolás kisebb mentést ad, miközben minden fontos játékosi változás és regeneráció reprodukálható marad.
+
+Státusz: Locked Decision.
+
+------------------------------------------------------------
+
+63. AUDITDÖNTÉS
+
+Kérdés: Hogyan épüljenek fel a régiók több összekapcsolt jelenetből?
+
+Választott döntés:
+63.1C — A régiók összekapcsolt aljelenetekből állnak.
+63.2C — A régióállapot közös, a helyi objektumok jelenetspecifikusak.
+63.3C — Stabil kapcsolati ID-k.
+63.4C — A részben feloldott régiók fizikailag blokkoltak.
+
+Rövid indoklás:
+A közös régióállapot egységes világot ad, a helyi jelenetállapot pedig kordában tartja a memória- és mentési igényt.
+
+Státusz: Locked Decision.
+
+------------------------------------------------------------
+
+64. AUDITDÖNTÉS
+
+Kérdés: Hogyan kezeljük az aktív jelenetet, az unloadot és a gyorsítótárat?
+
+Választott döntés:
+64.1C — Csak az aktuális jelenet teljesen aktív.
+64.2C — Unloadkor az ideiglenes runtime megszűnik, a tartós állapot megmarad.
+64.3C — Korlátozott prediktív előtöltés.
+64.4C — Alacsony memórián adaptív cache.
+
+Rövid indoklás:
+Mobilon csak a szükséges tartalom marad aktív, de az előtöltés és az adaptív cache csökkenti a várakozást.
+
+Státusz: Locked Decision.
+
+------------------------------------------------------------
+
+65. AUDITDÖNTÉS
+
+Kérdés: Hogyan működjön a világidő és az időjárás a jelenetek között?
+
+Választott döntés:
+65.1C — Közös globális világidő.
+65.2C — Regionális időjárás.
+65.3C — Beltérben is tovább halad a globális idő.
+65.4C — Az időjárás fokozatosan vált.
+
+Rövid indoklás:
+Az egységes idő megakadályozza az időduplikációt, a regionális időjárás pedig változatos, mégis koherens világot ad.
+
+Státusz: Locked Decision.
+
+------------------------------------------------------------
+
+66. AUDITDÖNTÉS
+
+Kérdés: Hogyan működjenek a regionális események és történeti világváltozások?
+
+Választott döntés:
+66.1C — A regionális események közösek.
+66.2C — Távollét alatt is folytatódhatnak.
+66.3C — A történeti változások tartós világállapottá válnak.
+66.4C — Konfliktusnál verziózott migráció.
+
+Rövid indoklás:
+A játékos távollétében is élő világ marad, miközben a tartós történeti eredmények nem vesznek el frissítéskor.
+
+Státusz: Locked Decision.
+
+------------------------------------------------------------
+
+67. AUDITDÖNTÉS
+
+Kérdés: Hogyan kezeljük az újrajátszható vagy generált aktivitási jeleneteket?
+
+Választott döntés:
+67.1C — Közös definíció, egyedi instance state.
+67.2C — Definíció és seed alapján generálódnak.
+67.3C — Új seed csak szabályos befejezés vagy új futam után.
+67.4C — A fontos eredmények tartósak, az ideiglenes run state törölhető.
+
+Rövid indoklás:
+Az instance-alapú rendszer újrajátszhatóságot ad, de nem engedi a seed vagy a jutalmak manipulálását.
+
+Státusz: Locked Decision.
+
+------------------------------------------------------------
+
+68. AUDITDÖNTÉS
+
+Kérdés: Hogyan kapcsolódjon a fő falu az aktivitási jelenetekhez?
+
+Választott döntés:
+68.1C — A fő falu tartós fejlődési és tárolási központ.
+68.2C — A szerzett tárgyak először helyi vagy játékosállapotba kerülnek, majd szabályos visszatéréskor integrálódnak.
+68.3C — Az aktivitási jelenetek saját szabályúak, de kapcsolódnak a fejlődéshez, inventoryhoz és világállapothoz.
+68.4C — Normál esetben helyben folytatás, veszélyes vagy érvénytelen állapotnál biztonságos visszatérés.
+
+Rövid indoklás:
+A falu központi szerepe megtartja a hosszú távú koherenciát, miközben az aktivitások önálló játékmenetet kaphatnak.
+
+Státusz: Locked Decision.
+
+------------------------------------------------------------
+
+69. AUDITDÖNTÉS
+
+Kérdés: Hogyan működjenek a belépési költségek, a veszély és a kilépés?
+
+Választott döntés:
+69.1C — Belépési költség csak indokolt esetben.
+69.2C — A költség a biztonságosan véglegesített átmenetkor vonódik le; hibánál visszaáll.
+69.3C — Biztonságos ponton szabad kilépés, veszélyben külön visszavonulási szabály.
+69.4C — Kényszerített megszakításkor az utolsó biztonságos állapot áll vissza.
+
+Rövid indoklás:
+A tranzakciós költségkezelés és a biztonságos checkpoint megakadályozza az igazságtalan veszteséget és a félkész állapotokat.
+
+Státusz: Locked Decision.
+
+------------------------------------------------------------
+
+70. AUDITDÖNTÉS
+
+Kérdés: Hogyan oldódjanak fel a jelenetek és hogyan maradjanak érthetők a lezárások?
+
+Választott döntés:
+70.1C — Többféle feltétel kombinációja oldhat fel jelenetet.
+70.2C — A lezárt hely részben látható lehet, a feloldási irány érthető.
+70.3C — A tartós feloldás megmarad, de helyi műveletek kérhetnek aktuális feltételt.
+70.4C — Az egyszer használható bejárat tartós lezárt állapotot és szükség esetén alternatív utat kap.
+
+Rövid indoklás:
+A többtényezős feloldás gazdagabb fejlődést ad, a látható korlátok pedig csökkentik a játékosi bizonytalanságot.
+
+Státusz: Locked Decision.
+
+------------------------------------------------------------
+
+71. AUDITDÖNTÉS
+
+Kérdés: Hogyan működjön a térkép, a felfedezés és a gyorsutazás?
+
+Választott döntés:
+71.1C — Az ismert régiók és fő kapcsolatok látszanak, a részletek felfedezéssel pontosodnak.
+71.2C — Fontos helyek, bejáratok, szolgáltatások, veszélyek és felfedezett jelölések mentődnek.
+71.3C — Gyorsutazás csak feloldott, meglátogatott biztonságos pontok között.
+71.4C — Rövid átmenet alatt költség-, idő-, célpont- és mentésellenőrzés történik.
+
+Rövid indoklás:
+A térkép támogatja a felfedezést anélkül, hogy előre mindent felfedne; a gyorsutazás csak ellenőrzött állapotban működik.
+
+Státusz: Locked Decision.
+
+------------------------------------------------------------
+
+72. AUDITDÖNTÉS
+
+Kérdés: Milyen korlátozásokkal és időhatással működjön a gyorsutazás?
+
+Választott döntés:
+72.1C — Aktív veszély, lezáratlan fontos folyamat, mozgó esemény vagy érvénytelen célpont esetén nincs gyorsutazás.
+72.2C — A távolság, útvonal és utazási mód alapján telik világidő.
+72.3C — Az aktív folyamatok sorsát a saját típusuk dönti el.
+72.4C — Érvénytelen célpontnál megszakítás vagy közeli biztonságos pont, szabályos költségkezeléssel.
+
+Rövid indoklás:
+A gyorsutazás a világ szabályain belül marad, nem kerülheti meg a veszélyt, az időt vagy a folyamatok lezárását.
+
+Státusz: Locked Decision.
+
+------------------------------------------------------------
+
+72.5. AUDITDÖNTÉS
+
+Kérdés: Hogyan akadályozzuk meg, hogy a teleport vagy gyorsutazás meghackelje az időalapú rendszereket?
+
+Választott döntés:
+72.5C — A gyorsutazás nem hozhat létre plusz időt, nem ismételhet feldolgozási ciklust, és nem gyorsíthatja mesterségesen a termelést, craftingot, növekedést vagy más időalapú folyamatot.
+
+Rövid indoklás:
+Minden időalapú rendszer ugyanazt az egységes világidőt használja, így utazási ciklusokkal nem lehet többleteredményt generálni.
+
+Státusz: Locked Decision.
+
+------------------------------------------------------------
+
+73. AUDITDÖNTÉS
+
+Kérdés: Hogyan változzon tartósan a dinamikus világ?
+
+Választott döntés:
+73.1C — Csak fontos történeti, gazdasági és világállapot-változások módosítják tartósan.
+73.2C — A jelentős játékosi változtatások tartósak; a kisebb elemek szabály szerint regenerálódhatnak.
+73.3C — Az NPC-k szabályozott szimulációban alakíthatják a világot.
+73.4C — Hosszabb idő alatt szezonális, gazdasági, NPC- és eseményváltozások történnek.
+
+Rövid indoklás:
+A világ élőnek érződik, de a szabályozott változás megőrzi az érthetőséget és a mentések stabilitását.
+
+Státusz: Locked Decision.
+
+------------------------------------------------------------
+
+74. AUDITDÖNTÉS
+
+Kérdés: Hogyan működjön a háttérszimuláció és az offline fejlődés?
+
+Választott döntés:
+74.1C — Csak fontos folyamatok futnak egyszerűsített háttérszimulációval.
+74.2C — Időszakaszos, korlátozott és determinisztikus számítás.
+74.3C — Megbízható időreferencia, monoton időkövetés, időbélyegek és biztonságos korrekció.
+74.4C — Nagy kihagyásnál szabályozott maximum és eseményösszefoglaló.
+
+Rövid indoklás:
+Nem szükséges minden másodpercet leszimulálni; a determinisztikus, plafonozott elszámolás teljesítménybarát és exploitbiztos.
+
+Státusz: Locked Decision.
+
+------------------------------------------------------------
+
+75. AUDITDÖNTÉS
+
+Kérdés: Mi legyen a World Simulation Core alaparchitektúrája?
+
+Választott döntés:
+75.1C — A központi World State az igazságforrás.
+75.2C — A rendszerek a World State-en és eseményrendszeren keresztül kommunikálnak.
+75.3C — Ütköző módosítások prioritási és tranzakciós szabályok szerint, determinisztikusan futnak.
+75.4C — Új rendszerek szabványos interfészeken és eseményeken keresztül csatlakoznak.
+
+Rövid indoklás:
+A központi igazságforrás és a laza modulkapcsolat elkerüli az eltérő állapotmásolatokat és megkönnyíti a bővítést.
+
+Státusz: Locked Decision.
+
+------------------------------------------------------------
+
+76. AUDITDÖNTÉS
+
+Kérdés: Hogyan módosítsák a rendszerek a világállapotot és hogyan dolgozzuk fel az eseményeket?
+
+Választott döntés:
+76.1C — Validált parancs vagy tranzakció módosítja a World State-et.
+76.2C — Többrendszeres műveletek atomi tranzakciók.
+76.3C — Azonos világpillanat eseményei fázisok, prioritások és stabil sorrend szerint futnak.
+76.4C — Hibás esemény elutasításra vagy hibakezelési sorba kerül, az érvényes állapot megmarad.
+
+Rövid indoklás:
+Az atomi és validált feldolgozás megakadályozza a pénz-, tárgy- vagy világállapot részleges módosulását.
+
+Státusz: Locked Decision.
+
+------------------------------------------------------------
+
+77. AUDITDÖNTÉS
+
+Kérdés: Hogyan működjön a rendszerprioritás és a frissítési ciklus?
+
+Választott döntés:
+77.1C — Előre meghatározott rendszerfrissítési sorrend.
+77.2C — Az új események szabályozott sorba kerülnek, és prioritás szerint ugyanabban vagy következő ciklusban futnak.
+77.3C — A háttérrendszerek saját szükséges frekvenciával frissülnek.
+77.4C — Azonos bemenet mindig azonos eredményt és világállapotot ad.
+
+Rövid indoklás:
+A stabil sorrend és eltérő frekvencia egyszerre biztosít reprodukálhatóságot és mobilbarát teljesítményt.
+
+Státusz: Locked Decision.
+
+------------------------------------------------------------
+
+78. AUDITDÖNTÉS
+
+Kérdés: Hogyan működjön a világobjektumok életciklusa?
+
+Választott döntés:
+78.1C — Minden tartós objektumnak globálisan egyedi, állandó Object ID-ja van.
+78.2C — Csak a hosszú távon jelentős objektumok tartósak.
+78.3C — Az ideiglenes effektek csak runtime-ban élnek és újragenerálódnak.
+78.4C — A végleges megszűnés vagy új állapot tartósan bekerül a World State-be.
+
+Rövid indoklás:
+A stabil objektumazonosítás és a tartós/ideiglenes szétválasztás egyszerűsíti a mentést és a hibajavítást.
+
+Státusz: Locked Decision.
+
+------------------------------------------------------------
+
+79. AUDITDÖNTÉS
+
+Kérdés: Hogyan tároljuk, regeneráljuk és migráljuk az objektumállapotokat?
+
+Választott döntés:
+79.1C — Külön alapdefiníció, a mentésben csak eltérések és fontos változások.
+79.2C — Regeneráció saját szabály, időbélyeg, feltétel és felső korlát alapján.
+79.3C — Definíciófrissítésnél verziózott migráció.
+79.4C — Hibás vagy hiányzó hivatkozásnál biztonságos fallback és naplózás.
+
+Rövid indoklás:
+A deltaalapú, verziózott állapotkezelés kis mentést és frissítésálló objektumokat ad.
+
+Státusz: Locked Decision.
+
+------------------------------------------------------------
+
+80. AUDITDÖNTÉS
+
+Kérdés: Hogyan kezeljük az összetett objektumokat, a hierarchiát és a tulajdonjogot?
+
+Választott döntés:
+80.1C — Stabil szülő–gyermek hierarchia; az önálló állapotú részek saját Object ID-t kaphatnak.
+80.2C — A szülő megszűnésekor vagy mozgatásakor definíciós szabály dönt a gyermekek sorsáról.
+80.3C — Szabványos tulajdonosi hivatkozás és jogosultsági szabály.
+80.4C — Tulajdonosváltáskor atomi tranzakció frissíti a tulajdont, jogosultságokat, készleteket és világállapotot.
+
+Rövid indoklás:
+Az explicit hierarchia és tulajdonjog minden kapcsolódó rendszert konzisztensen tart, különösen épületeknél, tárolóknál és kereskedelemnél.
+
+Státusz: Locked Decision.
+
+------------------------------------------------------------
+
+
+------------------------------------------------------------
+
+81. AUDITDÖNTÉS
+
+Választott döntés:
+81.1C — Objektumok újrafelhasználható komponensekből épülnek fel.
+81.2C — A komponensek csak deklarált interfészeken kommunikálnak.
+81.3C — A komponensek életciklusa szabványos.
+81.4C — A komponensek verziózhatók és validálhatók.
+
+Státusz: Locked Decision.
+
+------------------------------------------------------------
+
+82. AUDITDÖNTÉS
+
+Választott döntés:
+82.1C — Összetettebb objektumok definiált állapotgépet használnak.
+82.2C — Állapotváltást csak validált parancs, esemény vagy időfeltétel indíthat.
+82.3C — Megszakításkor az átmenet saját szabálya dönt.
+82.4C — Ismeretlen állapotnál migráció vagy biztonságos fallback.
+
+Státusz: Locked Decision.
+
+------------------------------------------------------------
+
+83. AUDITDÖNTÉS
+
+Választott döntés:
+83.1C — Újrafelhasználható component ability rendszer.
+83.2C — Minden tartós komponens saját validált állapottal rendelkezik.
+83.3C — Kommunikáció eseményekkel/parancsokkal/object controlleren keresztül.
+83.4C — Verziómigráció kezeli a komponensváltozásokat.
+
+Státusz: Locked Decision.
+
+------------------------------------------------------------
+
+84. AUDITDÖNTÉS
+
+Választott döntés:
+84.1C — Külön role/tag rendszer.
+84.2C — A capability validált viselkedési szerződés.
+84.3C — Konfliktusnál validáció és fallback.
+84.4C — Runtime módosítás csak validált állapotváltással.
+
+Státusz: Locked Decision.
+
+------------------------------------------------------------
+
+85. AUDITDÖNTÉS
+
+Választott döntés:
+85.1C — Pool csak gyakori ideiglenes objektumoknak.
+85.2C — Kötelező reset visszaadáskor.
+85.3C — Runtime handle/generation ID.
+85.4C — Méretkorlátok és szabályozott bővítés.
+
+Státusz: Locked Decision.
+
+------------------------------------------------------------
+
+86. AUDITDÖNTÉS
+
+Választott döntés:
+86.1C — Külön logikai shape.
+86.2C — Több célú shape támogatott.
+86.3C — Shape profil állapotfüggő.
+86.4C — Validáció és fallback.
+
+Státusz: Locked Decision.
+
+------------------------------------------------------------
+
+87. AUDITDÖNTÉS
+
+Választott döntés:
+87.1C — Shape-ek deklarált szereppel.
+87.2C — Layer/mask alapú ütközés.
+87.3C — Priorizált interakciós pontok.
+87.4C — Hibás shape újravalidálása.
+
+Státusz: Locked Decision.
+
+------------------------------------------------------------
+
+88. AUDITDÖNTÉS
+
+Választott döntés:
+88.1C — A logikai állapot az igazságforrás.
+88.2C — Vizuális profil állapotból oldódik fel.
+88.3C — Asset fallback.
+88.4C — Commitpont alapú átmenet.
+
+Státusz: Locked Decision.
+
+------------------------------------------------------------
+
+89. AUDITDÖNTÉS
+
+Választott döntés:
+89.1C — Tranzakciós objektumátalakulás.
+89.2C — Kapcsolatok deklarált migrációja.
+89.3C — Klónozás új identitással.
+89.4C — Atomi rollback.
+
+Státusz: Locked Decision.
+
+------------------------------------------------------------
+
+90. AUDITDÖNTÉS
+
+Választott döntés:
+90.1C — Definíció szerinti sérülésmodell.
+90.2C — Sérülési állapotok módosítják a működést.
+90.3C — Validált javítás.
+90.4C — Definíció szerinti végállapot.
+
+Státusz: Locked Decision.
+
+------------------------------------------------------------
+
+91. AUDITDÖNTÉS
+
+Választott döntés:
+91.1C — Szabványos inspector.
+91.2C — Runtime adatok csak olvashatók.
+91.3C — Diagnosztikai előzmények.
+91.4C — Rétegezett diagnosztika.
+
+Státusz: Locked Decision.
+
+------------------------------------------------------------
+
+92. AUDITDÖNTÉS
+
+Választott döntés:
+92.1C — Minden validált művelet interakció.
+92.2C — Interaction Request.
+92.3C — Teljes előfeltétel-validáció.
+92.4C — Tranzakciós eredmény.
+
+Státusz: Locked Decision.
+
+------------------------------------------------------------
+
+93. AUDITDÖNTÉS
+
+Választott döntés:
+93.1C — Teljes kérésmodell.
+93.2C — Deklarált célpont-rangsorolás.
+93.3C — Tie-break szabály.
+93.4C — Commit előtti újravalidálás.
+
+Státusz: Locked Decision.
+
+------------------------------------------------------------
+
+94. AUDITDÖNTÉS
+
+Választott döntés:
+94.1C — Előfeltételek az interakciódefinícióban.
+94.2C — Logikai feltételcsoportok.
+94.3C — Definiált újraellenőrzési pontok.
+94.4C — Strukturált hibakód.
+
+Státusz: Locked Decision.
+
+------------------------------------------------------------
+
+95. AUDITDÖNTÉS
+
+Választott döntés:
+95.1C — Fázisokra bontott interakció.
+95.2C — Validált időmódosítók.
+95.3C — Fázisfüggő megszakítás.
+95.4C — Menthető folyamatállapot.
+
+Státusz: Locked Decision.
+
+------------------------------------------------------------
+
+96. AUDITDÖNTÉS
+
+Választott döntés:
+96.1C — Erőforrás-foglalás/commit definíció szerint.
+96.2C — Atomi foglalás.
+96.3C — Deklarált visszatérítés.
+96.4C — Atomi tranzakciós csomag.
+
+Státusz: Locked Decision.
+
+------------------------------------------------------------
+
+97. AUDITDÖNTÉS
+
+Választott döntés:
+97.1C — Reservation rendszer.
+97.2C — Több foglalási mód.
+97.3C — Lejáró reservation.
+97.4C — Conflict kezelés commitkor.
+
+Státusz: Locked Decision.
+
+------------------------------------------------------------
+
+98. AUDITDÖNTÉS
+
+Választott döntés:
+98.1C — Deklarált eredménycsomag.
+98.2C — Commit utáni végleges események.
+98.3C — Kritikus/nem kritikus mellékhatások.
+98.4C — Idempotens eredményfeldolgozás.
+
+Státusz: Locked Decision.
+
+------------------------------------------------------------
+
+99. AUDITDÖNTÉS
+
+Választott döntés:
+99.1C — Prioritás és megszakíthatóság.
+99.2C — Validált interakciós várólista.
+99.3C — Összevonás és duplikációszűrés.
+99.4C — Védett commitfázis.
+
+Státusz: Locked Decision.
+
+------------------------------------------------------------
+
+100. AUDITDÖNTÉS
+
+Választott döntés:
+100.1C — Játékos és NPC ugyanazt a rendszert használja.
+100.2C — Interaction Plan.
+100.3C — Deklarált újratervezés.
+100.4C — Egységes validációs útvonal.
+
+Státusz: Locked Decision.
+
+------------------------------------------------------------
+
+101. AUDITDÖNTÉS
+
+Választott döntés:
+101.1C — Az interakciódefiníció határozza meg, hogy a művelet automatikus, kézi kontextuális, folyamatos vagy külön megerősítést igénylő módon indul.
+101.2C — Nincs permanens ACT gomb; egyetlen aktuális kontextuális prompt jelenik meg az érvényes célpont közelében.
+101.3C — Az automatikus interakció cooldownnal, belépési éllel, állapotellenőrzéssel és tranzakcióazonosítóval védi ki az ismételt aktiválást.
+101.4C — A mozgási input megszakítási kérésként kerül feldolgozásra, és az aktuális interakciós fázis szabálya dönti el a megszakítást, szüneteltetést, befejezést vagy ideiglenes mozgászárat.
+
+Státusz: Locked Decision.
+
+------------------------------------------------------------
+
+102. AUDITDÖNTÉS
+
+Választott döntés:
+102.1C — A rendszer stabil célpontzárat használ rövid megtartási idővel és hiszterézissel; csak egyértelműen jobb célpont vagy érvénytelenné válás esetén vált.
+102.2C — Több valódi célpont esetén deklarált alternatívaváltás érhető el, például rövid célpontlistával, promptváltással vagy ismételt kontextuális érintéssel.
+102.3C — A látható, de nem használható interakció elkülönített zárolt vagy inaktív promptot kap rövid indoklással és szükség esetén részletes követelménylistával.
+102.4C — Az interakciós rendszer támogatja az állítható automatizálást, nagyobb promptot és érintési területet, hosszabb célpontmegtartást, valamint kombinált vizuális, hang- és haptikus visszajelzést.
+
+Státusz: Locked Decision.
+
+------------------------------------------------------------
+
+103. AUDITDÖNTÉS
+
+Választott döntés:
+103.1C — Az interakció sikeres indulását a művelet típusához igazított, összehangolt vizuális, animációs, hang- és opcionális haptikus visszajelzés jelzi.
+103.2C — A hosszabb interakciók időtartamhoz és fontossághoz igazított helyi folyamatjelzést kapnak, amely szükség esetén a megszakíthatóságot is mutatja.
+103.3C — A strukturált hibakód játékosbarát, helyzetfüggő üzenetre fordul, amely megnevezi az okot és lehetőség szerint a következő értelmes lépést.
+103.4C — A visszajelzési rendszer prioritást, összevonást, ismétlődésszűrést és megjelenítési korlátot használ; a fontos eredmények külön megmaradnak.
+
+Státusz: Locked Decision.
+
+------------------------------------------------------------
+
+104. AUDITDÖNTÉS
+
+Téma:
+Interakciós megszakítás, visszavonás és app-életciklus.
+
+Választott döntés:
+104.1C — A megszakítható interakció deklarált Cancel műveletet használ; rövid műveleteknél ezt kiválthatja a mozgás, hosszabb vagy fontos folyamatoknál külön kontextuális megszakítás jelenik meg.
+104.2C — Az interakció definíciója és az elért fázis határozza meg a teljes, részleges vagy nulla erőforrás-visszatérítést; az eredmény tranzakciósan kerül végrehajtásra.
+104.3C — Az app-életciklus eseménye biztonságos megszakítási vagy mentési pontot kér; a folyamat definíciója szerint az interakció mentődik, szünetel, befejeződik vagy visszaáll.
+104.4C — Commitállapot, tranzakcióazonosító és idempotens eredményfeldolgozás különbözteti meg a nem véglegesített, a véglegesített és a már alkalmazott eredményeket, megakadályozva a jutalom többszöri jóváírását.
+
+Rövid indoklás:
+A megszakítás módja az interakció hosszához és fontosságához igazodik, ezért a véletlen érintés nem töröl fontos folyamatot. Az erőforrások és eredmények kezelése fázisfüggő, tranzakciós és idempotens. Az alkalmazás háttérbe kerülése vagy bezáródása biztonságos, definícióvezérelt állapotkezelést indít.
+
+Státusz: Locked Decision.
+
+------------------------------------------------------------
+
+105. AUDITDÖNTÉS
+
+Téma:
+Interakciós célpont eltűnése, érvénytelenedése és egyidejű használata.
+
+Választott döntés:
+105.1C — A rendszer meghatározott fázisokban újravalidálja az interakció célpontját; az interakció definíciója dönti el, hogy a művelet folytatható, szüneteltethető, biztonságosan megszakítandó vagy már véglegesítendő.
+105.2C — Az interakció stabil Object ID alapján követi a célpontot. Életciklus-változáskor megszünteti az érvénytelen runtime-hivatkozást, majd a definíció szerint megszakít, migrál, szüneteltet vagy biztonságos hibával lezár.
+105.3C — Kizárólagos használatnál az objektum deklarált reservation vagy foglalási szabályt alkalmaz. A győztes determinisztikusan kerül kiválasztásra, a másik kérés pedig várólistára, újratervezésre vagy játékosbarát elutasításra kerül.
+105.4C — Lezárt vagy megszakított Interaction Request nem éled újra automatikusan. Új kérés szükséges, kivéve, ha az interakció menthető folyamatként érvényes folytatási azonosítóval rendelkezik.
+
+Rövid indoklás:
+A célpont állapotának változása nem hagyhat érvénytelen hivatkozást, nem okozhat kettős használatot, és nem indíthat újra váratlanul korábbi kérést. A stabil azonosítók, újravalidálási pontok, determinisztikus foglalás és explicit folytatási azonosító biztonságos, menthető és kiszámítható interakciós működést adnak.
+
+Státusz: Locked Decision.
+
++======================================================================
+ELŐRE JÓVÁHAGYOTT TECHNIKAI DÖNTÉSEK — 106–299. TARTOMÁNY
+======================================================================
+
+A felhasználó 2026-07-30-án egyben jóváhagyta az alábbi 75 pontos technikai alapcsomagot.
+A ritka sorszámozás szándékos: az eredeti auditpontszámok megmaradnak, a köztes nyitott pontok továbbra is külön döntést igényelnek.
+
+------------------------------------------------------------
+
+106. AUDITDÖNTÉS
+
+Téma:
+Kézi, eszközös és együttműködő interakció
+
+Választott döntés:
+106.1C — Az objektumok és épületek ugyanazon deklarált interakciós képességeken keresztül kínálnak műveleteket.
+106.2C — A kiválasztott eszköz új műveletjelölteket adhat, de nem kerülheti meg a jogosultság-, célpont- és foglalásellenőrzést.
+106.3C — Üres kéznél csak az interakciódefiníció által engedett műveletek kerülnek a jelöltek közé; rangsorolásuk a 93.2C–93.3C szabályt követi, a romboló vagy visszafordíthatatlan művelet pedig a definíció szerinti megerősítést igényli.
+106.4C — Több együttműködő objektumot igénylő művelet az összes résztvevő stabil ID-ját rögzíti, majd egyetlen atomi foglalásban és tranzakcióban dolgozza fel őket.
+
+Rövid indoklás:
+Lezárja az objektum-, épület-, eszköz- és üreskezes interakció közös útvonalát, rejtett kivételek nélkül.
+
+Státusz: Locked Decision.
+
+------------------------------------------------------------
+
+108. AUDITDÖNTÉS
+
+Téma:
+Játékosazonosság, pozíció és biztonságos helyreállítás
+
+Választott döntés:
+108.1C — A profil, a tartós Player ID és az aktuális runtime-avatar külön fogalom.
+108.2C — A mentett helyzet Scene ID-t, biztonságos horgonyt, pozíciót és szükséges mozgásállapotot tartalmaz; félkész mozgási képkocka nem mentődik.
+108.3C — Betöltéskor a spawnpont csak betöltött, járható, nem blokkolt és engedélyezett területen fogadható el.
+108.4C — A stuck recovery a legutóbbi érvényes biztonságos horgonyra helyez, és nem ismétel idő-, költség- vagy jutalomtranzakciót.
+
+Rövid indoklás:
+A helyreállítás nem függ törékeny runtime-koordinátától, és nem nyit kihasználható visszatekerést.
+
+Státusz: Locked Decision.
+
+------------------------------------------------------------
+
+109. AUDITDÖNTÉS
+
+Téma:
+Mozgási állapotok és sebességmódosítók
+
+Választott döntés:
+109.1C — Az input először mozgási szándékká alakul, amelyet a mozgásrendszer képkockasebességtől függetlenül validál.
+109.2C — A sebességmódosítók forrással, taggel, időtartammal, összevonási sorrenddel és alsó-felső korláttal rendelkeznek.
+109.3C — A gyalogos, zárolt és szerkesztési mozgás, valamint minden később jóváhagyott mount- vagy speciális mód deklarált állapot, validált átmenetekkel.
+109.4C — Ha mount vagy helper részt vesz a mozgásban, deklarált navigációs és ütközési profilt használ; stabil Object ID-t csak tartós példányként kap a 78. pont szerint, egyébként runtime handle-t használ, és nem módosítja ellenőrizetlenül a játékospozíciót.
+
+Rövid indoklás:
+A mozgás bővíthető és determinisztikus marad anélkül, hogy minden új bónusz külön kivételt igényelne.
+
+Státusz: Locked Decision.
+
+------------------------------------------------------------
+
+111. AUDITDÖNTÉS
+
+Téma:
+Egykezes, balkezes és későbbi alternatív irányítás
+
+Választott döntés:
+111.1C — Az alapértelmezett jobbkezes profilban a virtuális joystick a képernyő jobb oldalán helyezkedik el.
+111.2C — Beállításból választható balkezes profil, amely tükrözi a vezérlőterületeket, de nem fordítja meg a világ irányait.
+111.3C — P0/P1-ben a joystick az elsődleges mozgásvezérlés. A tap-to-move technikailag később hozzáadható, de most nem része a scope-nak.
+111.4C — A joystick mérete, érzékenysége és pontos safe-area pozíciója konfigurálható, és az iPhone 16 Pro készüléken egykezes teszttel hangolandó.
+
+Rövid indoklás:
+A jobbkezes alapelrendezés követi a projekt tulajdonosának tényleges használatát, miközben a tükrözhető profil és a konfigurálható pozíció hozzáférhető marad más játékosoknak.
+
+Státusz: Locked Decision.
+
+------------------------------------------------------------
+
+112. AUDITDÖNTÉS
+
+Téma:
+Egységes inputfeldolgozás és kontrollzárolás
+
+Választott döntés:
+112.1C — A touch-, pointer- és egéresemények egy normalizált inputrétegben, kontaktazonosítóval alakulnak játékparanccsá.
+112.2C — Ugyanazon fizikai érintésből érkező touch és emulált pointer/click csak egy parancsot hozhat létre.
+112.3C — Fókuszvesztéskor minden lenyomott állapot és aktív gesztus biztonságosan felszabadul.
+112.4C — Menük, dialógusok és szerkesztési mód deklarált inputkontextust használnak; lezáráskor csak explicit állapotváltással adják vissza az irányítást.
+
+Rövid indoklás:
+Megelőzi a beragadt joystickot, a kettős érintést és a menü mögötti véletlen műveleteket.
+
+Státusz: Locked Decision.
+
+------------------------------------------------------------
+
+113. AUDITDÖNTÉS
+
+Téma:
+Mozgási ütközés, triggerzónák és speciális terep
+
+Választott döntés:
+113.1C — A mozgás a logikai collision shape-eket kérdezi le, nem a grafika látható pixeleit.
+113.2C — A triggerzónák nem blokkolnak; enter, stay és exit eseményeik stabil actor–shape átfedési kulccsal készülnek és ismétlődésszűrtek.
+113.3C — Víz, lejtő és más speciális terep deklarált traversal-képességet, sebességmódosítót vagy tiltást ad.
+113.4C — Az ütközésfeloldás stabil sorrendű, nagy elmozdulásnál áthaladásvédett, ismétlődő sikertelenségnél stuck recoveryt ajánl.
+
+Rövid indoklás:
+Az objektumrendszer általános shape-szabályait konkrét mozgási szerződéssé teszi.
+
+Státusz: Locked Decision.
+
+------------------------------------------------------------
+
+116. AUDITDÖNTÉS
+
+Téma:
+Képernyőarány, orientáció és Reduced Motion
+
+Választott döntés:
+116.1C — A játéklogika felbontásfüggetlen világkoordinátát, a HUD pedig safe-area-t és reszponzív korlátokat használ.
+116.2C — A portrait mód az elsődleges támogatott elrendezés; landscape csak külön HUD-, input- és kameratesztek teljesítése után minősül támogatottnak.
+116.3C — Reduced Motion csökkenti vagy kikapcsolja a kamerarázást, hosszú zoomot, lendületes átvezetést és parallaxismozgást, információvesztés nélkül.
+116.4C — Átméretezés, orientációváltás és fókuszváltás újrarendezi a nézetet és üríti az ideiglenes inputot, de nem módosítja a World State-et.
+
+Rövid indoklás:
+A portrait-first irány így mérhető platform- és hozzáférhetőségi szerződéssé válik.
+
+Státusz: Locked Decision.
+
+------------------------------------------------------------
+
+117. AUDITDÖNTÉS
+
+Téma:
+Item- és resource-definíciók
+
+Választott döntés:
+117.1C — Minden item- és resource-definíció stabil ID-val és tartalmi verzióval rendelkezik.
+117.2C — A definíció tartalmazza a kategóriákat, tageket, stackelési szabályt, alapviselkedést és engedélyezett komponenseket.
+117.3C — A registry a tartalom aktiválása előtt ellenőrzi az ID-egyediséget, a hivatkozásokat és a kötelező mezőket; az ellenőrzés build-, betöltési vagy fejlesztői validációs lépésben történhet.
+117.4C — A definíció nem másolódik a mentésbe; a mentés csak az azonosítót és az instance- vagy eltérésállapotot tárolja.
+
+Rövid indoklás:
+Megakadályozza a tartalmi adatok és mentett példányállapot összekeverését.
+
+Státusz: Locked Decision.
+
+------------------------------------------------------------
+
+118. AUDITDÖNTÉS
+
+Téma:
+Stackek és egyedi tárgypéldányok
+
+Választott döntés:
+118.1C — Csak azonos merge key-jel rendelkező tárgyak stackelhetők; a kulcsba minden játékmenetileg eltérő állapot bekerül.
+118.2C — Az egyedi eszközök, modulozott, sérült vagy más tartós állapotú tárgyak stabil Instance ID-t kapnak.
+118.3C — A mennyiség egész szám, validált minimum- és maximumértékkel; nulla mennyiségű stack nem marad fenn.
+118.4C — Minőség, ritkaság, állapot, tartósság és modulok csak akkor léteznek instance-adatként, ha a definíció használja őket.
+
+Rövid indoklás:
+Egyértelművé teszi, mi vonható össze, és megelőzi az állapotvesztő stackelést.
+
+Státusz: Locked Decision.
+
+------------------------------------------------------------
+
+119. AUDITDÖNTÉS
+
+Téma:
+Kulcs-, projekt- és védett tárgyak
+
+Választott döntés:
+119.1C — A kulcs- és projekttárgy külön deklarált szerep, nem név vagy inventorykategória alapján felismerhető kivétel.
+119.2C — A játékosi item lock tiltja az eladást, eldobást, bontást és automatikus receptfelhasználást, amíg a játékos fel nem oldja; a rendszer- vagy projektvédelem csak validált állapotváltással szüntethető meg.
+119.3C — Eladhatóságot és fogyaszthatóságot a definíció és az aktuális állapot együtt határoz meg.
+119.4C — Védett tárgyon végzett romboló művelet strukturált indokot és szükség esetén külön megerősítést kér.
+
+Rövid indoklás:
+Kritikus tárgy nem veszhet el általános gyorsművelettel vagy automatizálással.
+
+Státusz: Locked Decision.
+
+------------------------------------------------------------
+
+122. AUDITDÖNTÉS
+
+Téma:
+Tartós tárolók és épülethelyi készletek
+
+Választott döntés:
+122.1C — Minden tartós tároló stabil Object ID-val, Inventory komponenssel, kapacitással és hozzáférési szabállyal rendelkezik.
+122.2C — Az épülethelyi tárolás nem azonos a játékos inventoryjával; tulajdonosa és helye külön nyilvántartott.
+122.3C — Input-, output- és általános tároló logikailag külön rekesz lehet akkor is, ha egy UI-ban jelenik meg.
+122.4C — Tároló mozgatása, elrakása vagy bontása előtt a tartalom sorsa kötelezően validálandó.
+
+Rövid indoklás:
+A tárolótartalom nem válik épülethez kötött, elveszthető rejtett adattá.
+
+Státusz: Locked Decision.
+
+------------------------------------------------------------
+
+124. AUDITDÖNTÉS
+
+Téma:
+Tárgyáthelyezési műveletek
+
+Választott döntés:
+124.1C — Minden áthelyezés atomi source–destination tranzakció; a tárgy nem tűnhet el a két hely között.
+124.2C — Részleges áthelyezés csak a játékos által választott mennyiséggel vagy előre közölt kapacitáskorláttal történhet.
+124.3C — Ha Quick Transfer vagy Transfer All támogatott, előbb teljes áthelyezési tervet készít, majd stabil rendezési sorrendben commitol.
+124.4C — Ha Deposit Matching támogatott, csak jelen lévő vagy deklaráltan elfogadott kategóriát mozgat, és tiszteletben tartja a lockot és reservationt.
+
+Rövid indoklás:
+A kényelmi műveletek ugyanazt a duplikáció- és elvesztésvédelmet használják, mint az egyedi mozgatás.
+
+Státusz: Locked Decision.
+
+------------------------------------------------------------
+
+126. AUDITDÖNTÉS
+
+Téma:
+Inventory-migráció és integritásvédelem
+
+Választott döntés:
+126.1C — Ismeretlen item ID karanténozott legacy-placeholderként marad vissza, amíg migráció vagy visszatérítés nem rendezi.
+126.2C — Törölt vagy felosztott item ID explicit verziózott migrációs táblát használ.
+126.3C — Tranzakcióazonosítók és inventory-invariánsok felismerik a duplikációt, negatív mennyiséget és tulajdon nélküli instance-t.
+126.4C — Appmegszakításkor csak a teljesen commitolt áthelyezés marad meg; a többi visszaáll vagy idempotensen folytatódik.
+
+Rövid indoklás:
+A korábbi 50. pont alapmodelljét teljes migrációs és megszakításbiztonsági szerződéssé egészíti ki.
+
+Státusz: Locked Decision.
+
+------------------------------------------------------------
+
+131. AUDITDÖNTÉS
+
+Téma:
+Eszközhatások és capability-gate-ek
+
+Választott döntés:
+131.1C — Minden ténylegesen támogatott eszközhatás külön, típusos módosító; a lehetséges hatások közé tartozhat sebesség, hozam, hatótáv és hozzáférés, rare-drop módosító pedig csak a 139. pont jóváhagyása esetén aktív.
+131.2C — A capability- vagy tierkövetelmény nem váltható ki pusztán nagyobb hatékonysági bónusszal.
+131.3C — A módosítók stabil sorrendben, deklarált stacking szabállyal és biztonságos korlátokkal számolódnak.
+131.4C — Az eszköz részletei az effektív értéket és annak fő forrásait is megmutatják.
+
+Rövid indoklás:
+Elválasztja a „meg tudom csinálni” és a „gyorsabban/jobban csinálom” fogalmát.
+
+Státusz: Locked Decision.
+
+------------------------------------------------------------
+
+135. AUDITDÖNTÉS
+
+Téma:
+Eszközhasználat mentése és megszakítása
+
+Választott döntés:
+135.1C — Minden eszközspecifikus fogyó- vagy tartós állapot csak validált interakciós tranzakción keresztül változhat.
+135.2C — Appváltás és megszakítás a 104. pont szerinti interakciós fázisszabályt használja, külön eszközspecifikus kerülőút nélkül.
+135.3C — Ismételt input ugyanazzal a tranzakcióazonosítóval nem alkalmazhat újra eszközfogyasztást, állapotváltozást vagy hozamot.
+135.4C — Hiányzó vagy migráció után érvénytelen aktív eszköz esetén biztonságos alapválasztás és magyarázó jelzés történik.
+
+Rövid indoklás:
+Az általános tranzakciós szabályokat az eszközök fogyó és tartós állapotára alkalmazza.
+
+Státusz: Locked Decision.
+
+------------------------------------------------------------
+
+136. AUDITDÖNTÉS
+
+Téma:
+Resource node definíció és identitás
+
+Választott döntés:
+136.1C — A node-definíció tartalmazza a harvestable role-t, régiót, spawnfeltételeket, szükséges capabilityt és állapotgépet.
+136.2C — Az authored node tartós Object ID-t kap, ha eltávolítása vagy állapota hosszú távon számít.
+136.3C — A tartós generált node stabil, betöltési sorrendtől független azonosítót kap; ez reprodukálható kulcsból származhat vagy explicit menthető, míg ideiglenes node-nak runtime handle elegendő.
+136.4C — Az alapdefiníció és az instance-delta külön tárolódik és külön validálható.
+
+Rövid indoklás:
+Nagy nodeszám mellett is reprodukálható és migrálható marad a természet.
+
+Státusz: Locked Decision.
+
+------------------------------------------------------------
+
+137. AUDITDÖNTÉS
+
+Téma:
+Node-állapot, depletion, respawn és újratelepítés
+
+Választott döntés:
+137.1C — A node elérhető, foglalt, kitermelt, stump/depleted és más szükséges állapotait deklarált állapotgép kezeli.
+137.2C — Respawn idő, feltétel és felső korlát alapján történik; nem írhat felül játékosi épületet vagy tartós világváltozást.
+137.3C — Végleges eltávolítás tartós tombstone vagy területi delta, amelyet normál regeneráció nem töröl.
+137.4C — Újratelepítés új kontrollált instance-t vagy deklarált visszaállítást hoz létre, nem éleszti fel véletlenül a régi foglalásokat.
+
+Rövid indoklás:
+Elkülöníti a megújuló kitermelést a tartós földhasználati változástól.
+
+Státusz: Locked Decision.
+
+------------------------------------------------------------
+
+138. AUDITDÖNTÉS
+
+Téma:
+Harvest művelet és jutalomcommit
+
+Választott döntés:
+138.1C — Az eszköz-, tier-, skill-, hatótáv- és nodeállapot-követelmény induláskor és commit előtt ellenőrződik.
+138.2C — Az action timing adatvezérelt és az interakciós fázisrendszert használja.
+138.3C — A nodeállapot és a definíció szerinti eredmények — hozam, esetleges drop és esetleges skill XP — egyetlen atomi eredménytranzakcióban véglegesülnek.
+138.4C — Commit előtti megszakítás nem ad hozamot; commit utáni ismételt esemény nem adhat második jutalmat.
+
+Rövid indoklás:
+A kitermelés nem kap külön, duplikálható jutalomútvonalat.
+
+Státusz: Locked Decision.
+
+------------------------------------------------------------
+
+143. AUDITDÖNTÉS
+
+Téma:
+Offline regeneráció, save delta és anti-exploit
+
+Választott döntés:
+143.1C — Offline regeneráció megbízható időreferenciából, determinisztikusan és nodetípusonkénti felső korláttal számolódik.
+143.2C — Időmanipuláció nem ad extra spawnciklust; gyanús ugrás biztonságos maximumra korlátozódik büntetés nélkül.
+143.3C — Csak a seedtől eltérő nodeállapot, időbélyeg és tartós eltávolítás kerül mentésbe.
+143.4C — Betöltéskor a regeneráció nem írhat felül építést, földhasználati változást vagy aktív rezervációt.
+
+Rövid indoklás:
+Alkalmazza a lezárt háttérszimulációs és anti-exploit elveket nagy nodeszámra.
+
+Státusz: Locked Decision.
+
+------------------------------------------------------------
+
+145. AUDITDÖNTÉS
+
+Téma:
+Receptdefiníció és verzió
+
+Választott döntés:
+145.1C — Minden recept stabil Recipe ID-val és tartalmi verzióval rendelkezik.
+145.2C — Inputok, alternatív inputcsoportok, mennyiségek, outputok és melléktermékek strukturáltan deklaráltak.
+145.3C — A recept feloldási állapota külön progressionadat; nem a receptfájl jelenléte jelenti a feloldást.
+145.4C — A registry ellenőrzi az item-, állomás-, requirement- és outputhivatkozásokat.
+
+Rövid indoklás:
+A recept tartalma, elérhetősége és aktív instance-a nem keveredik össze.
+
+Státusz: Locked Decision.
+
+------------------------------------------------------------
+
+146. AUDITDÖNTÉS
+
+Téma:
+Craftingjogosultság és munkaállomás
+
+Választott döntés:
+146.1C — A recept által deklarált workstation capability, building tier, profession és tool requirement külön validálható feltétel.
+146.2C — Minden hiányzó követelmény látható és játékosbarát következő lépésre fordítható.
+146.3C — A feltételek sorba állításkor és tényleges induláskor is ellenőrződnek.
+146.4C — Időközben érvénytelenné vált állomásnál a job saját életciklus-szabálya dönt a várakozásról, megszakításról vagy explicit kompatibilis célpontra migrálásról; az alapanyagok sorsát az 51.2C és 104.2C szabály kezeli.
+
+Rövid indoklás:
+Nem indulhat olyan munka, amelynek állomása vagy jogosultsága csak a UI szerint volt érvényes.
+
+Státusz: Locked Decision.
+
+------------------------------------------------------------
+
+148. AUDITDÖNTÉS
+
+Téma:
+Queue, batch, Craft All és Repeat
+
+Választott döntés:
+148.1C — Minden queue véges, adatvezérelt limittel és stabil sorrenddel.
+148.2C — Ha batch craft támogatott, menthető mennyiséggel vagy determinisztikusan kibontott jobokkal működik.
+148.3C — Ha Craft All támogatott, a kérés pillanatában biztonságosan kiszámított véges maximumot jelenti.
+148.4C — Ha Repeat támogatott, csak előkészített véges inputból dolgozik, és input-, output-, fuel- vagy jogosultsághiánynál leáll; végtelen loop nincs.
+
+Rövid indoklás:
+A kényelmi funkciók nem válhatnak korlátlan háttértermeléssé.
+
+Státusz: Locked Decision.
+
+------------------------------------------------------------
+
+150. AUDITDÖNTÉS
+
+Téma:
+Outputkapacitás és megtelt kimenet
+
+Választott döntés:
+150.1C — A gép outputja saját, előre ellenőrizhető kapacitással rendelkezik.
+150.2C — Megtelt outputnál a következő ciklus commit előtt megáll; új inputot nem fogyaszt.
+150.3C — Már elkészült, de át nem vett output tartósan megmarad és ugyanazzal a tranzakcióval csak egyszer vehető át.
+150.4C — Outputfelszabadítás után a folyamat csak új validációval folytatódik.
+
+Rövid indoklás:
+Kizárja az offline és kapacitáshatáron történő tárgyvesztést vagy duplikációt.
+
+Státusz: Locked Decision.
+
+------------------------------------------------------------
+
+151. AUDITDÖNTÉS
+
+Téma:
+Offline crafting és véges automatizálás
+
+Választott döntés:
+151.1C — Távollét alatt csak az előre sorba állított véges jobok haladhatnak.
+151.2C — Az eredményt eltelt idő, queue, input, fuel és outputkapacitás együttesen korlátozza.
+151.3C — Offline eredmény egyetlen idempotens visszatérési tranzakcióban számolódik és rögzül.
+151.4C — Repeat vagy Craft All nem hoz létre új batch-et távollét alatt a már jóváhagyott mennyiségen túl.
+
+Rövid indoklás:
+Konkretizálja a 45–46. és 72.5. pont anti-exploit szabályait craftingra.
+
+Státusz: Locked Decision.
+
+------------------------------------------------------------
+
+155. AUDITDÖNTÉS
+
+Téma:
+Épületdefiníció és instance
+
+Választott döntés:
+155.1C — BuildingDefinition és BuildingInstance külön adatmodell, stabil Building/Object ID-val.
+155.2C — Az authored landmark, player-owned és közösségi épület deklarált tulajdonosi és mozgathatósági típust kap.
+155.3C — Restauráció, tier, működés, tárolás és kapcsolatok külön komponensállapotként tárolódnak.
+155.4C — A mentés csak az instance-állapotot és definíciótól való eltérést tárolja.
+
+Rövid indoklás:
+A korábbi általános objektum- és mentésdöntéseket konkrét épületkontraktussá teszi.
+
+Státusz: Locked Decision.
+
+------------------------------------------------------------
+
+163. AUDITDÖNTÉS
+
+Téma:
+Épülettartalom migrációja és grafikai fallback
+
+Választott döntés:
+163.1C — A tartós instance szerkezetét vagy jelentését érintő BuildingDefinition-változás verziózott migrációt igényel; kizárólag vizuális vagy nem állapothordozó metadata-változás nem.
+163.2C — Hiányzó tier-, restaurációs vagy működési grafika biztonságos generikus vizuális profilt és diagnosztikai jelzést használ.
+163.3C — Eltávolított épülettípus tartalmát, projektinputját és tulajdonosi értékét explicit migráció vagy visszatérítés rendezi.
+163.4C — Migráció után érvénytelen pozíció vagy hálózati kapcsolat a már lezárt biztonságos elrakási/fallback szabályt használja.
+
+Rövid indoklás:
+Tartalomfrissítés nem teheti betölthetetlenné a falut vagy láthatatlanná a fontos épületet.
+
+Státusz: Locked Decision.
+
+------------------------------------------------------------
+
+165. AUDITDÖNTÉS
+
+Téma:
+Soil plot és növényinstance
+
+Választott döntés:
+165.1C — Minden tartós soil plot stabil Plot ID-t és külön talaj-, víz- és foglaltsági állapotot kap.
+165.2C — A növényfajta definíció, az elültetett növény pedig plothivatkozással rendelkező instance-állapot.
+165.3C — Az ültetés ideje, növekedési fázis, módosítók és harvest state validált mezők.
+165.4C — Egy ploton egyszerre csak a definíció által engedett növény- vagy növénycsoport lehet aktív.
+
+Rövid indoklás:
+Stabil alapot ad növekedéshez, offline számításhoz és migrációhoz.
+
+Státusz: Locked Decision.
+
+------------------------------------------------------------
+
+166. AUDITDÖNTÉS
+
+Téma:
+Növekedési szimuláció
+
+Választott döntés:
+166.1C — A növekedés a közös világidőből és deklarált fázisküszöbökből számolódik.
+166.2C — Víz, talaj, évszak, időjárás és egyéb módosító típusos, stabil sorrendben alkalmazott hatás.
+166.3C — Hosszabb eltelt idő determinisztikus, szakaszos vagy képletalapú számítással dolgozódik fel; bármely játékmeneti felső korlát a 45.3C szerinti, külön deklarált növényrendszer-szabály, nem implementációs mellékhatás.
+166.4C — Növénydefiníció frissítése az aktív példányokat verziózott migrációval kezeli.
+
+Rövid indoklás:
+Nem szükséges minden növényt képkockánként szimulálni, és ugyanaz az idő mindig ugyanazt az állapotot adja.
+
+Státusz: Locked Decision.
+
+------------------------------------------------------------
+
+170. AUDITDÖNTÉS
+
+Téma:
+Állatdefiníció, instance és lakóhely
+
+Választott döntés:
+170.1C — Az állatfaj definíciója tartalmazza a lakóhely-, kapacitás-, gondozási és outputszabályokat.
+170.2C — Fontos egyedi állat stabil Animal ID-t és teljes instance state-et kap; egyszerű csoport a lezárt 53.2C szerint aggregálható.
+170.3C — Minden állat vagy csoport pontosan egy érvényes lakóhelyhez vagy átmeneti biztonságos állapothoz tartozik.
+170.4C — Áthelyezés atomi módon frissíti a régi és új lakóhely kapacitását, tulajdonát és állatállapotát.
+
+Rövid indoklás:
+Megelőzi az eltűnő, két helyen szereplő vagy lakóhely nélküli állatokat.
+
+Státusz: Locked Decision.
+
+------------------------------------------------------------
+
+175. AUDITDÖNTÉS
+
+Téma:
+Fontos és tömeges NPC-k adatmodellje
+
+Választott döntés:
+175.1C — A fontos NPC stabil NPC ID-t, definíciót és külön mentett instance state-et kap.
+175.2C — Tömeges háttér-NPC archetipikus vagy aggregált állapotú lehet, ha egyedi története és tulajdona nincs.
+175.3C — Jelenet, lakóhely, munkahely, kapcsolat és aktuális feladat stabil ID-hivatkozás.
+175.4C — Fontos NPC és tömeges NPC közötti átalakítás explicit migráció, nem runtime-optimalizációs mellékhatás.
+
+Rövid indoklás:
+Csak a játékmenetileg jelentős személyek igényelnek teljes perzisztenciát.
+
+Státusz: Locked Decision.
+
+------------------------------------------------------------
+
+177. AUDITDÖNTÉS
+
+Téma:
+Schedule conflict, háttérszimuláció és offline állapot
+
+Választott döntés:
+177.1C — Ütköző schedule-bejegyzésnél eseményprioritás, sürgősség és stabil tie-break dönt.
+177.2C — Érvénytelen célhely vagy munkahely esetén az NPC deklarált biztonságos fallback rutint használ.
+177.3C — Nem betöltött jelenetben csak a fontos hely-, szolgáltatás-, esemény- és termelési állapot szimulálódik.
+177.4C — Offline idő alatt csak korlátozott, determinisztikus NPC-változások történnek; fontos eredmény visszatérési összefoglalóba kerül.
+
+Rövid indoklás:
+Megakadályozza az egyszerre több helyen lévő NPC-t és a szükségtelen teljes háttér-AI-t.
+
+Státusz: Locked Decision.
+
+------------------------------------------------------------
+
+182. AUDITDÖNTÉS
+
+Téma:
+NPC eltűnés, visszatérés és eseményütközés
+
+Választott döntés:
+182.1C — Fontos NPC eltűnése explicit történeti, utazási, ideiglenes vagy eltávolított állapot, nem hiányzó runtime-objektum.
+182.2C — Visszatérés érvényes lakóhelyet, munkahelyet, schedule-t és függő feladatokat újravalidál.
+182.3C — Eltávolított NPC-re mutató quest-, building- vagy relationship-hivatkozás explicit tartalmi migrációt kap; ennek hiányában biztonságos feloldatlan vagy blokkolt állapot és diagnosztikai jelzés marad, automatikus személycsere nélkül.
+182.4C — Egymással ütköző események stabil prioritás és kizárási csoport alapján választódnak ki.
+
+Rövid indoklás:
+A tartalmi változás nem törheti el a világot vagy hagyhat félbe nem teljesíthető függőségeket.
+
+Státusz: Locked Decision.
+
+------------------------------------------------------------
+
+185. AUDITDÖNTÉS
+
+Téma:
+Quest-adatmodell és életciklus
+
+Választott döntés:
+185.1C — Minden küldetés verziózott Quest ID-t használ; a változatlan definíció és a mentett Quest Instance állapot külön adat.
+185.2C — Minden érdemi objective és subgoal saját stabil azonosítót, típust, feltételt és validálható progressziót kap.
+185.3C — Az aktív, teljesített, halasztott, elutasított, sikertelen és újra elérhető állapotok csak deklarált átmenetekkel változhatnak.
+185.4C — A mentés csak az instance-deltákat és szükséges időbélyegeket tárolja; definícióváltáskor verziózott migráció fut.
+
+Rövid indoklás:
+Ez tovább részletezi az 54. kanonikus döntést, és megakadályozza az elvesző progresszt, hibás objective-hivatkozást és mentésfüggő eltérést.
+
+Státusz: Locked Decision.
+
+------------------------------------------------------------
+
+187. AUDITDÖNTÉS
+
+Téma:
+World Path és függőségi gráf
+
+Választott döntés:
+187.1C — Minden World Path node stabil Node ID-val és deklarált ismert, részben ismert, zárolt, feloldott és teljesített állapottal rendelkezik.
+187.2C — A node követelményei, alternatív feltételei, kimenetei és feloldott rendszerei explicit dependency graphban szerepelnek.
+187.3C — Minden zárolt node megnevezi a hiányzó feltételt, annak forrását és — ahol van — az alternatív útvonalat.
+187.4C — Automatikus validáció tiltja a körkörös, önmagára hivatkozó, hiányzó és kezdőpont nélküli kötelező függőségeket.
+
+Rövid indoklás:
+A World Path így magyarázza a rendszerek kapcsolatát, de nem válik láthatatlan questkapuvá vagy progressziós csapdává.
+
+Státusz: Locked Decision.
+
+------------------------------------------------------------
+
+190. AUDITDÖNTÉS
+
+Téma:
+Jutalom, world event és tartalmi migráció
+
+Választott döntés:
+190.1C — Questjutalom, story flag és visszafordíthatatlan világváltozás egyetlen atomi, tranzakcióazonosítóval védett eredménycsomagban véglegesül.
+190.2C — Ugyanaz az objective- vagy world-event eredmény újratöltés után sem számolható el kétszer.
+190.3C — Eltávolított vagy átstrukturált quest/objective explicit, verziózott migrációs szabályt kap; a szabály biztonságos lezárást vagy helyettesítést választhat, kompenzációt pedig csak külön jóváhagyott tartalmi döntés alapján adhat.
+190.4C — Automatikus teszt ellenőrzi a sorrendtől független progresszt, retryt, lejáratot, mentés-visszatöltést és hibás hivatkozásokat.
+
+Rövid indoklás:
+A questrendszer közvetlenül módosítja a jutalmakat és a tartós világot, ezért ugyanazok az atomi és idempotens szabályok vonatkoznak rá, mint más rendszerekre.
+
+Státusz: Locked Decision.
+
+------------------------------------------------------------
+
+191. AUDITDÖNTÉS
+
+Téma:
+Progression-adatmodell
+
+Választott döntés:
+191.1C — Minden profession, skill, mastery, perk, specialization, milestone, collection entry és reward type stabil, verziózott azonosítót használ.
+191.2C — A definíciók különülnek el a játékos mentett XP-, szint-, feloldás-, mastery-, collection- és választási állapotától.
+191.3C — A feloldások validált eseménnyel, idempotensen kerülnek a profilba; a UI nem lehet igazságforrás.
+191.4C — Átnevezett vagy eltávolított progresszióelem explicit, verziózott migrációs szabályt kap; helyettesítés vagy visszatérítés csak az adott elem jóváhagyott tartalmi szabálya alapján történhet.
+
+Rövid indoklás:
+Ez illeszkedik a központi World State-hez és a 49. profilmentési döntéshez.
+
+Státusz: Locked Decision.
+
+------------------------------------------------------------
+
+197. AUDITDÖNTÉS
+
+Téma:
+Pénznem, ledger és tranzakció
+
+Választott döntés:
+197.1C — Minden pénznem stabil Currency ID-val és egész számú, pontos reprezentációval rendelkezik.
+197.2C — Vásárlás, eladás, jutalom, költség és refund az inventoryval egyetlen atomi tranzakcióban változik.
+197.3C — Minden tranzakció egyedi azonosítót, okkódot és szükséges price/version hivatkozást kap.
+197.4C — Megismételt kérés, újratöltés vagy appmegszakítás nem vonhat le és nem írhat jóvá kétszer.
+
+Rövid indoklás:
+A ledger-alapú, atomi gazdaság az item duplication és részleges vásárlás alapvető védelme.
+
+Státusz: Locked Decision.
+
+------------------------------------------------------------
+
+202. AUDITDÖNTÉS
+
+Téma:
+Offline kereskedelem és exploitvédelem
+
+Választott döntés:
+202.1C — Offline kereskedelem csak előre elkészített, véges rendelést vagy tranzakciót fejezhet be; nem generálhat végtelen vásárlási-eladási ciklust.
+202.2C — Minden offline folyamat véges inputtal, queue-val, outputkapacitással és rendszer-specifikus felső korláttal működik.
+202.3C — Azonos tárgypéldány egyszerre csak egy inventoryban, orderben, shopban vagy feldolgozásban lehet lefoglalva.
+202.4C — Automatikus invariáns- és hibateszt ellenőrzi a negatív pénzt, duplikációt, refundot, árváltást és appmegszakítást.
+
+Rövid indoklás:
+Ez a már lezárt tranzakciós, reservation- és offline szabályokat alkalmazza a gazdaságra.
+
+Státusz: Locked Decision.
+
+------------------------------------------------------------
+
+203. AUDITDÖNTÉS
+
+Téma:
+Kanonikus világóra
+
+Választott döntés:
+203.1C — Egy verziózott World Clock szolgáltatás az egyetlen igazságforrás minden játékidőhöz.
+203.2C — A futó session monoton időt használ; közvetlen rendszeróra-lekérdezést egyetlen játékrendszer sem végezhet.
+203.3C — A World Clock a 65.1C és 65.3C szerinti globális időt szolgáltatja minden jelenetnek; regionális rendszer csak deklarált prezentációs vagy időjárási eltérést használhat, külön folyamatidőt nem.
+203.4C — Az időállapot menthető, validálható és migrálható; hibás referencia esetén biztonságos korrekció történik.
+
+Rövid indoklás:
+Egyetlen időszolgáltatás nélkül az offline, termelési, időjárási és fast-travel folyamatok eltérő eredményt adhatnak.
+
+Státusz: Locked Decision.
+
+------------------------------------------------------------
+
+206. AUDITDÖNTÉS
+
+Téma:
+Offline folyamatok
+
+Választott döntés:
+206.1C — Offline csak deklaráltan támogatott, előre elkészített folyamat halad; aktív játékosi XP vagy végtelen automatikus ismétlés nem történik.
+206.2C — A számítás kezdő- és végidőbélyegből, véges inputból, véges queue-ból, outputkapacitásból és rendszerspecifikus capből készül.
+206.3C — Minden offline folyamat eltárolja az utolsó feldolgozott időpontot vagy ciklusazonosítót, ezért ugyanaz az eltelt idő újratöltéskor nem számolható el ismét.
+206.4C — Input-, queue- vagy outputkorlát elérésekor a folyamat az első nem végrehajtható ciklusnál veszteség nélkül leáll, és a 46. döntés szerinti összefoglalóban jelenik meg.
+
+Rövid indoklás:
+Ez közvetlenül következik a 45–46. és 74. kanonikus döntésekből.
+
+Státusz: Locked Decision.
+
+------------------------------------------------------------
+
+207. AUDITDÖNTÉS
+
+Téma:
+Pause, app-életciklus és utazás
+
+Választott döntés:
+207.1C — Minden pause-képes kontextus explicit időpolitikát deklarál a helyi szimulációra és a háttérfolyamatokra; az egyes menük és aktivitások konkrét politikája saját definíciójukban marad.
+207.2C — Tereprendezési módban a korábban lezárt 12. döntés szerinti részleges pause működik.
+207.3C — Appháttérbe kerüléskor az időreferencia és az aktív folyamat biztonságos checkpointot kap; resume előtt az eltelt idő egyszer kerül feldolgozásra.
+207.4C — Fast travel és más időugrás ugyanazt az időfeldolgozási útvonalat használja, ezért nem duplázhat termelési ciklust.
+
+Rövid indoklás:
+Egységes időfeldolgozás nélkül a pause, háttérbe kerülés és utazás exploitot vagy állapoteltérést okozhat.
+
+Státusz: Locked Decision.
+
+------------------------------------------------------------
+
+208. AUDITDÖNTÉS
+
+Téma:
+Óramanipuláció, időzóna és teljesítményteszt
+
+Választott döntés:
+208.1C — Nyári/téli időszámítás és időzónaváltás nem adhat negatív eltelt időt vagy ismételt jutalmat.
+208.2C — Gyanús rendszeróra-változás büntetés helyett korlátozott, magyarázható korrekciót és diagnosztikai bejegyzést eredményez.
+208.3C — Minden offline eredmény folyamat- és tranzakcióazonosítóval idempotens.
+208.4C — Tesztmátrix fedi a nagy előre- és hátraugrást, DST-t, időzónát, hosszú távollétet, appkillt, low-memory resume-ot és gyenge telefonos teljesítményt.
+
+Rövid indoklás:
+Az időhibák ritkák, de közvetlenül veszélyeztetik a mentést és a gazdaságot.
+
+Státusz: Locked Decision.
+
+------------------------------------------------------------
+
+209. AUDITDÖNTÉS
+
+Téma:
+Activity- és run-adatmodell
+
+Választott döntés:
+209.1C — Minden activity verziózott Activity ID-val, külön definícióval és külön menthető run instance állapottal rendelkezik.
+209.2C — A run seed, belépési feltételek, költségek, veszélyszint, checkpointok és jutalomtáblák a létrehozáskor rögzülnek.
+209.3C — Az ideiglenes run-only resource elkülönül a tartós inventorytól, a biztosított jutalom pedig explicit secured állapotot kap.
+209.4C — Futó run verzióváltáskor explicit verziópolitika szerint a mentett szabállyal befejeződik, migrálódik vagy biztonságosan lezárul; kompenzáció csak külön jóváhagyott tartalmi szabályból következhet.
+
+Rövid indoklás:
+Ez kiterjeszti a 67–69. kanonikus aktivitási döntéseket egy teljes adatkontraktussá.
+
+Státusz: Locked Decision.
+
+------------------------------------------------------------
+
+220. AUDITDÖNTÉS
+
+Téma:
+Mobilos megszakítás és autosave
+
+Választott döntés:
+220.1C — Fókuszvesztéskor a mozgási input leáll, és a 104.3C szerinti biztonságos checkpoint- és mentési kísérlet indul; a rendszer nem feltételezi, hogy az operációs rendszer felfüggesztése előtt a tartós írás biztosan befejeződik.
+220.2C — Visszatéréskor korábbi érintés, joystick-állapot vagy Interaction Request nem aktiválódhat újra.
+220.3C — Hosszú háttérben töltött idő ugyanazt az offline feldolgozást használja, mint a teljes bezárás.
+220.4C — Hívás, értesítés, appváltás, képernyőzár, folyamatkill és low-memory újraindítás kötelező regressziós teszt.
+
+Rövid indoklás:
+Ez a már lezárt mobilos interakciós és mentési szerződések session-szintű alkalmazása.
+
+Státusz: Locked Decision.
+
+------------------------------------------------------------
+
+223. AUDITDÖNTÉS
+
+Téma:
+Undo-szabály összehangolása
+
+Választott döntés:
+223.1C — Az első verzióban és az első vertical slice-ban nincs általános Undo-rendszer.
+223.2C — A még nem commitolt mozgatás vagy szerkesztés megszakítása az eredeti pozíciót állítja vissza; ez nem Undo-history.
+223.3C — Commitolt item transfer, eladás, dekoráció vagy más művelet nem kap utólagos Undo-ablakot; a hibát validáció, előnézet és szükség esetén megerősítés előzi meg.
+223.4C — A Gameplay Bible korábbi Undo-lehetőséget említő állítása felülírt történeti javaslat, nem elfogadott funkció.
+
+Rövid indoklás:
+Az általános Undo elhagyása egyszerűbb és biztonságosabb tranzakciós modellt ad; a véletlen hibákat művelet előtti védelem kezeli.
+
+Státusz: Locked Decision.
+
+------------------------------------------------------------
+
+225. AUDITDÖNTÉS
+
+Téma:
+Stuck recovery és degradált mód
+
+Választott döntés:
+225.1C — Érvénytelen pozíció validált recovery policyt indít, amely biztonságos spawnra helyez vagy explicit visszatérési műveletet kínál; a konkrét játékosoldali UX külön prototípusos döntés.
+225.2C — Hibás objektum, quest, scene vagy dependency izolálható; nem teheti betölthetetlenné az egész világállapotot.
+225.3C — Hiányzó asset deklarált fallbacket használ, a logikai objektumállapot megmarad.
+225.4C — Súlyos részleges hiba Recovery Mode-ot vagy degradált működést indít, érthető játékosüzenettel és részletes fejlesztői diagnosztikával.
+
+Rövid indoklás:
+A részleges tartalomhiba nem válhat teljes mentésvesztéssé.
+
+Státusz: Locked Decision.
+
+------------------------------------------------------------
+
+226. AUDITDÖNTÉS
+
+Téma:
+Crash, rollback és adatvesztés elleni teszt
+
+Választott döntés:
+226.1C — Többrendszeres hiba a 76.2C és 76.4C szerinti rollbacket használja, és megőrzi a sikertelen tranzakció diagnosztikai azonosítóját.
+226.2C — Crash recovery a 43.1–43.4 szerint fut; a fő mentés csak sikeres validáció vagy javítás után írható vissza.
+226.3C — A játék alapfunkciói hálózat nélkül helyben működnek; külső szolgáltatás hibája nem sértheti a World State-et.
+226.4C — Kötelező fault-injection teszt fedi az írás közbeni killt, hibás adatblokkot, elfogyó tárhelyet, hiányzó assetet és tranzakció közbeni megszakítást.
+
+Rövid indoklás:
+A „nincs adatvesztés” csak visszaállítható backup- és hibainjektálási bizonyítékkal tekinthető teljesítettnek.
+
+Státusz: Locked Decision.
+
+------------------------------------------------------------
+
+230. AUDITDÖNTÉS
+
+Téma:
+Állapot- és hibavisszajelzés
+
+Választott döntés:
+230.1C — Loading, progress, saving, success, warning és error külön, egységes komponenseket használ.
+230.2C — A 102.3C és 103.3C locked-state- és hibamagyarázati szerződése minden panelre, menüre és modal/non-modal UI-ra érvényes.
+230.3C — A 103.4C prioritási, összevonási és megjelenítési korlátja minden toastra érvényes; a fontos eredmény tartós naplóból vagy összefoglalóból később is elérhető.
+230.4C — Egyetlen kritikus állapot sem közölhető csak színnel, hanggal vagy haptikával.
+
+Rövid indoklás:
+Ez közvetlenül alkalmazza a 102–103. interakciós és hozzáférhetőségi döntéseket az egész UI-ra.
+
+Státusz: Locked Decision.
+
+------------------------------------------------------------
+
+234. AUDITDÖNTÉS
+
+Téma:
+Sprite registry és szemantikus feloldás
+
+Választott döntés:
+234.1C — Minden használható vizuális asset stabil Sprite ID-val, verziózott registrybe kerül.
+234.2C — A játékrendszer alapból role-t és taget kér, nem fájlnevet; exact Sprite ID csak authored landmarkhoz vagy pontos animációs állapothoz használható.
+234.3C — Minden kéréshez deklarált fallbacklánc és diagnosztikai eredmény tartozik.
+234.4C — Assetaktiválást manifest és registry vezérel; a böngésző nem próbál mappát szkennelni.
+
+Rövid indoklás:
+Ez rendererfüggetlen, cserélhető és validálható assetkapcsolatot ad.
+
+Státusz: Locked Decision.
+
+------------------------------------------------------------
+
+235. AUDITDÖNTÉS
+
+Téma:
+Geometriai és atlaszmetaadat
+
+Választott döntés:
+235.1C — Minden sprite deklarálja a forrásterületet, pivotot, drawSize-t, alpha-szabályt és szükséges collision- vagy interakciós metaadatot.
+235.2C — Atlasz esetén grid, cella, padding, frame-sorrend és maximális textúraméret automatikusan validálódik.
+235.3C — Külön sprite és atlasz azonos logikai registry-kontraktust használ, ezért csomagolási forma nem szivárog a gameplaykódba.
+235.4C — Kötelező, gameplayt befolyásoló metaadat hiánya validációs hiba, és megakadályozza az érintett asset vagy modul aktiválását; csak explicit opcionális vizuális metaadat használhat deklarált fallbacket, minden eset naplózva.
+
+Rövid indoklás:
+A metaadat-szerződés erős technikai alap; az atlaszméret maga később mérhető.
+
+Státusz: Locked Decision.
+
+------------------------------------------------------------
+
+236. AUDITDÖNTÉS
+
+Téma:
+Vizuális állapotok és variánsok
+
+Választott döntés:
+236.1C — Restoration, animation, seasonal, weather és damage state a logikai állapotból feloldott vizuális profil, nem külön igazságforrás.
+236.2C — A variánsok explicit kompatibilitást és rendezett fallbacket használnak.
+236.3C — Animáció frame-je és ideiglenes effektje újragenerálható; csak a játékmenetileg fontos állapot mentődik.
+236.4C — Ha asset vagy variáns stabil ID-ja vagy kompatibilitási szerződése változik, kiadás előtt alias, migráció vagy fallback szükséges; kompatibilis, azonos ID alatti grafikai csere validációt és asset reportot igényel.
+
+Rövid indoklás:
+Ez megakadályozza, hogy a grafika és a World State eltérjen egymástól.
+
+Státusz: Locked Decision.
+
+------------------------------------------------------------
+
+237. AUDITDÖNTÉS
+
+Téma:
+Seamless terrain és assetpipeline
+
+Választott döntés:
+237.1C — Ground tile csak akkor fogadható el seamlessként, ha négy irányban ismételhető, és technikai 3×3 teszten látható varrat nélkül átmegy.
+237.2C — Az AI vagy alkotói „seamless” megnevezés önmagában nem elfogadási bizonyíték.
+237.3C — Egy körben egy assetcsalád változhat; képalkotás, technikai validáció és runtime-integráció külön lépés.
+237.4C — Minden kör asset reportot, vizuális összehasonlítást és regressziós ellenőrzést készít.
+
+Rövid indoklás:
+Ez megfelel a projekt rögzített assetbiztonsági és terrain-szabályainak.
+
+Státusz: Locked Decision.
+
+------------------------------------------------------------
+
+240. AUDITDÖNTÉS
+
+Téma:
+Audio-event rendszer
+
+Választott döntés:
+240.1C — A játékrendszerek szemantikus Audio Event ID-t küldenek, nem közvetlen hangfájlt játszanak le.
+240.2C — Egy központi Audio Manager kezeli a kategóriát, prioritást, concurrency limitet, cooldownt, loopot és duckingot.
+240.3C — Az audioesemények vizuális állapotot nem módosíthatnak; a gameplay marad igazságforrás.
+240.4C — Hiányzó vagy sikertelen hang csendes, naplózott fallbacket kap, és nem blokkolhatja az interakciót.
+
+Rövid indoklás:
+Ez cserélhető asseteket, kontrollált mixet és biztonságos hiánykezelést ad.
+
+Státusz: Locked Decision.
+
+------------------------------------------------------------
+
+243. AUDITDÖNTÉS
+
+Téma:
+App-életciklus és audiobeállítások
+
+Választott döntés:
+243.1C — Music, ambience, SFX és UI külön hangerőkategóriát és mute-ot használ; voice vagy dialogue kategória csak akkor készül, ha külön jóváhagyott tartalom valóban igényli.
+243.2C — Háttérbe kerüléskor a hang kontrolláltan felfüggesztődik; resume nem indít duplikált loopot vagy késleltetett effektet.
+243.3C — Böngészős autoplay-korlát esetén az Audio Manager az első valódi játékosi inputig vár, érthető fallbackkel.
+243.4C — Nem támogatott haptika vagy audiofunkció biztonságosan kimarad, a játék továbbra is teljesen használható.
+
+Rövid indoklás:
+Ezek platform- és életciklus-szintű kötelező működési szabályok.
+
+Státusz: Locked Decision.
+
+------------------------------------------------------------
+
+246. AUDITDÖNTÉS
+
+Téma:
+Hozzáférhetőségi minimumszerződés
+
+Választott döntés:
+246.1C — Fontos információ nem közölhető kizárólag színnel, hanggal, haptikával vagy mozgással.
+246.2C — A szöveg egyszerű, tömör, lokalizálható és a tutorial később is visszanézhető.
+246.3C — Minden fontos művelethez egyértelmű fókusz-, állapot-, siker- és hibajelzés tartozik.
+246.4C — Hozzáférhetőségi támogatás a komponensek alapkontraktusa, nem későbbi külön akadálymentes mód.
+
+Rövid indoklás:
+Ez rendszerszintű tervezési minimum, amelyet később nehéz és költséges visszaépíteni.
+
+Státusz: Locked Decision.
+
+------------------------------------------------------------
+
+250. AUDITDÖNTÉS
+
+Téma:
+Beállításadat, profil és migráció
+
+Választott döntés:
+250.1C — Minden beállítás stabil Setting ID-t, típust, támogatott tartományt, alapértéket és schema-verziót kap.
+250.2C — Minden SettingDefinition profile vagy device hatókört deklarál; a mentés és eszközváltás az 55.2–55.4 döntések szerint történik.
+250.3C — Betöltéskor a támogatott tartomány és az eszközképesség validálódik; nem támogatott érték az 55.4C szerinti fallbacket kap, diagnosztikai bejegyzéssel.
+250.4C — Migráció ismeretlen vagy régi beállítást nem dob el csendben, és szükség esetén érthető reset- vagy helyreállítási lehetőséget ad.
+
+Rövid indoklás:
+Ez a már lezárt beállításmentési szabály teljes adatkontraktusa.
+
+Státusz: Locked Decision.
+
+------------------------------------------------------------
+
+251. AUDITDÖNTÉS
+
+Téma:
+Privacy és értesítési policy
+
+Választott döntés:
+251.1C — P0/P1-ben minden játékadat helyben marad.
+251.2C — Nincs analitika, automatikus hibajelentés, reklámkövetés vagy push értesítés.
+251.3C — Ezek később integrálhatók, de csak a külön privacy-dokumentum és önkéntes játékosi engedély után.
+251.4C — A jóváhagyásig minden hálózati adatküldés kikapcsolt vagy nem implementált.
+
+Rövid indoklás:
+A teljesen helyi P0/P1 működés elkerüli a szükségtelen adatkezelési kockázatot, miközben a későbbi, átlátható és önkéntes integráció lehetőségét nem zárja ki.
+
+Státusz: Locked Decision.
+
+------------------------------------------------------------
+
+253. AUDITDÖNTÉS
+
+Téma:
+Definíciós formátum és csomaghatárok
+
+Választott döntés:
+253.1C — A runtime csak sémával validált, sorosítható adatdefiníciókat fogyaszt; végrehajtható gameplay-logika nem kerül tartalomfájlba. A konkrét authoring- és buildformátum implementációs részlet marad.
+253.2C — Minden definíció közös, verziózott alapburkot kap: típus, stabil ID, namespace, schema-verzió és forráscsomag.
+253.3C — Az item, resource, recipe, building, NPC, quest, region, scene, activity, weather, event, profession és perk saját típusos sémát kap.
+253.4C — A tartalom koherens, manifestben regisztrált csomagokra oszlik explicit függőségekkel; a pontos fizikai felosztás nem kanonikus, és mappaszkennelés önmagában nem aktivál tartalmat.
+
+Rövid indoklás:
+Egységes adatmodell mellett a tartalom bővíthető anélkül, hogy minden új elemhez runtime-kódot kellene módosítani.
+
+Státusz: Locked Decision.
+
+------------------------------------------------------------
+
+254. AUDITDÖNTÉS
+
+Téma:
+Stabil azonosítók, hivatkozások és dependency graph
+
+Választott döntés:
+254.1C — Minden tartós definíció namespaced, soha újra nem használt stabil ID-t kap.
+254.2C — A kereszthivatkozások ID-ra és várt típusra mutatnak, nem fájlútra, megjelenített névre vagy runtime-objektumra.
+254.3C — Az alternate requirement, prerequisite, unlock és world-state feltétel közös deklaratív all/any/min feltételmodellt használ.
+254.4C — Buildkor teljes dependency graph készül; hiányzó, rossz típusú, elérhetetlen és tiltott körkörös hivatkozás hibának számít.
+
+Rövid indoklás:
+Ez teszi kiszámíthatóvá a migrációt, a progression-ellenőrzést és a hibák pontos megtalálását.
+
+Státusz: Locked Decision.
+
+------------------------------------------------------------
+
+255. AUDITDÖNTÉS
+
+Téma:
+Role, tag, asset, lokalizáció és UI-metaadat
+
+Választott döntés:
+255.1C — Viselkedési szerepet ellenőrzött role vagy capability, keresési és csoportosítási célt kontrollált tag fejez ki.
+255.2C — A stage- és gameplay-logika role vagy tag alapján kér assetet; pontos asset-ID csak landmarknál vagy konkrét animációs állapotnál használható.
+255.3C — Minden játékosnak szánt szöveg lokalizációs kulcsot használ, fejlesztői fallbackkel és hiánylistával.
+255.4C — A UI-metaadat csak megjelenítési tanács; költség, feloldás vagy állapot igazságforrása mindig a rendszerdefiníció.
+
+Rövid indoklás:
+A tartalom, a grafika és a felület így cserélhető marad anélkül, hogy egymás belső részleteire épülnének.
+
+Státusz: Locked Decision.
+
+------------------------------------------------------------
+
+257. AUDITDÖNTÉS
+
+Téma:
+Mentési tárhely és atomi írás
+
+Választott döntés:
+257.1C — A Save Manager platformfüggetlen storage adaptert használ. A backing store-nak teljesítenie kell az atomi vagy staged írás, méret-, kvóta- és hibajelzési követelményeket; a localStorage önmagában nem lehet az autoritatív világmentés.
+257.2C — A fő mentés verziózott gyökérből és külön validálható, szükség szerint külön verziózott adatrészekből áll.
+257.3C — Az új mentési generáció tranzakciósan vagy elkülönített stagingben készül, és csak teljes validáció után válhat aktívvá.
+257.4C — Az előző ellenőrzött főmentés csak az új generáció sikeres aktiválása után válik az egyetlen automatikus backuppá; egy írási hiba nem érvénytelenítheti egyszerre a főmentést és a backupot.
+
+Rövid indoklás:
+Ez konkretizálja a már lezárt egy fő mentés és egy backup modellt adatvesztés nélkül.
+
+Státusz: Locked Decision.
+
+------------------------------------------------------------
+
+258. AUDITDÖNTÉS
+
+Téma:
+Mentési ütemezés, megszakítás és több tab
+
+Választott döntés:
+258.1C — Kritikus tranzakció, fontos vagy tartós állapotú jelenetváltás és app-életciklus-esemény korlátozott idejű kritikus mentést vagy biztonságos checkpointot kér; kisebb változás rövid késleltetéssel összevonható.
+258.2C — Minden mentés rögzíti az okot, generációt és a legutolsó alkalmazott tranzakció vízjelét.
+258.3C — Mentési slotonként egyszerre csak egy aktív író működhet; a platformadapter tabok vagy folyamatok között is megakadályozza a kontrollálatlan last-write-wins felülírást.
+258.4C — Kvótahiánynál először eldobható cache törlődik; a játék érthetően jelez, ha új tartós mentés nem garantálható.
+
+Rövid indoklás:
+A mobilmegszakítás, párhuzamos tab és tárhelyhiány nem okozhat elveszett vagy összekevert állapotot.
+
+Státusz: Locked Decision.
+
+------------------------------------------------------------
+
+259. AUDITDÖNTÉS
+
+Téma:
+Mentésintegritás és javítási bizonyíték
+
+Választott döntés:
+259.1C — Minden befejezett mentési generáció ellenőrizhető integritásjelzőt és az alkalmazott sémaazonosítót kap.
+259.2C — A javítás determinisztikus, idempotens, adatrész-szintű és elkülönített példányon fut; az aktív mentést csak sikeres utóvalidáció után válthatja le.
+259.3C — A javítási napló rögzíti a bemeneti verziót, talált hibákat, alkalmazott műveleteket és a kimeneti validáció eredményét; a játékos rövid összefoglalót kap.
+259.4C — Fault-injection teszt igazolja, hogy korrupció vagy bármely írási megszakítás nem érvényteleníti egyszerre az utolsó ellenőrzött főmentést és backupot.
+
+Rövid indoklás:
+Az integritásjelző, az elkülönített javítás és a fault-injection bizonyíthatóvá teszi, hogy a helyreállítás nem rontja tovább a mentési állapotot.
+
+Státusz: Locked Decision.
+
+------------------------------------------------------------
+
+261. AUDITDÖNTÉS
+
+Téma:
+Export, import és későbbi felhőmentés
+
+Választott döntés:
+261.1C — P0/P1-ben nincs játékosoldali mentésexport, mentésimport, cross-device szinkron vagy cloud save.
+261.2C — A Save Manager platform- és szolgáltatófüggetlen adapterhatárt kap, hogy export, import vagy felhőmentés később a játékmag átírása nélkül integrálható legyen.
+261.3C — Későbbi import csak kompatibilitási ellenőrzés, migrációs próba, automatikus backup, teljes validáció és atomi aktiválás mellett engedélyezhető.
+261.4C — Cross-device vagy cloud save csak külön szolgáltató-, fiók-, konfliktuskezelési, titkosítási és adatkezelési döntés után nyitható meg.
+
+Rövid indoklás:
+A vertical slice-nak nincs szüksége felhőszolgáltatásra, de a tiszta adapterhatár megakadályozza, hogy egy későbbi integráció miatt újra kelljen írni a mentési magot.
+
+Státusz: Locked Decision.
+
+------------------------------------------------------------
+
+262. AUDITDÖNTÉS
+
+Téma:
+Platformhatár és csomagolás
+
+Választott döntés:
+262.1C — A World State és gameplay mag platformfüggetlen; storage, lifecycle, haptika, értesítés és fájlkezelés adaptereken keresztül érhető el.
+262.2C — A PWA és statikus webes build fejlesztési vagy proof cél; a GitHub Pages teszt nem határozza meg a termékarchitektúrát.
+262.3C — A natív csomagolási adapternek proof buildben kell igazolnia a platformkövetelményeket, mielőtt bármely natív platform támogatása kiadási vállalássá válik; a proof időzítése külön produkciós döntés.
+262.4C — Android- és iOS-specifikus konfiguráció, jogosultság és fallback külön platformrétegben marad.
+
+Rövid indoklás:
+Egy közös játékmag mellett a csomagolás később cserélhető és külön tesztelhető.
+
+Státusz: Locked Decision.
+
+------------------------------------------------------------
+
+263. AUDITDÖNTÉS
+
+Téma:
+Célplatform- és eszközmátrix
+
+Választott döntés:
+263.1C — P0 és az első proof GitHub Pages-en futó webapp/PWA legyen. Elsődleges valódi tesztkészülék: iPhone 16 Pro, Safari és Home Screen mód. Capacitoros iOS-csomagolás későbbi proof; Android addig halasztott, amíg nincs hozzá tesztkészülék.
+263.2C — P0-ban az iPhone 16 Pro az egyetlen hiteles fizikai referenciaeszköz. Az asztali böngésző csak fejlesztési ellenőrzés. Nyilvános kiadás előtt legalább egy régebbi vagy gyengébb iPhone-t is be kell vonni.
+263.3C — Az első támogatott eszközosztály portré módú, érintőkijelzős telefon. Safe area, különböző képarányok és pixelsűrűség kötelező; tablet és landscape egyelőre nem kiadási követelmény.
+263.4C — Nem támogatott készüléken érthető figyelmeztetés jelenjen meg; ahol lehetséges, csökkentett grafikai minőséggel még elindulhat a játék.
+
+Rövid indoklás:
+A proof-kapu így a ténylegesen rendelkezésre álló fizikai készüléken ellenőrizhető, miközben a közös játékmag későbbi natív és Android-csomagolhatósága megmarad.
+
+Státusz: Locked Decision.
+
+------------------------------------------------------------
+
+264. AUDITDÖNTÉS
+
+Téma:
+Viewport, Canvas és adaptív megjelenítés
+
+Választott döntés:
+264.1C — A portré mód elsődleges; orientációváltás biztonságosan szünetelteti és újrarendezi a felületet.
+264.2C — A CSS-viewport és a Canvas belső felbontása külön kezelendő; DPR és render scale felső korlátot kap.
+264.3C — A safe area, minimális érintési méret és szélsőséges képarány minden fő képernyő acceptance tesztjének része.
+264.4C — Minőségváltás csak renderelést érinthet; világállapotot, collisiont, jutalmat vagy időzítési eredményt nem.
+
+Rövid indoklás:
+A változó telefonméret és pixelsűrűség nem módosíthatja a játékszabályokat.
+
+Státusz: Locked Decision.
+
+------------------------------------------------------------
+
+265. AUDITDÖNTÉS
+
+Téma:
+Teljesítmény-, memória- és energia-budget
+
+Választott döntés:
+265.1C — iPhone 16 Pro készüléken 60 FPS a cél, tartós 30 FPS alatti működés sikertelen. A 350 MB folyamat- és 128 MB aktív textúrakeret kezdeti proof-budget marad.
+265.2C — Külön normál és stresszteszt készüljön. Normál: kezdő falu és átlagos forest jelenet. Stressz: kiépített falu, sok objektum, NPC, effekt és gyors kameramozgás.
+265.3C — A proof mérjen hideg és meleg indítást, legalább 30 perces játékmenetet, tíz háttérbe helyezés–visszatérés ciklust, memóriaemelkedést, melegedést és akkumulátorhasználatot.
+265.4C — A jelenlegi teljesítménybizonyíték kizárólag az iPhone 16 Pro-ra érvényes; ebből nem következtetünk automatikusan régebbi készülékek támogatására. A budget valós mérés után dokumentáltan módosítható.
+
+Rövid indoklás:
+A számszerű proof-budget a rendelkezésre álló iPhone-on mérhető indulási célt ad, de nem állít bizonyíték nélkül szélesebb készüléktámogatást.
+
+Státusz: Locked Decision.
+
+------------------------------------------------------------
+
+266. AUDITDÖNTÉS
+
+Téma:
+Cache, lifecycle, offline és proof build
+
+Választott döntés:
+266.1C — Egyszerre csak az aktuális jelenet lehet teljesen aktív. A következő jelenet előtöltése korlátozott; a korábbi jelenet nem használt assetjei felszabadítandók.
+266.2C — Háttérbe kerüléskor azonnali biztonságos mentési checkpoint készül. A játék nem feltételez rendelkezésre álló háttéridőt.
+266.3C — Visszatéréskor a mentés, idő, renderelés, input és megszakított folyamatok újraellenőrzése idempotensen történik.
+266.4C — A proof GitHub Pages URL-en, Safari böngészőben és Home Screen módban teljesítse az offline, mentés, tíz resume-ciklus, safe area, jelenetváltás, hibás asset fallback és legfeljebb 10 másodperces time-to-action tesztet.
+
+Rövid indoklás:
+A lifecycle- és proof-feltételek a tényleges iPhone-os webapp/PWA útvonalon teszik ellenőrizhetővé a mobil működést; a későbbi natív csomagolás külön proof marad.
+
+Státusz: Locked Decision.
+
+------------------------------------------------------------
+
+267. AUDITDÖNTÉS
+
+Téma:
+Kötelező tesztrétegek
+
+Választott döntés:
+267.1C — Minden rendszer kap unit tesztet a tiszta szabályaira, integration tesztet a World State-kapcsolataira és rendszer- vagy looptesztet a játékosi folyamatára.
+267.2C — Normál, megszakítási, hiba-, migrációs és regressziós eset minden tartós rendszer Definition of Done-jának része.
+267.3C — Pénz-, tárgy-, jutalom- és ownership-tranzakcióknál invariáns- és duplikációs teszt kötelező.
+267.4C — Idő, RNG és külső szolgáltatások tesztelhető órát, seedet és adaptert használnak.
+
+Rövid indoklás:
+A tesztelhetőségnek a rendszerhatár részeként kell megszületnie, nem utólagos kiegészítésként.
+
+Státusz: Locked Decision.
+
+------------------------------------------------------------
+
+268. AUDITDÖNTÉS
+
+Téma:
+Determinisztikus replay és naplók
+
+Választott döntés:
+268.1C — A command-, event- és transaction log stabil ID-t, tick- vagy sorrendértéket, seedet, bemeneti hivatkozást és eredményhash-t vagy eredményazonosítót rögzít; teljes állapotmásolat nem kötelező.
+268.2C — Azonos validált snapshot, definícióverzió, releváns tuningverzió, időforrás, seed és parancssor ugyanazt a végső World State hash-t adja.
+268.3C — Replay-eltérésnél az első eltérő parancs, esemény és adatrész automatikusan kimutatható.
+268.4C — A naplók verziózottak, méretkorlátosak és érzékeny adatoktól tisztítottak.
+
+Rövid indoklás:
+A ritka, időzítésfüggő hibák reprodukálhatóvá válnak anélkül, hogy korlátlan napló készülne.
+
+Státusz: Locked Decision.
+
+------------------------------------------------------------
+
+269. AUDITDÖNTÉS
+
+Téma:
+Inspectorok és fejlesztői vezérlők
+
+Választott döntés:
+269.1C — A kanonikus 91. döntés szerinti közös inspector-kontraktushoz az adott rendszer Definition of Done-jához szükséges domainnézetek csatlakoznak; minden domainhez külön inspectoralkalmazás nem kötelező.
+269.2C — Idő-, seed-, spawn- és állapotmódosítás csak jelölt developer mode-ban, validált debug parancson keresztül történhet.
+269.3C — A dependency graph, asset report és content validation közvetlenül stabil ID-kre és forráshelyekre mutat.
+269.4C — Debug parancs által módosított mentés egyértelmű developer jelölést kap, és külön jóváhagyás nélkül nem használható normál golden save-ként vagy release-validációhoz.
+
+Rövid indoklás:
+A diagnosztika láthatóvá teszi az állapotot anélkül, hogy párhuzamos, szabályt megkerülő játéklogikát hozna létre.
+
+Státusz: Locked Decision.
+
+------------------------------------------------------------
+
+272. AUDITDÖNTÉS
+
+Téma:
+Strukturális döntés és tuning szétválasztása
+
+Választott döntés:
+272.1C — Minden konfigurációs mező jelzi, hogy strukturális szerződés, tuning default vagy kísérleti érték.
+272.2C — Strukturális változás audithoz és szükség esetén migrációhoz kötött; tuningérték mérési eljárással módosítható.
+272.3C — A tuningnak egysége, megengedett tartománya, verziója, forrása és indoklása van.
+272.4C — Mentés, replay és balanszteszt megőrzi a releváns tuningverziót.
+
+Rövid indoklás:
+Így egy számmódosítás nem válik észrevétlen architektúra- vagy mentésváltozássá.
+
+Státusz: Locked Decision.
+
+------------------------------------------------------------
+
+276. AUDITDÖNTÉS
+
+Téma:
+Tartalmi taxonómia
+
+Választott döntés:
+276.1C — Régió, biome, landmark, resource-, building-, recipe-, profession-, animal- és activity family stabil definíciót kap.
+276.2C — Az ismételhető elemek családsablonból, az egyedi világfontosságú helyek authored landmarkként készülnek.
+276.3C — Minden tartalomcsomag felsorolja rendszer-, asset-, audio-, lokalizációs, mentési és progressionfüggőségeit.
+276.4C — Jövőbeli tartalom nem kényszerítheti az engine-t konkrét, még nem jóváhagyott rendszerek túltervezésére.
+
+Rövid indoklás:
+A világ bővíthető marad, miközben az egyedi helyek nem szorulnak mesterségesen generikus modellbe.
+
+Státusz: Locked Decision.
+
+------------------------------------------------------------
+
+277. AUDITDÖNTÉS
+
+Téma:
+Első vertical slice
+
+Választott döntés:
+277.1C — A slice játékosi ígérete: „Egy elhagyatott falurészben felfedezem a sérült Forester Hutot, az erdőből összegyűjtöm a helyreállításhoz szükséges alapanyagokat, elkészítem a javításhoz szükséges elemeket, majd tartósan újjáépítem az épületet.” Kezdőpont: belépés a kezdetben üres fő faluba. Végpont: a helyreállított Forester Hut és az ebből következő látható világállapot-változás. Célzott első játékidő: 20–30 perc.
+277.2C — A slice tartalmazza a fő falu egy korlátozott részét, egy forest területet, a Forester Hutot, alapmozgást és interakciót, gyűjtést, inventoryt, egy minimális crafting receptet, épület-helyreállítást, jutalmat, valamint mentés–kilépés–folytatás működést.
+277.3C — Farm, harbor, fishing, mine, teljes professionrendszer, kereskedelmi gazdaság, storage network és további helyreállítható épületek nem részei az első slice-nak. Csak bizonyított technikai függőség kerülhet be.
+277.4C — A slice lezárásához működő GitHub Pages-en elérhető webapp/PWA, iPhone 16 Pro készüléken Safari és Home Screen módban végigfuttatott end-to-end teszt, mentés/resume ellenőrzés, valamint tartalom-, asset-, lokalizáció- és tesztleltár szükséges. Ideiglenes asset használható, ha egyértelműen jelölt, manifestből cserélhető és nem képez rejtett technikai függőséget.
+
+Rövid indoklás:
+Ez a legkisebb olyan teljes játékosi hurok, amely egyszerre bizonyítja a Readi World alapígéretét, a tartós világváltozást és a tényleges iPhone-os webapp/PWA működést.
+
+Státusz: Locked Decision.
+
+------------------------------------------------------------
+
+282. AUDITDÖNTÉS
+
+Téma:
+Munkacsomag-szerződés
+
+Választott döntés:
+282.1C — Minden változtatási körnek egyetlen célja és ismert baseline-ja van.
+282.2C — Előre rögzíteni kell a módosítható és védett fájlokat.
+282.3C — Előre rögzíteni kell az elfogadási feltételeket és regressziós ellenőrzéseket.
+282.4C — Sikertelen kör esetére bizonyított visszaállítási pont szükséges.
+
+Rövid indoklás:
+Ez közvetlenül az AGENTS.md kötelező munkafolyamatát teszi auditálható szerződéssé.
+
+Státusz: Locked Decision.
+
+------------------------------------------------------------
+
+284. AUDITDÖNTÉS
+
+Téma:
+Mérföldkövek és P0–P3
+
+Választott döntés:
+284.1C — P0 kizárólag az alapot tartalmazza: Git/rollback baseline, clean runtime és vékony bootstrap, PWA shell, verziózott World State, parancs–esemény–tranzakció modell, Save Manager, asset manifest/registry, validáció és automatikus alapszintű tesztek. Kész játékterület és végleges grafika nem P0-követelmény.
+284.2C — P1 a 277. pontban lezárt, belső használatra teljes vertical slice. P2 az iPhone-on végigtesztelt, külső tesztelőnek átadható webes demó. P3 a slice után bizonyítottan indokolt világ- és rendszerbővítés.
+284.3C — A rendszerek sorrendjét a függőség határozza meg: baseline → bootstrap és kontraktusok → World State → Save Manager → asset/role resolution → minimális játékosi loop → tartalom és vizuális finomítás.
+284.4C — A mérföldkövek elfogadási feltételekhez, nem önkényes dátumhoz kötöttek. Időbecslés csak a P0 lezárása után készül; új tartalom nem csúszhat észrevétlenül az aktív mérföldkőbe.
+
+Rövid indoklás:
+Az elfogadási feltételekhez kötött P0–P3 felosztás védi a vertical slice scope-ját, miközben nem kényszerít bizonyíték nélküli határidővállalást.
+
+Státusz: Locked Decision.
+
+------------------------------------------------------------
+
+285. AUDITDÖNTÉS
+
+Téma:
+Implementációs sorrend
+
+Választott döntés:
+285.1C — Az első munkacsomag a Git-baseline után a külön clean runtime, a vékony `index.html`, a modulhatárok, a konfiguráció és a validálható adatkontraktusok létrehozása.
+285.2C — Ezután készül a World State, a parancs-, esemény- és tranzakciós réteg, a Save Manager, majd az asset manifest és role-resolution alapja.
+285.3C — Következőként egyetlen end-to-end gathering → inventory → crafting → Forester Hut restoration hurok készül minimális tartalommal.
+285.4C — Farm, harbor, fishing, mine, economy, teljes professionrendszer és storage network csak a vertical slice bizonyított lezárása után nyitható meg.
+
+Rövid indoklás:
+Ez a sorrend előbb a tartós és tesztelhető alapot készíti el, majd egyetlen bizonyítható játékosi hurkon keresztül integrálja a rendszereket.
+
+Státusz: Locked Decision.
+
+------------------------------------------------------------
+
+286. AUDITDÖNTÉS
+
+Téma:
+Egységes Definition of Done
+
+Választott döntés:
+286.1C — Kész rendszerhez lezárt felelősség, adatkontraktus, dokumentáció és validáció tartozik.
+286.2C — Normál, mentés- vagy betöltés-, megszakítás-, hiba-, migrációs és regressziós tesztje sikeres.
+286.3C — Platform-, input-, render-, lifecycle- vagy teljesítményfüggő rendszerhez releváns valódi eszközteszt tartozik; tiszta logikai modulnál az automatizált teszt elegendő, de milestone-szintű mobilintegrációban annak működését is igazolni kell.
+286.4C — Nincs ismert progression blocker, részleges tranzakció vagy visszaállíthatatlan állapot; release és rollback lépés dokumentált.
+
+Rövid indoklás:
+A „fut” önmagában nem kész állapot egy tartós, mobilos játékban.
+
+Státusz: Locked Decision.
+
+------------------------------------------------------------
+
+287. AUDITDÖNTÉS
+
+Téma:
+Scope-fegyelem, Git és rollback
+
+Választott döntés:
+287.1C — Tartalmi változás, architektúra-refaktor, assetcsere és save-schema módosítás mindig külön munkacsomag és külön commit legyen.
+287.2C — Scope-on kívüli ötlet külön backlogba kerül; nem épülhet be észrevétlenül az aktív P0 vagy P1 mérföldkőbe.
+287.3C — A meglévő `czkiii/readi-world` repository lesz az új clean runtime aktív repositoryja, és a `https://czkiii.github.io/readi-world/` marad a proof webapp címe. A jelenlegi prototípus látható fájljai a helyben ellenőrzött P0 baseline elkészülte után lecserélhetők; automatikus kódátvétel nem történik.
+287.4C — A jelenlegi `5b79fb0b735ad2b04713437df59820290c066713` commit maradjon történeti visszaállítási pont, és lehetőség szerint kapjon `prototype-reference-2026-07-20` taget. Az első ellenőrzött clean-runtime állapot `p0-start` tag legyen. Minden telepítéshez rögzített commit SHA, kis célzott commitok, ellenőrzőlista és bizonyított visszaállítás tartozzon; a felhasználó külön helyi RAR-backuppal is rendelkezik.
+
+Rövid indoklás:
+A repository és a Pages cím újrahasználható anélkül, hogy a régi monolitikus kód technikai alappá válna: az új runtime helyben, tisztán készül el, majd ellenőrzött commitként váltja le a látható prototípust.
+
+Státusz: Locked Decision.
+
+------------------------------------------------------------
+
+292. AUDITDÖNTÉS
+
+Téma:
+Privacy és monetizáció
+
+Választott döntés:
+292.1C — Privacy-, adatkezelési, életkori, store-policy- és monetizációs döntésekhez külön, jóváhagyott dokumentum készül a kapcsolódó funkciók megnyitása előtt.
+292.2C — A P0/P1 alapját helyi, telemetria nélkül is teljesen működő játék képezi; hálózati adatküldés nem lehet rejtett technikai függőség.
+292.3C — Kiskorú célközönség, nyilvános teszt vagy store-kiadás előtt külön jogi és platformpolicy-ellenőrzés kötelező.
+292.4C — Üzleti modell csak későbbi tulajdonosi döntéssel nyitható meg; FOMO-, pay-to-skip- és kötelező várakozásra épülő monetizáció továbbra sem egyeztethető össze a játékígérettel.
+
+Rövid indoklás:
+A külön policy-dokumentum megakadályozza, hogy hiányzó jogi vagy üzleti döntéseket a technikai implementáció észrevétlenül eldöntsön.
+
+Státusz: Locked Decision.
+
+------------------------------------------------------------
+
+293. AUDITDÖNTÉS
+
+Téma:
+Identitás, verziózás, tranzakció és megszakítás
+
+Választott döntés:
+293.1C — Minden tartós entitás és definíció stabil, nem újrahasznált ID-ját ellenőrizni kell.
+293.2C — Minden tartós adatváltozásnál explicit régiadat-kezelés és migráció szükséges.
+293.3C — Pénz, tárgy, jutalom, építés, vásárlás és ownership csak atomi, idempotens tranzakcióban változhat.
+293.4C — Hívás, értesítés, háttér, lock és bezárás nem okozhat adatvesztést vagy ismételt eredményt.
+
+Rövid indoklás:
+Ez a négy szerződés minden rendszer kötelező belépési feltétele.
+
+Státusz: Locked Decision.
+
+------------------------------------------------------------
+
+294. AUDITDÖNTÉS
+
+Téma:
+Offline, exploit, grind és helyreállítás
+
+Választott döntés:
+294.1C — Háttérfolyamat csak véges inputtal, queue-val, outputtal és rendszerspecifikus plafonnal működhet.
+294.2C — Időugrás, gyorsutazás, reload, duplikált input, import és megszakítás nem hozhat többletjutalmat.
+294.3C — Minden ismétlődő rendszerhez ellenőrizni kell az adott rendszerre külön jóváhagyott anti-grind követelményt; az action count, köztes fejlődés és alternatív út elfogadási küszöbe tulajdonosi vagy playtest-döntés.
+294.4C — A játékos nem maradhat helyrehozhatatlan, blokkolt vagy érvénytelen állapotban.
+
+Rövid indoklás:
+Ezek a mobil, offline és cozy játék legfontosabb biztonsági invariánsai.
+
+Státusz: Locked Decision.
+
+------------------------------------------------------------
+
+295. AUDITDÖNTÉS
+
+Téma:
+Magyarázhatóság, teljesítmény, hozzáférhetőség és tesztelhetőség
+
+Választott döntés:
+295.1C — Zárolt vagy hibás funkció megmondja, mi hiányzik, miért, hol szerezhető meg és mi a következő lépés.
+295.2C — Minden rendszer deklarálja aktív, háttér- és unload-viselkedését.
+295.3C — Fontos állapot nem közölhető kizárólag színnel vagy kizárólag hanggal.
+295.4C — Minden rendszerhez reprodukálható normál, megszakítási, hiba-, migrációs és regressziós teszt tartozik.
+
+Rövid indoklás:
+A checklist minden későbbi audit- és Definition of Done bejegyzés kötelező része legyen.
+
+Státusz: Locked Decision.
+
+------------------------------------------------------------
+
+296. AUDITDÖNTÉS
+
+Téma:
+Audit-evidenciamátrix
+
+Választott döntés:
+296.1C — Minden scope-pont Locked Decision, TULAJDONOSI DÖNTÉS SZÜKSÉGES, PROTOTÍPUST VAGY MÉRÉST IGÉNYEL, KONFLIKTUS VAGY HIÁNY, KANONIKUSAN MÁR LEFEDETT vagy külön indokolt HALASZTOTT státuszt kap. A HALASZTOTT státuszhoz indok, felelős és újranyitási feltétel tartozik.
+296.2C — Minden rendszerhez rögzített felelősség, input vagy output, állapot- és rendszerhatár tartozik; mentés, migráció, lifecycle, teljesítmény, hozzáférhetőség és tesztelés releváns esetben szerződést, máskor indokolt N/A jelölést kap.
+296.3C — Minden konfliktus, hiány és tudatos kivétel külön listában, felelőssel és feloldási feltétellel szerepel.
+296.4C — A döntésekhez séma-, dependency graph-, teszt-, mérés- vagy prototípusbizonyíték kapcsolható.
+
+Rövid indoklás:
+A lezárás nem a kérdések számát, hanem az ellenőrizhető szerződések teljességét jelenti.
+
+Státusz: Locked Decision.
+
+------------------------------------------------------------
+
+297. AUDITDÖNTÉS
+
+Téma:
+Architektúra- és gameplay-readiness
+
+Választott döntés:
+297.1C — A World State, modulhatárok, parancsok, események, tranzakciók, idő és mentési alap ellentmondásmentes.
+297.2C — Az adatkontraktusokból validálható dependency graph készül, ismert lehetetlen vagy körkörös fő progression nélkül.
+297.3C — A fő gameplay loop minden lépése, hibája, megszakítása, jutalma és mentése definiált.
+297.4C — Az új Engine & Architecture Bible a lezárt auditból vezethető le, és nem válik eltérő párhuzamos igazságforrássá.
+
+Rövid indoklás:
+Ezek nélkül a clean runtime első rendszere sem építhető stabil szerződésre.
+
+Státusz: Locked Decision.
+
+------------------------------------------------------------
+
+298. AUDITDÖNTÉS
+
+Téma:
+Implementációindítási kapu
+
+Választott döntés:
+298.1C — A tulajdonos jóváhagyja a vertical slice pontos scope-ját, P0-elemeit és kizárt tartalmát.
+298.2C — Létezik clean-runtime baseline, tisztázott Git- vagy rollback-folyamat és egyetlen első munkacsomag.
+298.3C — A céltelefon-mátrix, proof build elfogadási feltétele és alap teljesítménybudget meghatározott.
+298.4C — Implementáció csak akkor indul, ha minden szükséges szerződés lezárt; a nem blokkoló jövőbeli kérdések külön deferred listán maradnak.
+
+Rövid indoklás:
+A `20f9900ec348fa564a5f7948d612fb40e1e8735b` clean baseline, a két visszaállítási tag, a draft PR, a lezárt vertical slice és P0-scope, valamint az iPhone 16 Pro proof-szerződés mind a négy indítási feltételt bizonyíthatóan teljesíti.
+
+Státusz: Locked Decision.
+
+------------------------------------------------------------
+
+299. AUDITDÖNTÉS
+
+Téma:
+Az audit célja és korlátja
+
+Választott döntés:
+299.1C — Az audit célja a bizonyítható rendszerhatár és kockázatcsökkentés, nem a dokumentum- vagy kérdésszám növelése.
+299.2C — Az első jóváhagyott mérföldkőhöz és a közös hosszú távú alaphoz szükséges szerződéseket kell teljes részletességgel lezárni. Távoli tartalmi részlet halasztható, de nem maradhat nyitva olyan jövőbeli függőség, amely a mostani alaparchitektúrát érdemben korlátozhatja.
+299.3C — Egy döntés akkor hasznos, ha csökkenti az újraírás, adatvesztés, rejtett függőség vagy kiszámíthatatlan fejlesztés esélyét.
+299.4C — A programozás egyetlen kontrollált rendszerrel indul, és új scope csak annak bizonyított lezárása után nyílik.
+
+Rövid indoklás:
+Ez őrzi meg az audit gyakorlati értékét, és megakadályozza, hogy maga a tervezés váljon végtelen projektté.
+
+Státusz: Locked Decision.
+
+AKTUÁLIS ÁLLAPOT
+Az 1–105. auditpont és a 72.5 kiegészítő anti-exploit szabály lezárva.
+A 106–299. tartományból a fenti 75 technikai auditpont 2026-07-30-án lezárva.
+A 263. implementációs kapupont 2026-07-30-án külön tulajdonosi döntésként lezárva.
+A 265–266. mobil mérési és proof-build kapupont 2026-07-30-án lezárva.
+A 263., 265. és 266. pont proof-iránya 2026-07-30-án iPhone 16 Pro + GitHub Pages webapp/PWA környezetre korrigálva.
+A 277. első vertical slice tulajdonosi kapupont 2026-07-30-án lezárva.
+A 284–285. mérföldkő- és implementációs sorrend tulajdonosi kapupontjai 2026-07-30-án lezárva.
+A 287. Git-, scope- és rollback-kapu 2026-07-30-án lezárva, majd felhasználói döntéssel korrigálva: a meglévő `czkiii/readi-world` repository és Pages cím lesz az új clean runtime aktív célja; a régi commit és a külön RAR-backup biztosít visszaállítást.
+A 111. jobbkezes joystickprofil, a 223. Undo-tiltás, a 261. későbbre előkészített export/cloud irány és a 292. külön policy-dokumentum kapuja 2026-07-30-án lezárva.
+A 251. helyi adatkezelési és hálózati adatküldési szabály 2026-07-30-án lezárva.
+A 298. implementációindítási kapu 2026-07-30-án lezárva; a P0 implementáció a jóváhagyott sorrendben megkezdhető.
+A 210. és 283. pontot korábbi kanonikus döntések már lefedik; ezek nem új, ismételt döntések.
+Nyitva marad: 69 nem P0-blokkoló tulajdonosi döntés és 35 későbbi prototípust vagy mérést igénylő pont. Konfliktusos vagy hiányos pont nincs.
+Következő sorrendi nyitott pont: 107.
+A clean-runtime PR #1 `cd967b0bed5b4b6121af1146d4367bc4a563d9e9` squash commitként merge-elve és sikeresen deployolva a GitHub Pages oldalra.
+Következő dokumentációs lépés: a D2 HUD–menu–screen map elkészítése.
+
+------------------------------------------------------------
+
+D1. DOKUMENTÁCIÓS KAPUDÖNTÉS
+
+Téma:
+Korábbi döntések, prototípus-viselkedések és vizuális referenciák implementáció előtti egyeztetése
+
+Választott döntés:
+D1.1C — Az angol az elsődleges source-locale; minden játékosszöveg lokalizációs kulcson keresztül jelenik meg.
+D1.2C — A jobbkezes alapértelmezett profil floating joystickja a jobb oldali, HUD-on kívüli szabad játéktér érintési pontján jelenik meg, húzásra mozgat és elengedéskor eltűnik. UI-érintés nem aktiválja.
+D1.3C — A jobbkezes alap nem végleges kényszer: külön beállításban választható balkezes tükrözés, a későbbi HUD-testreszabás pedig a vezérlők és támogatott HUD-elemek oldalát vagy engedélyezett helyét módosíthatja. A világ irányai nem fordulnak meg.
+D1.4C — Teljes, bejárható épületbelsőt alapértelmezetten csak a Player Home kap. Más funkcionális épületek külső interakciós/building screent vagy külön activity scene-t használnak. Minden további bejárható belső tér külön jóváhagyott scope-ot és assetbudgetet igényel; a Forester Hut belseje nem része az első vertical slice-nak.
+D1.5C — Üres kéz a sétát és egyszerű pickupot priorizálja. Egy tool kiválasztása maga a megfelelő munkaszándék: fejsze kézben, érvényes fa közelében a favágás külön ACT vagy második megerősítés nélkül automatikusan elindul.
+D1.6C — A kilenc indexelt tulajdonosi referenciakép a vizuális szándék része. A régi prototípus viselkedési és vizuális referencia, nem technikai alap; átvétel csak külön RECREATE vagy REDESIGN döntéssel történhet.
+D1.7C — Az első slice tanítási íve: földi ágak gyűjtése, munkapad helyreállítása, további fa gyűjtése, fejsze craftolása, fejsze kiválasztása, automatikus favágás, a Forester Hut restaurációja és látható világváltozás.
+
+Rövid indoklás:
+Az alapértelmezett jobbkezes használat és a későbbi személyre szabhatóság együtt biztosít mobilbarát indulást és hozzáférhetőséget. A Player Home-ra korlátozott teljes belső tér megőrzi a mobil vertical slice kezelhető content-, memória- és assetkeretét. A referencia- és prototípusleltár megakadályozza, hogy korábbi értékes szándékok elvesszenek vagy régi technikai hibák automatikusan visszakerüljenek.
+
+Státusz: Locked Decision — D1 lezárva 2026-08-01.
+
+------------------------------------------------------------
+
+D2. DOKUMENTÁCIÓS KAPUDÖNTÉS
+
+Téma:
+Portré HUD, menühierarchia, képernyőállapotok és későbbi testreszabhatóság
+
+Választott döntés:
+D2.1C — A normál portré HUD adaptív zónákból épül: tömör felső státuszsáv, összecsukható tracked goal, world-space context feedback, kézprofilhoz kötött kontrollzóna és korlátozott notification réteg.
+D2.2C — A P1 egy főmenüshellt és legfeljebb négy működő alnézetet használ: Goals/Current Project, Inventory & Tools, Workbench/Crafting és Settings. A Workbench/Crafting a világ érvényes kontextusából nyílik.
+D2.3C — Jobbkezes alapban a floating joystick jobb alul, a tool-intent rail bal alul helyezkedik el; balkezes profil tükrözi őket. A későbbi HUD Layout Editor támogatott elemeket kijelölt safe zónák között mozgathat, és nem írhatja felül észrevétlenül a játékos custom elrendezését.
+D2.4C — Nem implementált későbbi rendszer alapból rejtett. Locked menüelem csak akkor jelenhet meg, ha az aktuális build valóban fel tudja oldani és játékosbarát követelményt tud mutatni; dead button nincs.
+D2.5C — A navigáció deklarált back- és inputstackből áll: confirmation modal, nested detail, aktív screen, main menu, world. Felsőbb réteg blokkolja az alatta lévő inputot, és egy fizikai érintés csak egy parancsot hozhat létre.
+D2.6C — Minden panel egységes loading, empty, locked, ready, progress, success, warning, error, offline és resume állapotcsaládot használ; kritikus információ nem közölhető egyetlen érzékelési csatornán.
+D2.7C — Menünyitás blokkolja az új mozgási és tool-work inputot, de a World Clock tovább fut. Aktív művelet csak a saját interrupt/commit/recovery szerződése szerint állhat meg, a menü bezárásakor pedig nem maradhat aktív touch vagy joystick kontakt.
+D2.8C — Minden játékosszöveg angol source-locale string ID-ból érkezik. A layout kezeli a safe area-t, text scale-t, hosszabb fordítást, Reduced Motiont és a későbbi készülékprofilokat; a pontos méretértékek D4- és device-proof feladatai.
+
+Rövid indoklás:
+A négy működő alnézet elegendő az első vertical slice-hoz, miközben a route- és komponenshatárok későbbi rendszerekkel bővíthetők. A rejtett, még nem működő funkciók megőrzik a tiszta mobilfelületet; a kézprofil és a későbbi custom HUD együtt biztosít hozzáférhető alapot és személyre szabhatóságot.
+
+Státusz: Locked Decision — D2 lezárva 2026-08-01.
+
+------------------------------------------------------------
+
+D3. DOKUMENTÁCIÓS KAPUDÖNTÉS
+
+Téma:
+Az első vertical slice village–forest–Forester Hut térképtopológiája
+
+Választott döntés:
+D3.1C — Az érkezési terület, village clearing, workyard, forest edge/grove, Forester Hut és lezárt farmösvény egyetlen folyamatos `main-village` jelenet része; village–forest loading screen nincs.
+D3.2C — A térkép hibrid: authored főút, oldalhurok és landmarkok, valamint adatvezérelt ground-, object-, resource- és spawnslotok. Saját map editor P1-ben nem szükséges.
+D3.3C — A portré kompozíció délről észak felé vezető főgerincet használ: érkezés → village → workbench → forest → Forester Hut. A forest rövid oldalhurkot ad, de a kritikus út nem labirintus.
+D3.4C — A workbench a főút középső csomópontja. A Forester Hut korán felismerhető landmark lehet, de restaurációja csak a workbench–axe–wood sorrend validálása után véglegesülhet.
+D3.5C — A restoration ugyanazon Scene ID-t, landmark ID-t, footprintet és bejáratot tartja meg. Romos/restored assetprofil, környezet és útelérhetőség a logikai állapotból oldódik fel; külön teljes térképkép nem készül minden fejlődési állapothoz.
+D3.6C — A Forester Hut restaurációja megnyitja a keleti farmösvényt és új célt ad, de P1-ben nem hoz létre működés nélküli Farm screent vagy teljes farmjátékmenetet.
+D3.7C — A Player Home későbbi helye a déli player-plot zónában fenntartható, de Player Home production exterior/interior csak külön asset- és contentbudget-döntéssel kerülhet P1-be.
+D3.8C — A kötelező resource-supply determinisztikusan fedezi a workbench, axe és hut progression szükségletét. Kritikus resource, interaction anchor és útvonal nem kerülhet elérhetetlenül, más footprintre vagy a kézprofil elsődleges HUD-zónája alá.
+D3.9C — A P1 map nem tartalmaz működő farmot, harbort, mine-t, quarryt, expeditiont, kötelező NPC-t, terrain editort, teljes village districtet vagy külön open-world streamingrendszert.
+
+Rövid indoklás:
+Az egybefüggő authored főút és forest loop erős helyérzetet ad töltés nélkül, miközben az adatvezérelt slotok, stabil ID-k és state-rétegek megőrzik a menthetőséget és a későbbi bővíthetőséget. A keleti farmösvény látható jutalom, de nem nyit kontrollálatlan új scope-ot.
+
+Státusz: Locked Decision — D3 lezárva 2026-08-01.
+
+------------------------------------------------------------
+
+D4. DOKUMENTÁCIÓS KAPUDÖNTÉS
+
+Téma:
+Vizuális projekció, közös assetlépték, kamera, pivot, depth és occlusion
+
+Választott döntés:
+D4.1C — A világ ortografikus hatású, enyhén döntött 3/4 top-down projekciót használ, körülbelül 55° ± 5° vizuális elevációval, 0° yaw-val, horizon és perspektivikus összetartás nélkül. Észak a képernyő teteje; nincs elforgatott izometrikus gyémántrács.
+D4.2C — A geometriai igazságforrás a felbontásfüggetlen world unit. A production raster export kezdő sűrűsége 64 source px/WU; CSS px, render px, DPR és source px nem keverhető össze.
+D4.3C — A referencia normál kamera kezdő célja 20 CSS px/WU, a támogatott context zoom hard guardja 12–26 CSS px/WU. A normál P1 gameplayben nincs játékosi pinch zoom; a későbbi terrain és Scenic profil külön inputcontext.
+D4.4C — A logikai mozgás 360° analóg, a karakter megjelenítése 8 irányú. Production alapként 5 authored irány és 3, csak kompatibilis aszimmetria esetén tükrözött pár használható; minden frame azonos ground pivotot tart.
+D4.5C — Draw bounds, logical footprint, ground pivot/sort edge, interaction anchor és occluder shape külön kötelező metaadat. Egyik sem vezethető le automatikusan a sprite látható alphapixeléből.
+D4.6C — Draw order deklarált layer, ground sort point/edge, explicit suborder és stabil Object ID tie-break alapján készül; fájlnév és betöltési sorrend nem depth rule.
+D4.7C — Takarásnál authored kompozíció, overhang/canopy alpha fade, szükség esetén target highlight és korlátozott camera bias használható. Collision és World State nem változik pusztán láthatóságért.
+D4.8C — A követő kamera validált character ground pivotot követ, portréban kissé közép alá komponálva, profilos dead zone/smoothing/look-ahead értékekkel. A konkrét érzeti értékek iPhone 16 Pro eszközmérésből záródnak.
+D4.9C — iPhone Safari és Home Screen az elsődleges camera/safe-area proof. Tablet több világot mutathat a HUD felnagyítása nélkül; landscape külön proof előtt nem támogatott.
+D4.10C — Persistent asset semleges mastervilágítást, külön kontaktárnyék- vagy shadow role-t használ. Napszak és időjárás runtime tint/light/emissive profillal készül, nem minden objektum teljes napszakonkénti duplikálásával.
+
+Rövid indoklás:
+A közös WU/APU rendszer és projekció lehetővé teszi, hogy külön időben vagy külön promptból készült assetek ugyanabban a világban méret-, perspektíva- és pivotugrás nélkül működjenek. Az érzeti kameraértékek mérhetők maradnak anélkül, hogy az artgeometria bizonytalanná válna.
+
+Státusz: Locked Decision — D4 lezárva 2026-08-01.
+
+------------------------------------------------------------
+
+D5. DOKUMENTÁCIÓS KAPUDÖNTÉS
+
+Téma:
+Kanonikus art direction, referenciahierarchia, paletta, anyag-, fény- és vizuális QA-szerződés
+
+Választott döntés:
+D5.1C — A Readi World vizuális north starja meleg, cozy, kézzel festett/storybook világ: tiszta mobilos sziluettek, puha térfogat, természetes kézműves anyagok és egy elhagyott helyből élő, személyes otthonná váló világ. A hat pillér: COZY, HANDCRAFTED, READABLE, GROUNDED FANTASY, REMEMBERS YOU és CALM DEPTH.
+D5.2C — A kilenc tulajdonosi koncepció nem átlagolandó össze. A-szintű north-star referencia a REF-005 pillanatról pillanatra gameplay-hangulathoz, a REF-001 portré világkompozícióhoz és a REF-009 tartós before/after restaurációhoz; a többi kép csak deklarált támogató vagy távlati szerepben használható.
+D5.3C — A world és UI anchor paletta 14 world- és 10 funkcionális UI-tokenből áll. A tokenek jelentése stabil szerződés, a hexértékek festett variációt megengedő anchorok; kritikus állapot nem közölhető csak színnel.
+D5.4C — Az assetek részlethierarchiája 60% nagy, tiszta tömeg és silhouette, 30% közepes szerkezeti részlet és legfeljebb 10% finom textúra. Minden élre tett vastag fekete outline, zajos mikrorészlet és mobilon széteső silhouette tilos.
+D5.5C — A fa, vakolat, kő, tető, fém, foliage, ground és textil természetes, matt, festett és enyhén organikus anyagnyelvet használ. Fotózaj, műanyag fény, chrome, éles low-poly kristályosság és generikus glossy mobile-ad render nem elfogadható.
+D5.6C — Persistent production asset semleges, enyhén meleg nappali masterfényt, puha felső-bal key lightot és külön kontaktárnyékot használ. Morning, Afternoon, Evening, Night és Weather runtime profil; teljes objektumonkénti napszakduplikáció nincs, külön emissive/ablak variáns indokoltan használható.
+D5.7C — Karakter, portré, növény/resource, épület/restoration, ground/path, dekor és effekt ugyanazt a D4 perspektívát, scale/pivot szerződést és D5 formanyelvet követi. Building state-ek ugyanazon footprintet, entrance-t és identitást tartják; ruined állapot nem felismerhetetlen törmelék, restored állapot nem azonnali palota.
+D5.8C — A UI sötét erdőzöld panelalapot, meleg parchment tartalmat, moss keretet és arany fókuszt használ; lekerekített, skálázható/9-slice kompatibilis és mobilon olvasható. Generált bitmap szöveg, neon glassmorphism, kaszinóhatás és pontos referencia-layout másolása tilos.
+D5.9C — Production asset hard failt kap hibás projekció, baked napszakfény, cropped ground pivot, state-ek közötti geometriaeltérés, generált szöveg/vízjel, idegen stílus vagy bizonytalan provenance esetén. Ismert játék konkrét assetje vagy védett stílusazonosítója nem másolható közvetlenül.
+D5.10C — Minden production jelölt tíz dimenziós, 20 pontos art QA-t kap; minimum 18/20 szükséges, projection, scale/pivot, silhouette és provenance nem lehet 0, a hard fail lista pedig nem pontozható felül. A D7 promptkönyvtár örökli a D5 globális pozitív/negatív jelentésblokkot és a kanonikus REF-role címkéket.
+
+Rövid indoklás:
+A referenciahierarchia, a közös paletta, anyag- és fényrendszer, valamint a mérhető vizuális QA megakadályozza, hogy a külön időben vagy külön promptból készülő assetcsaládok stílusban, perspektívában vagy technikai használhatóságban szétesjenek. A referencia inspiráció marad, nem rejtett feature- vagy layoutdöntés.
+
+Státusz: Locked Decision — D5 lezárva 2026-08-02 (`D5-OWN-001A`).
+
+------------------------------------------------------------
+
+D6. DOKUMENTÁCIÓS KAPUDÖNTÉS
+
+Téma:
+Asset production pipeline, masterforrás, normalizálás, export, passport, provenance, backup és rollback
+
+Választott döntés:
+D6.1C — Minden production grafika három külön rétegen halad át: szerkeszthető source/master, veszteségmentes normalized köztes kép és optimalizált runtime export. Runtime-exportból master nem fejthető vissza, source/master nem kerülhet automatikusan a kiadott játékba.
+D6.2C — A szerkeszthető források projektközeli `art-source/` gyökérben, elkülönített inbox, brief, master, normalized, review, archive és registry területen maradnak. Tényleges family mappa csak jóváhagyott D8 munkacsomagban nyílik.
+D6.3C — A stabil logikai Asset ID, a `rNNN` masterrevision és az `eNNN` exportrevision külön azonosító. Fájlformátum, atlasz, napszak és DPR nem kerül a logikai Asset ID-ba; azonos ID alatti csere is új exportrevisiont, hash-t, QA-t és reportot igényel.
+D6.4C — Az asset állapotgépe brief-, master-, normalizálási-, art QA-, technical QA-, owner approval-, staging- és integration kaput különít el. Szép kép nem jelent technikai elfogadást, helyes pivot nem jelent artelfogadást.
+D6.5C — Normalized raster alapesetben veszteségmentes sRGB, 8 bit/channel RGBA PNG, deklarált straight alphával. A D4 WU és 64 source px/WU kezdősűrűség marad a geometriai alap; pivot, footprint, interaction és occluder nem vezethető le automatikusan alpha boundsból.
+D6.6C — Runtime első jelölt transparent sprite-hoz lossless WebP, opaque groundhoz vizuálisan ellenőrzött lossy WebP, UI-hoz lossless WebP vagy indokolt PNG. Formátum és quality exportprofil, nem örök technológiai döntés; újragenerálás helyett új exportrevisionnal mérhető és cserélhető.
+D6.7C — Atlasz csak együtt töltődő, azonos package/család és samplingigény esetén készül; kezdő maximum 2048×2048, legalább 2 px extrusion és 4 px padding, alapból frame-forgatás nélkül. UI 9-slice és ground 3×3 seamless proof külön kötelező, ha releváns.
+D6.8C — Minden production Asset ID passportot kap identity-, role/tag-, D4 geometria-, D5 art-, D7 prompt-, provenance-, source/master-, export-, QA-, performance-, fallback- és rollbackmezőkkel. Bizonytalan eredet `LEGAL-HOLD`, source elvesztése `SOURCE-LOST`; egyik sem release-képes.
+D6.9C — Aktív master nem írható felül visszaállítható revision nélkül. Minimum projektközeli working copy és külön ellenőrzött backup szükséges; release-képes assetnél harmadik eszközön kívüli vagy verziózott backup ajánlott. Minden elfogadott revision previewt, SHA-256 hash-t és inventory-bejegyzést kap.
+D6.10C — Egy körben csak egy assetcsalád változhat. Képalkotás, normalizálás és runtime-integráció külön ellenőrizhető lépés; integrációhoz passport, family report, manifest/registry validáció, vizuális regresszió, memóriaösszesítés és visszaállítható előző export szükséges.
+
+Rövid indoklás:
+A master, a technikailag egységes köztes kép és a runtime-export szétválasztása lehetővé teszi, hogy a játék képi minősége, tömörítése és csomagolása újrarajzolás nélkül fejlődjön. A passport, provenance, hash, report és backup megakadályozza a forrásvesztést, a jogilag bizonytalan assetet és a visszaállíthatatlan integrációt.
+
+Státusz: Locked Decision — D6 lezárva 2026-08-02 (`D6-OWN-001A`).
+
+------------------------------------------------------------
+
+D7. DOKUMENTÁCIÓS KAPUDÖNTÉS
+
+Téma:
+Verziózott, reprodukálható képgenerálási promptkönyvtár minden elsődleges assetcsaládhoz
+
+Választott döntés:
+D7.1C — Minden production prompt deklarált sorrendben áll össze: task, globális stílus, D4 kamera, D5 semleges fény, family blokk, subject/state, kompozíció/scale, D6 outputprofil, globális és family negatív blokk, végül QA reminder. Korábbi chat- vagy modellmemória nem helyettesíthet blokkot.
+D7.2C — A globális promptkészlet kilenc verziózott style-, camera-, lighting-, output-, negative- és QA-blokkot tartalmaz. A blokkok jelentése kanonikus; konkrét szövegük új promptverzióval finomítható.
+D7.3C — Hét elsődleges promptpack készül: karakter/animáció, resource/növény, building/state, ground/path/seamless, dekor, UI/ikon/portré és effekt/árnyék/részecske. A D7 v1 összesen 27 family promptreceptet tartalmaz.
+D7.4C — Minden kitöltendő mező `{{UPPER_SNAKE_CASE}}` változó; production futás üres változóval nem indítható. Asset ID, state, variant, D4 draw size, facing, material, reference role, output size, padding és family exclusion a D8 specifikációból érkezik.
+D7.5C — Prompt ID formátuma `PROMPT.<family>.<purpose>.vNNN`; minden konkrét futás külön `PRUN-YYYYMMDD-NNN` Run ID-t kap. Exact prompt, negatív blokk, tool/model/version, inputreferencia, seed/job ID, output és SHA-256 naplózandó.
+D7.6C — Referenciakép csak D5 `MATCH`, `INSPIRE`, `AVOID` vagy `SCOPE-ONLY-LATER` szereppel használható. Koncepció nem másolható pixel-, layout- vagy assetpontossággal; más játék vagy élő művész neve nem használható közvetlen stílusparancsként.
+D7.7C — Karakter identity sheet nem runtime spritesheet. Gameplay directionök és animation key pose-ok az elfogadott identity master alapján, azonos skálával és pivottal külön készülnek és külső overlay/timing proofot igényelnek.
+D7.8C — Building state-eknél az elfogadott base master kontrollált szerkesztése elsőbbséget élvez a független újragenerálással szemben. Ground seamless, UI 9-slice, alpha és effect sequence generátori állítása külső technikai proof nélkül nem acceptance.
+D7.9C — Egy family futássorban egyszerre egy érdemi változó módosulhat, például silhouette, state vagy material accent. Kamera, lépték, fény, pivot és globális stílus nem lehet variáció.
+D7.10C — A generált kép D6 szerint `INBOX`, nem production asset. Csak kitöltött run log, provenance, D5 art QA, D6 master/normalization/technical QA és tulajdonosi jóváhagyás után léphet tovább; D7 önmagában nem ad runtime-integrációs felhatalmazást.
+
+Rövid indoklás:
+A közös blokkok és a family-specifikus receptek egyszerre biztosítják az egységes perspektívát és a használható változatosságot. A pontos futásnapló, az identity/state kontroll és a külső technikai proof megakadályozza, hogy egy látványos, de nem reprodukálható vagy nem implementálható generálás production assetté váljon.
+
+Státusz: Locked Decision — D7 lezárva 2026-08-02 (`D7-OWN-001A`).

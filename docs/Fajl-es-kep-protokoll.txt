@@ -1,0 +1,342 @@
+READI WORLD
+FÁJL- ÉS KÉPKÉSZÍTÉSI KÉRÉSI PROTOKOLL — VERSION 1.0
+
+CÉL
+Ez a dokumentum meghatározza, hogyan kérem a ChatGPT-től:
+- letölthető projektfájlok elkészítését,
+- meglévő fájlok módosítását,
+- új képek és atlaszok létrehozását,
+- ZIP-csomagok összeállítását,
+- valamint hogyan kell ezeket biztonságosan átadni.
+
+A dokumentumot a Readi World Engine & Design Bible v0.3 mellett kell használni.
+
+
+1. ÁLTALÁNOS MUNKASZABÁLY
+
+Mindig csak egyetlen rendszert vagy egyetlen assetcsaládot módosíts.
+
+Mielőtt bármit elkészítesz, röviden írd le:
+1. Mi az egyetlen cél?
+2. Mely fájlok módosíthatók?
+3. Mely fájlokhoz nem szabad hozzányúlni?
+4. Mi alapján tekintjük késznek?
+5. Milyen regressziós teszteket végzel?
+
+Ne készíts egyszerre teljes projektcsomagot, ha csak egy fájlt vagy egy assetcsaládot kértem.
+Ne módosíts más működő rendszert mellékesen.
+
+
+2. LETÖLTHETŐ FÁJLOK KÉRÉSE
+
+Ha azt írom, hogy:
+„Kérem letölthető formában”
+vagy
+„Készítsd el a fájlt”
+
+akkor a válasz ne csak kódblokk vagy leírás legyen.
+
+A ChatGPT feladata:
+- ténylegesen elkészíteni a fájlt,
+- ellenőrizni, hogy a fájl megnyitható és helyes formátumú,
+- a fájlt az eredeti, stabil alapnéven elmenteni,
+- letöltési linket adni hozzá.
+
+Példák helyes nevekre:
+- index.html
+- sprite_registry.json
+- assets_manifest.json
+- forest_atlas.png
+
+Nem kérek ilyen neveket:
+- index_final.html
+- index_v12.html
+- sprite_registry_new.json
+- forest_atlas_fixed_final2.png
+
+A verziózás Gitben és a dokumentációban történjen, ne a fájlnévben.
+
+
+3. FÁJLNÉV ÉS MAPPA SZABÁLY
+
+A meglévő projektstruktúrát meg kell tartani.
+
+Stabil példák:
+
+readi-world/
+  index.html
+  manifest.json
+  data/
+    assets_manifest.json
+    sprite_registry.json
+    village_layout.json
+  assets/
+    buildings/
+      village_buildings.png
+    environment/
+      forest_atlas.png
+      ground_tiles.png
+    characters/
+      tool_overlays.png
+    effects/
+      effects_atlas.png
+
+A ChatGPT nem találhat ki új mappát vagy új fájlnevet külön jóváhagyás nélkül.
+A letölthető fájl neve pontosan egyezzen a projektben használt névvel.
+
+
+4. EGYEDI FÁJL VAGY ZIP
+
+Alapesetben minden módosított fájlt külön is kérek letölthetően.
+
+ZIP csak akkor készüljön, ha:
+- több fájl szorosan összetartozik,
+- külön kérem,
+- vagy a helyes mappastruktúra megőrzése miatt hasznos.
+
+A ZIP nem helyettesíti az egyedi fájllinkeket, ha csak néhány fájl változott.
+
+A ZIP-ben ne legyenek:
+- régi verziók,
+- duplikált fájlok,
+- ideiglenes képek,
+- tesztfájlok,
+- nem kért projektfájlok.
+
+
+5. MEGLÉVŐ FÁJL MÓDOSÍTÁSA
+
+Ha feltöltök egy fájlt és azt kérem, hogy módosítsd:
+
+- mindig abból a feltöltött fájlból indulj ki,
+- ne építsd újra emlékezetből,
+- ne cseréld le egy korábbi változatra,
+- őrizd meg a nem érintett részeket,
+- csak a jóváhagyott területet módosítsd.
+
+A válaszban röviden sorold fel:
+- mit változtattál,
+- mit hagytál érintetlenül,
+- milyen ellenőrzést végeztél.
+
+Példakérés:
+„A feltöltött index.html fájlban csak az AssetManager betöltését módosítsd. A mozgáshoz, mentéshez, HUD-hoz és rendereléshez ne nyúlj. Kérem letölthető index.html fájlként.”
+
+
+6. KÉPKÉSZÍTÉS ALAPSZABÁLYA
+
+Képek és atlaszok esetén ne próbáljunk egyszerre teljes vizuális rendszert generálni.
+
+Mindig egy assetcsaláddal dolgozunk:
+- ground,
+- forest,
+- buildings,
+- tools,
+- effects,
+- UI,
+- characters.
+
+A folyamat:
+
+1. Pontos specifikáció.
+2. Cella- vagy elembeosztás.
+3. Vizuális referencia jóváhagyása.
+4. Egyedi elemek létrehozása.
+5. Átlátszóság, méret és perspektíva ellenőrzése.
+6. Atlasz összeállítása.
+7. Technikai validáció.
+8. Játékba integrálás külön lépésben.
+9. Telefonos teszt.
+10. Jóváhagyás vagy visszaállítás.
+
+Ne generálj egyszerre új ground, forest, buildings, tools és effects atlaszt.
+
+
+7. ATLASZKÉSZÍTÉS SZABÁLYA
+
+Atlasz esetén először mindig rögzíteni kell:
+
+- fájlnév,
+- teljes képméret,
+- sorok és oszlopok száma,
+- cellaméret,
+- cellánkénti tartalom,
+- átlátszó vagy átlátszatlan háttér,
+- perspektíva,
+- pivot,
+- drawSize,
+- role és tag adatok.
+
+Ha egy generátor nem tud pontos atlaszt készíteni, akkor:
+- az elemek külön készüljenek,
+- utána programozottan legyenek összeállítva,
+- ne használjunk infografikát vagy előnézeti táblát valódi atlaszként.
+
+Tiltott az atlaszban:
+- felirat,
+- szám,
+- keret,
+- UI-panel,
+- checkerboard háttér,
+- cellák közötti dekoráció,
+- teljes jelenetkép,
+- véletlen extra objektum.
+
+
+8. ÁTLÁTSZÓSÁG SZABÁLY
+
+Objektum- és effektatlasz:
+- valódi PNG alfa-csatorna kell,
+- nem elfogadható a képre égetett sakktáblás háttér,
+- nem elfogadható a fehér háttér,
+- a széleken nem maradhat fehér vagy szürke glória.
+
+Ground és teljes cellás terrain:
+- általában átlátszatlan,
+- a cella teljes területét ki kell töltenie,
+- az éleknek ismételhetőnek vagy szabályosan illeszthetőnek kell lenniük.
+
+
+9. KÉPGENERÁLÁSI KÉRÉSMINTA
+
+„Készítsük el csak a forest_atlas.png fájlt.
+Ne módosíts semmilyen más képet vagy projektfájlt.
+Méret: 1536×1024.
+Grid: 3×2.
+Cella: 512×512.
+Valódi átlátszó PNG.
+A cellák sorrendje:
+1. oak_tree_01
+2. oak_tree_02
+3. oak_tree_03
+4. pine_tree_01
+5. pine_tree_02
+6. bush_01
+
+Először készíts rövid specifikációt és jelezd, mely fájlok maradnak érintetlenek.
+Utána készítsd el a letölthető forest_atlas.png fájlt.
+Ne módosítsd az index.html-t vagy a registryt ebben a lépésben.”
+
+
+10. KÓD ÉS KÉP KÜLÖN LÉPÉS
+
+Egy új kép elkészítése és játékba integrálása két külön feladat.
+
+Első lépés:
+- csak a kép elkészítése és validálása.
+
+Második lépés:
+- registry frissítése.
+
+Harmadik lépés:
+- csak akkor kódmódosítás, ha a generikus engine-szerződés ezt valóban igényli.
+
+Assetcsere miatt normál esetben nem szabad új index.html fájlt írni.
+
+
+11. VALIDÁCIÓ
+
+Minden elkészített fájlt ellenőrizni kell.
+
+JSON:
+- érvényes JSON,
+- helyes fájlútvonalak,
+- egyedi azonosítók,
+- szükséges mezők megléte.
+
+HTML/JavaScript:
+- nincs szintaktikai hiba,
+- a meglévő funkciók megmaradnak,
+- relatív útvonalak működnek,
+- mobilos safe area és touch kezelés nem sérül.
+
+PNG atlasz:
+- pontos pixelméret,
+- pontos cellaosztás,
+- helyes alfa,
+- nincs cellahatár-átlógás,
+- nincs beégetett háttér,
+- registry sorrendjével egyezik.
+
+ZIP:
+- helyes mappastruktúra,
+- csak a szükséges fájlokat tartalmazza.
+
+
+12. VÁLASZ FORMÁTUMA ELKÉSZÜLT FÁJL ESETÉN
+
+A válasz legyen rövid és egyértelmű:
+
+Elkészült:
+- [fájlnév letöltése]
+
+Módosítva:
+- rövid felsorolás
+
+Érintetlen:
+- rövid felsorolás
+
+Ellenőrzés:
+- rövid felsorolás
+
+Feltöltési hely:
+- pontos projektútvonal
+
+Ne adj hosszú elméleti magyarázatot, ha kész fájlt kértem.
+
+
+13. BIZTONSÁGI ÉS VISSZAÁLLÍTÁSI SZABÁLY
+
+Módosítás előtt a jelenlegi működő fájl a baseline.
+
+Ha az új fájl hibás:
+- ne javíts egyszerre több másik rendszert,
+- állítsuk vissza az előző működő fájlt,
+- azonosítsuk az egyetlen hibát,
+- csak azt javítsuk.
+
+Egy változtatási körben legyen egyértelmű, mely fájl cserélhető vissza.
+
+
+14. RÖVID KÉRÉSMINTÁK
+
+LETÖLTHETŐ FÁJL:
+„Készítsd el letölthető formában, stabil alapnévvel. Ne csak a kódot másold be a válaszba.”
+
+EGYETLEN MÓDOSÍTÁS:
+„Csak ezt az egy fájlt módosítsd. A többi fájlhoz és rendszerhez ne nyúlj.”
+
+KÉP:
+„Először csak ezt az egy képet készítsd el és validáld. Integrációt még ne végezz.”
+
+ATLASZ:
+„A cellákat külön kezeld, utána állítsd össze az atlaszt. Ne generálj infografikát.”
+
+ZIP:
+„Kérek ZIP-et a helyes mappastruktúrával, de a módosított fájlokat külön is add oda.”
+
+REGRESSZIÓ:
+„Ellenőrizd, hogy a mozgás, mentés, HUD és jelenlegi játékmenet változatlan maradt.”
+
+VISSZAÁLLÍTÁS:
+„A feltöltött működő fájlból indulj ki, és csak a megnevezett hibát javítsd.”
+
+
+15. ÚJ BESZÉLGETÉSBEN HASZNÁLHATÓ KEZDŐSZÖVEG
+
+„A Readi World Engine & Design Bible v0.3 és a
+Readi World Fájl- és Képkészítési Kérési Protokoll v1.0
+a beszélgetés irányadó dokumentumai.
+
+A feltöltött GitHub-projekt a működő baseline.
+Egyszerre csak egy rendszert vagy egy assetcsaládot módosíts.
+Mielőtt dolgozni kezdesz, írd le az egyetlen célt, a módosítható és védett fájlokat, valamint az elfogadási és regressziós teszteket.
+Ha letölthető fájlt kérek, tényleges fájlt készíts stabil alapnévvel és adj hozzá letöltési linket.
+Képeket először külön készíts és validálj; ne integráld automatikusan őket a játékba.
+Ne cserélj egyszerre több atlaszt, és ne írj át index.html-t pusztán egy assetcsere miatt.”
+
+
+ALAPELV
+Először pontosan egy dolgot készítsünk el jól.
+Utána validáljuk.
+Csak ezután lépjünk tovább.

@@ -1,0 +1,1766 @@
+READI WORLD
+DOKUMENTUMAUDIT — STATIKUS KATEGÓRIA- ÉS HATÓKÖRTÉRKÉP
+Verzió: 1.0
+Dátum: 2026-07-24
+
+======================================================================
+1. A DOKUMENTUM CÉLJA
+======================================================================
+
+Ez a dokumentum meghatározza, hogy a Readi World teljes dokumentumauditja
+során milyen nagy tervezési, technikai, játékmeneti, tartalmi és
+produkciós kategóriákat kell biztosan átvizsgálni.
+
+Ez NEM:
+- döntési napló;
+- státuszlista;
+- feladatkezelő;
+- implementációs backlog;
+- auditpont-számláló;
+- „lezárva / folyamatban / következik” nyilvántartás.
+
+Ez egy statikus hatókörtérkép.
+
+Feladata:
+- megakadályozni, hogy fontos rendszer kimaradjon;
+- logikus sorrendet adni az auditnak;
+- megmutatni a kategóriák közötti függőségeket;
+- biztosítani, hogy minden rendszer játékosi, technikai, mentési,
+  mobilos és hibabiztonsági oldalról is át legyen gondolva;
+- alapot adni az új Project Constitution, Gameplay Bible,
+  Engine & Architecture Bible, adatkontraktusok és implementációs
+  mérföldkövek elkészítéséhez.
+
+A kanonikus Dokumentumaudit külön fájlban tárolja a ténylegesen
+meghozott döntéseket. Ez a dokumentum csak azt mondja meg, milyen
+területeket kell érintenünk.
+
+======================================================================
+2. AZ AUDIT ÁLTALÁNOS MÓDSZERE
+======================================================================
+
+Minden nagy kategóriát több nézőpontból kell megvizsgálni.
+
+2.1 Játékosi cél
+- Mit él át a játékos?
+- Mit akar elérni?
+- Milyen visszajelzést kap?
+- Mi teszi a rendszert érthetővé és élvezetessé?
+- Hogyan támogatja a Readi World alapígéretét:
+  „A világ emlékszik rád, láthatóan fejlődik veled, és jó érzés
+  visszatérni hozzá”?
+
+2.2 Játékmeneti szabály
+- Mi indítja a rendszert?
+- Milyen feltételek szükségesek?
+- Mi a normál sikeres folyamat?
+- Hogyan lehet megszakítani?
+- Mi történik hibánál?
+- Mi történik távollét alatt?
+- Van-e visszaélési vagy végtelen ciklus lehetőség?
+
+2.3 Adatmodell
+- Milyen stabil azonosítók szükségesek?
+- Mi definíció és mi mentett példányállapot?
+- Mi tartós és mi újragenerálható?
+- Milyen hivatkozások vannak más rendszerekre?
+- Hogyan validálható az adat?
+- Hogyan verziózható és migrálható?
+
+2.4 Rendszerkapcsolatok
+- Milyen más rendszerektől függ?
+- Milyen eseményeket küld?
+- Milyen eseményeket fogad?
+- Melyik rendszer az igazságforrás?
+- Van-e körkörös vagy önmagára visszamutató függőség?
+- Egy hiányzó rendszer blokkolhatja-e helyrehozhatatlanul a játékost?
+
+2.5 Mentés és helyreállítás
+- Mikor kell menteni?
+- Milyen állapotot kell megőrizni?
+- Mi történik appmegszakításkor?
+- Mi történik hibás vagy régi mentésnél?
+- Hogyan áll vissza az utolsó biztonságos állapot?
+- Milyen backup és migráció szükséges?
+
+2.6 Mobilos használat
+- Elfér-e álló mobilképernyőn?
+- Egy kézzel is kezelhető-e?
+- Nem takarja-e az ujj a fontos elemeket?
+- Megszakítható-e biztonságosan?
+- Gyenge eszközön is működik-e?
+- Milyen touch, safe area, háttérbe kerülési és folytatási szabály kell?
+
+2.7 Teljesítmény
+- Milyen gyakran kell frissülnie?
+- Futhat-e egyszerűsített háttérszimulációban?
+- Mi tölthető ki a memóriából?
+- Mi cache-elhető?
+- Mi generálható újra?
+- Milyen felső korlátok szükségesek?
+
+2.8 UI és visszajelzés
+- Hogyan látja a játékos az állapotot?
+- Hogyan jelennek meg a feltételek?
+- Hogyan magyarázza el a rendszer a zárolást vagy hibát?
+- Mi legyen rövid, és mi nyitható meg részletesen?
+- Hogyan működik csökkentett HUD-dal vagy Scenic Mode-ban?
+
+2.9 Hozzáférhetőség
+- Állítható-e a szöveg és UI mérete?
+- Van-e színfüggetlen visszajelzés?
+- Csökkenthető-e a mozgás és villogás?
+- Használható-e haptika, hang és vizuális jel együtt?
+- Megoldható-e bal- és jobbkezes elrendezés?
+
+2.10 Tesztelhetőség
+- Milyen automatikus teszt szükséges?
+- Milyen megszakítási és hibateszt szükséges?
+- Milyen valós telefonos teszt szükséges?
+- Milyen regressziós teszt védi a már működő rendszereket?
+- Mikor tekinthető a rendszer valóban késznek?
+
+======================================================================
+3. A KATEGÓRIÁK JAVASOLT LOGIKAI SORRENDJE
+======================================================================
+
+A sorrend oka:
+előbb az irányító szabályokat és közös alapokat kell lezárni,
+utána az ezekre épülő játékmechanikákat, végül a balanszt,
+prezentációt, produkciót és implementációs tervet.
+
+A kategóriák nem merev fejezetek. Ha egy kérdés több kategóriát érint,
+az elsődleges kategóriában kell lezárni, a többi helyen pedig
+hivatkozással kell kezelni.
+
+======================================================================
+4. DOKUMENTUMKORMÁNYZÁS ÉS FORRÁSHIERARCHIA
+======================================================================
+
+Vizsgálandó területek:
+- Project Constitution szerepe;
+- Gameplay Bible hatásköre;
+- Engine & Architecture Bible hatásköre;
+- art-, audio-, UI- és content-dokumentumok szerepe;
+- kanonikus Dokumentumaudit szerepe;
+- Decision Log és Open Decision Register szerepe;
+- dokumentumok közötti elsőbbségi szabály;
+- konfliktuskezelés;
+- locked döntések módosítási eljárása;
+- superseded és rejected döntések archiválása;
+- verziózás és dátumozás;
+- dokumentumnevek és stabil hivatkozások;
+- duplikált szabályok elkerülése;
+- fejezetek közötti kereszthivatkozás;
+- implementációs és design-dokumentumok szétválasztása;
+- tuningértékek elkülönítése a végleges szabályoktól.
+
+Kimeneti cél:
+egyértelmű legyen, melyik dokumentum milyen kérdésben az igazságforrás,
+és egy új döntés hogyan jut el minden érintett dokumentumba.
+
+======================================================================
+5. PROJEKT- ÉS RUNTIME-ALAPOK
+======================================================================
+
+Vizsgálandó területek:
+- a jelenlegi kód referencia-prototípus szerepe;
+- clean runtime stratégia;
+- régi kódrészek átvételi feltételei;
+- thin bootstrap index.html;
+- moduláris forrásstruktúra;
+- HTML/CSS/JavaScript alap;
+- Canvas vagy könnyű játékkönyvtár választási kritériumai;
+- PWA használat;
+- Capacitor kompatibilitás;
+- offline működés;
+- böngésző- és eszköztámogatás;
+- konfiguráció és környezeti beállítások;
+- fejlesztői és production build különbsége;
+- bootfolyamat;
+- hiba esetén fallback indulás;
+- alapvető szolgáltatások felelősségi határai;
+- függőségi irányok;
+- globális állapot minimalizálása;
+- új modul hozzáadásának szerződése.
+
+Különösen érintendő szolgáltatások:
+- Bootstrap;
+- World State;
+- Event/Command rendszer;
+- Scene Manager;
+- Object Manager;
+- Save Manager;
+- Time System;
+- Input Manager;
+- Renderer;
+- Camera;
+- Collision System;
+- Interaction System;
+- Audio Manager;
+- Debug Tools.
+
+======================================================================
+6. VILÁGMODELL, JELENETEK ÉS RÉGIÓK
+======================================================================
+
+Vizsgálandó területek:
+- fő falu mint tartós központ;
+- aktivitási és távoli jelenetek;
+- régió és aljelenet fogalma;
+- Scene ID és Region ID;
+- belépési és kilépési pontok;
+- átjárók és portálok;
+- jelenetváltás tranzakciója;
+- betöltési fázisok;
+- játékosirányítás visszaadási feltétele;
+- sikertelen betöltés;
+- biztonságos előző jelenet;
+- aktív jelenet és háttérjelenetek;
+- unload;
+- cache;
+- előtöltés;
+- alacsony memória mód;
+- jelenet- és régióállapot határai;
+- persistent és regenerálható állapot;
+- seedalapú újraépítés;
+- aktivitási instance-ok;
+- futamok új seedje;
+- lejáró és egyszer használható helyszínek;
+- ismert és felfedezetlen térképadatok;
+- fast travel;
+- biztonságos utazási pontok;
+- utazási költség;
+- utazási idő;
+- érvénytelen célpont;
+- veszély vagy aktív folyamat alatti utazás;
+- időalapú rendszerek anti-exploit védelme;
+- világ- és jelenetfrissítés különbsége.
+
+======================================================================
+7. KÖZPONTI VILÁGÁLLAPOT ÉS SZIMULÁCIÓS MAG
+======================================================================
+
+Vizsgálandó területek:
+- World State mint központi igazságforrás;
+- rendszerállapot és világállapot elválasztása;
+- validált parancsok;
+- tranzakciók;
+- atomi műveletek;
+- rollback;
+- eseménysor;
+- eseményprioritás;
+- feldolgozási fázisok;
+- stabil eseménysorrend;
+- determinisztikus működés;
+- ugyanazon esemény duplikált feldolgozásának védelme;
+- eseményazonosítók;
+- idempotencia;
+- végtelen eseménylánc elleni védelem;
+- hibás események kezelése;
+- biztonságos hibasor;
+- eseményújrapróbálás;
+- cikluson belüli és következő ciklusos események;
+- rendszerfrissítési frekvenciák;
+- frame-, másodperc-, világóra- és napalapú frissítés;
+- prioritási konfliktus;
+- többrendszeres műveletek;
+- naplózhatóság;
+- reprodukálható hibakeresés;
+- háttérszimulációs egyszerűsítés;
+- hosszú távú szimulációs plafon.
+
+======================================================================
+8. OBJEKTUMRENDSZER
+======================================================================
+
+Vizsgálandó területek:
+- Object ID;
+- objektumdefiníció és objektumpéldány;
+- tartós és ideiglenes objektum;
+- objektuméletciklus;
+- létrehozás;
+- aktiválás;
+- deaktiválás;
+- unload;
+- regeneráció;
+- megszűnés;
+- archiválás;
+- deltaalapú mentés;
+- objektumverzió;
+- definíciómigráció;
+- hibás objektumhivatkozás;
+- fallback objektum;
+- szülő–gyermek hierarchia;
+- összetett objektum;
+- gyermekobjektum sorsa;
+- tulajdonjog;
+- hozzáférési jogosultság;
+- tulajdonosváltás;
+- objektumkapcsolatok;
+- függőségek;
+- ideiglenesen elérhetetlen függőség;
+- végleg megszűnt függőség;
+- állapotgépek;
+- engedélyezett állapotátmenetek;
+- folyamatban lévő átmenetek;
+- megszakítási szabály;
+- ismeretlen állapot fallback;
+- komponensalapú képességek;
+- komponensállapot;
+- komponensek kommunikációja;
+- komponensmigráció;
+- tag-, role- és capability-rendszer;
+- objektumpooling;
+- objektumfoglalási terület;
+- ütközési és interakciós shape;
+- vizuális és logikai állapot elválasztása;
+- másolás, csere és átalakulás;
+- objektumjavítás és sérülés;
+- objektumellenőrző fejlesztői nézet.
+
+======================================================================
+9. INTERAKCIÓS RENDSZER
+======================================================================
+
+Vizsgálandó területek:
+- közelségi interakció;
+- automatikus interakció;
+- kézi kontextuális interakció;
+- permanens ACT gomb nélküli működés;
+- interakciós célpontok;
+- több közeli célpont prioritása;
+- objektum- és épületinterakció;
+- eszköz által aktivált interakció;
+- üres kéz viselkedése;
+- interakciós hatótáv;
+- nézési vagy helyzeti feltétel;
+- interakciós jogosultság;
+- zárolt interakció;
+- feltételek megjelenítése;
+- rövid és hosszabb műveletek;
+- progress jelzés;
+- megszakítás mozgással;
+- kézi Cancel;
+- appmegszakítás;
+- többszörös input elleni védelem;
+- cooldown;
+- interakciós sor;
+- együttműködő objektumok;
+- interakciós esemény és tranzakció;
+- jutalom jóváírásának időpontja;
+- hibás célpont;
+- eltűnő célpont;
+- kontextuális feliratok;
+- haptikus és hangos visszajelzés;
+- Scenic Mode alatti viselkedés;
+- hozzáférhetőségi alternatívák.
+
+======================================================================
+10. JÁTÉKOS, MOZGÁS, INPUT ÉS KAMERA
+======================================================================
+
+Vizsgálandó területek:
+- játékosazonosító és profilkapcsolat;
+- játékospozíció;
+- biztonságos spawn;
+- stuck recovery;
+- mozgási modell;
+- joystick;
+- érzékenység;
+- dead zone;
+- egykezes használat;
+- bal- és jobbkezes mód;
+- tap-to-move jövőbeli lehetősége;
+- mozgás és interakció prioritása;
+- mozgás megszakítása;
+- appháttérbe kerülés;
+- sebességmódosítók;
+- mount és helper mozgás;
+- collision;
+- triggerzónák;
+- lejtő, víz és speciális terep;
+- normál követő kamera;
+- szerkesztési kamera;
+- zoom;
+- kameraütközés;
+- kamera smoothing;
+- jelenetváltás alatti kamera;
+- Reduced Motion;
+- képernyőarányok;
+- portrait-first szabály;
+- későbbi landscape támogatás feltételei;
+- input események duplikációvédelme;
+- touch és pointer események együttélése;
+- fókuszvesztés;
+- kontrollzárolás menük alatt.
+
+======================================================================
+11. TEREPRENDEZÉS, ÉPÍTÉS ÉS ELHELYEZÉS
+======================================================================
+
+Vizsgálandó területek:
+- szerkesztési mód elérése;
+- külön Kész gomb;
+- automatikus biztonságos kilépés;
+- folyamatos szerkesztés;
+- egyszerre egy objektum;
+- későbbi csoportos kijelölés;
+- objektum kijelölése;
+- fogópont és mozgatóvezérlő;
+- kis dekoráció közvetlen húzása;
+- nagy épület vezérelt mozgatása;
+- rejtett rács;
+- snap;
+- forgathatóság;
+- többirányú grafika;
+- placement preview;
+- valid és invalid jelzés;
+- bejárat;
+- működési terület;
+- víz-, út-, energia- és tárolókapcsolat;
+- átfedési szabályok;
+- authored landmarkok;
+- mozgatható és fix épületek;
+- aktív folyamat leállítása mozgatás előtt;
+- eredeti pozíció visszaállítása;
+- appmegszakítás alatti rollback;
+- mentési időzítés;
+- katalógus;
+- kategóriák;
+- zárolt elemek;
+- feloldási feltételek;
+- költségelőnézet;
+- többszörös lerakás;
+- tulajdonosi készlet;
+- dekorációs inventory;
+- épülettárolás;
+- lebontás;
+- refund;
+- egyedi és ritka épületek;
+- területi jogosultság;
+- bővülő saját birtok;
+- természetes objektumok átültetése;
+- végjátékbeli nagyobb szabadság;
+- undo szükségessége és lehetséges rövid időablaka;
+- hibás elhelyezés megelőzése;
+- mobilos UI és kamerakezelés;
+- építési állapotok és vizuális fázisok.
+
+======================================================================
+12. INVENTORY, TÁRGYAK, ERŐFORRÁSOK ÉS TÁROLÓK
+======================================================================
+
+Vizsgálandó területek:
+- item definition;
+- resource definition;
+- stabil item ID;
+- stackelhető tárgy;
+- egyedi példány;
+- mennyiség;
+- minőség;
+- ritkaság;
+- állapot;
+- tartósság;
+- modulok;
+- eszközök külön Tool Collectionben;
+- kulcs- és projektitemek;
+- eladhatóság;
+- item lock;
+- kategóriák;
+- automatikus rendezés;
+- hordozott inventory kapacitása;
+- slot- vagy súlyalapú modell;
+- full inventory védelem;
+- overflow;
+- földre ejtés;
+- elveszett jutalom;
+- biztonságos kézbesítés;
+- mailbox vagy recovery storage szükségessége;
+- tárolók saját állapota;
+- épülethelyi tárolás;
+- közeli tárolás;
+- storage network;
+- távoli hozzáférés;
+- input- és outputtároló;
+- rezervált alapanyag;
+- tárgyáthelyezési tranzakció;
+- részleges áthelyezés;
+- quick transfer;
+- transfer all;
+- deposit matching;
+- szűrés;
+- keresés;
+- kedvencek;
+- presetek;
+- eladásvédelem;
+- buyback;
+- ismeretlen régi tárgy;
+- törölt item ID migrációja;
+- duplikáció- és elvesztésvédelem;
+- inventory UI mobilon;
+- mentés és megszakításbiztonság.
+
+======================================================================
+13. ESZKÖZÖK, KÉPESSÉGEK ÉS SPECIALIZÁCIÓ
+======================================================================
+
+Vizsgálandó területek:
+- alap eszközlista;
+- automatikus eszközválasztás;
+- játékosi felülírás;
+- quick access;
+- activity preset;
+- tool tier;
+- upgrade chain;
+- upgrade alapanyag;
+- upgrade helyszín;
+- régi eszköz beépítése;
+- azonnali használat;
+- tartósság hiánya vagy különleges kivételek;
+- fuel, charge és speciális komponens;
+- tool module;
+- module slot;
+- fej, markolat, charm, utility;
+- sebesség;
+- hozam;
+- hatótáv;
+- hozzáférés;
+- rare-drop módosító;
+- specializációs ágak;
+- respec;
+- teljes ágak későbbi feloldása;
+- tool perk és profession perk elkülönítése;
+- különleges eszközök;
+- elégtelen tool tier visszajelzés;
+- vizuális eszközfejlődés;
+- animáció és overlay;
+- eszközhasználat mentése;
+- megszakítás és appváltás;
+- mobilos gyorsváltás.
+
+======================================================================
+14. GYŰJTÉS, KITERMELÉS ÉS TERMÉSZETI ERŐFORRÁSOK
+======================================================================
+
+Vizsgálandó területek:
+- resource node definíció;
+- harvestable role;
+- spawn szabály;
+- authored és generált node;
+- stabil node ID;
+- szükséges eszköz;
+- action timing;
+- jutalomtábla;
+- determinisztikus vagy véletlen drop;
+- rare drop;
+- bad-luck protection;
+- hozam;
+- skill XP;
+- node állapot;
+- stump vagy depleted állapot;
+- respawn;
+- offline regeneráció;
+- végleges eltávolítás;
+- újratelepítés;
+- land management;
+- ritka növény;
+- gomba;
+- időjárási és napszakfeltétel;
+- szezon;
+- régió;
+- célzott megszerzési információ;
+- alternatív forrás;
+- gyűjtési útvonal;
+- ismétlés csökkentése;
+- area harvest;
+- helper;
+- környezeti visszajelzés;
+- teljesítmény nagy nodeszámnál;
+- save delta;
+- anti-exploit;
+- mobilos automatikus közelségi interakció.
+
+======================================================================
+15. CRAFTING, FELDOLGOZÁS ÉS TERMELÉS
+======================================================================
+
+Vizsgálandó területek:
+- recipe ID és verzió;
+- recipe unlock;
+- inputok;
+- alternatív inputok;
+- outputok;
+- melléktermék;
+- mennyiség;
+- minőség;
+- munkaállomás;
+- szükséges building tier;
+- profession requirement;
+- tool requirement;
+- craft time;
+- azonnali és hosszú craft;
+- alapanyagfoglalás;
+- cancel refund;
+- partial progress;
+- queue;
+- queue limit;
+- batch craft;
+- Craft All;
+- Repeat;
+- finite prepared input;
+- output capacity;
+- full output viselkedés;
+- machine state;
+- energia, fuel vagy víz;
+- worker dependency;
+- offline egy ciklus vagy véges batch;
+- infinite loop tiltása;
+- receptfrissítés közbeni aktív folyamat;
+- régi receptverzió szerinti befejezés;
+- minőségi craft;
+- különleges kockázatos craft;
+- hibaesély csak jelzett speciális esetben;
+- jutalomtranzakció;
+- economy kapcsolat;
+- UI;
+- értesítés;
+- visszatérési összefoglaló;
+- anti-grind és automation.
+
+======================================================================
+16. ÉPÜLETEK, RESTAURÁCIÓ ÉS FALUINFRASTRUKTÚRA
+======================================================================
+
+Vizsgálandó területek:
+- building definition;
+- building instance;
+- stabil Building/Object ID;
+- authored landmark;
+- player-owned building;
+- romos állapot;
+- restaurációs szakasz;
+- beadott anyagok;
+- preparatory task;
+- vizuális építési fázis;
+- végső játékosi milestone action;
+- három vagy más tierstruktúra;
+- kisebb funkcionális fejlesztések;
+- upgrade követelmények;
+- feloldott rendszerek;
+- kapacitás;
+- szolgáltatás;
+- input és output;
+- működési állapot;
+- inaktív állapot;
+- karbantartás hiánya vagy speciális operating material;
+- falu szint;
+- falu szint jutalmai;
+- világ vizuális átalakulása;
+- út, fény, növényzet, propok;
+- specialisták;
+- játékosotthon;
+- szobák;
+- kültéri bővítés;
+- tárolás;
+- konyha;
+- gyűjtemény;
+- dekoráció;
+- hálózatok;
+- út-, víz-, energia- és storage kapcsolat;
+- egyszerre több projekt;
+- highlighted main project;
+- partial funding;
+- refund;
+- mozgatás;
+- elrakás;
+- lebontás;
+- mentés;
+- migráció;
+- hiányzó grafikai állapot fallback;
+- első vertical slice: Forester Hut;
+- farm, harbor és mine kapcsolódás.
+
+======================================================================
+17. FARM, NÖVÉNYEK, ÁLLATOK ÉS FÖLDHASZNÁLAT
+======================================================================
+
+Vizsgálandó területek:
+- soil plot;
+- plot ID;
+- vetőmag;
+- növényfajta;
+- növekedési fázis;
+- ültetési idő;
+- világidő;
+- vízállapot;
+- talajállapot;
+- évszak;
+- időjárás;
+- módosítók;
+- hozam;
+- minőség;
+- harvest state;
+- mature waiting state;
+- offline növekedés;
+- automatikus betakarítás tiltása vagy korlátozása;
+- row planting;
+- area watering;
+- irrigation;
+- helper animal;
+- finite task assignment;
+- földterület feloldás;
+- orchards;
+- erdőgazdálkodás és farming határa;
+- állat példány és csoportos állat;
+- faj;
+- lakóhely;
+- gondozás;
+- feed;
+- hangulat;
+- termék;
+- output capacity;
+- szaporodás;
+- különleges állatok;
+- távollét alatti büntetésmentesség;
+- állat elvesztésének tiltása;
+- farmépületek;
+- storage kapcsolat;
+- cooking kapcsolat;
+- trade kapcsolat;
+- anti-grind;
+- mobilos tömegműveletek;
+- save és háttérszimuláció.
+
+======================================================================
+18. NPC-K, LAKOSOK, SPECIALISTÁK ÉS KAPCSOLATOK
+======================================================================
+
+Vizsgálandó területek:
+- fontos NPC és tömeges NPC elkülönítése;
+- stabil NPC ID;
+- NPC definíció;
+- NPC példányállapot;
+- jelenet;
+- lakóhely;
+- munkahely;
+- napi rutin;
+- időjárási rutin;
+- jelenetek közötti mozgás;
+- egyszerűsített háttérszimuláció;
+- schedule conflict;
+- szolgáltatás;
+- specialist funkció;
+- kereskedő;
+- worker;
+- building assignment;
+- kapcsolat a játékossal;
+- relationship state;
+- ajándék;
+- párbeszéd;
+- minimális, nem blokkoló történeti szöveg;
+- kötelező hosszú dialógus tiltása;
+- rövid funkcionális kommunikáció;
+- NPC által kiváltott világváltozás;
+- NPC inventory vagy termelési kapcsolat;
+- NPC eltűnés;
+- visszatérés;
+- migráció;
+- eseményütközés;
+- ownership;
+- személyes és közösségi objektumok;
+- UI és hozzáférhetőség;
+- offline viselkedés;
+- performance nagy NPC-számnál.
+
+======================================================================
+19. KÜLDETÉSEK, WORLD PATH, TÖRTÉNET ÉS FELFEDEZÉS
+======================================================================
+
+Vizsgálandó területek:
+- quest ID;
+- quest definition;
+- quest instance;
+- aktív, teljesített, halasztott, elutasított és újra elérhető állapot;
+- subgoal;
+- objective type;
+- progress counter;
+- feltétel;
+- időzítés;
+- lejárat;
+- sikertelenség;
+- retry;
+- alternatív út;
+- jutalom;
+- visszafordíthatatlan világváltozás;
+- story flag;
+- world event;
+- környezeti történet;
+- minimális szöveg;
+- World Path node;
+- node visibility;
+- ismert, részben ismert, zárolt, feloldott és teljesített állapot;
+- fő cél;
+- ajánlott mellékcélok;
+- rendszerbemutatás;
+- permanently reviewable tutorial;
+- tutorial replay;
+- tracked goal;
+- dependency preview;
+- locked requirement magyarázat;
+- térképi jelölések;
+- exploration discovery;
+- secret;
+- main path és opcionális tartalom;
+- quest által blokkolt rendszer elkerülése;
+- save;
+- migration;
+- régi quest eltávolítása;
+- hibás objective hivatkozás;
+- mobilos megjelenítés.
+
+======================================================================
+20. PROGRESSION, PROFESSIONÖK, SKILLEK ÉS JUTALMAZÁS
+======================================================================
+
+Vizsgálandó területek:
+- general player level;
+- profession lista;
+- profession XP;
+- skill;
+- mastery;
+- perk;
+- specialization;
+- respec;
+- unlock;
+- content progression;
+- personal progression;
+- visible world progression;
+- Village Level;
+- tool progression;
+- building progression;
+- region progression;
+- collection progression;
+- jutalomtípusok;
+- első felfedezés;
+- first craft;
+- milestone;
+- project reward;
+- rare reward;
+- cosmetic reward;
+- ismételhető jutalom;
+- soft variety bonus;
+- repeated low-level action csökkenő hatékonysága;
+- napi cap hiánya;
+- hard cap és soft cap;
+- catch-up;
+- késői játék;
+- több érvényes életút;
+- professionök közötti egyenrangúság;
+- egy profession ne blokkolja a fő utat;
+- perk és tool perk elkülönítése;
+- progression pace;
+- UI;
+- előre látható feloldás;
+- save;
+- migration;
+- balance tuning;
+- anti-grind ellenőrzés.
+
+======================================================================
+21. GAZDASÁG, KERESKEDELEM ÉS PÉNZNEMEK
+======================================================================
+
+Vizsgálandó területek:
+- pénznemek;
+- currency ID;
+- pénz mint nem univerzális megoldás;
+- tárgyérték;
+- alapár;
+- eladási ár;
+- vásárlási ár;
+- kereskedők;
+- buyer specializáció;
+- shop stock;
+- stock refresh;
+- buyback;
+- order;
+- contract;
+- speed bonus;
+- büntetés nélküli lassú teljesítés;
+- regional trade;
+- harbor trade;
+- kereslet;
+- kínálat;
+- rotating demand;
+- bulk-sale reduction;
+- processed goods értéke;
+- professionenként életképes pénzkereseti út;
+- ritka tárgyak;
+- specialist exchange;
+- alternatív beszerzés;
+- infláció;
+- pénznyelő rendszerek;
+- refund;
+- building és tool költség;
+- jutalomgazdaság;
+- gazdasági esemény;
+- offline kereskedelem;
+- exploitvédelem;
+- item duplication;
+- árverzió és aktív tranzakció;
+- UI-transzparencia;
+- szimuláció és balanszteszt.
+
+======================================================================
+22. IDŐ, NAPSZAK, IDŐJÁRÁS, ÉVSZAK ÉS OFFLINE FOLYAMATOK
+======================================================================
+
+Vizsgálandó területek:
+- egységes világidő;
+- négyórás valós idejű világciklus;
+- világóra;
+- nap;
+- napszak;
+- globális és regionális idő;
+- beltéri idő;
+- időjárás;
+- regionális időjárás;
+- helyi eltérés;
+- fokozatos vizuális váltás;
+- évszak;
+- ritka világjelenség;
+- időablakos tartalom;
+- alternatív hozzáférési lehetőség;
+- fontos tartalom ne legyen egyetlen időablakhoz kötve;
+- real-time és játékidő kapcsolata;
+- megbízható időreferencia;
+- monotonic time;
+- rendszeróra manipuláció;
+- anti-exploit;
+- offline elapsed time;
+- process start és end timestamp;
+- ciklusonkénti feldolgozás;
+- finite input;
+- finite queue;
+- output capacity;
+- system-specific cap;
+- hosszú távollét;
+- visszatérési összefoglaló;
+- háttérszimuláció;
+- time travel és fast travel;
+- pause és edit mode;
+- appháttérbe kerülés;
+- időmigráció;
+- nyári/téli időszámítás;
+- időzónaváltás;
+- hibás óra;
+- performance.
+
+======================================================================
+23. AKTIVITÁSOK, EXPEDÍCIÓK ÉS OPCIONÁLIS HARC
+======================================================================
+
+Vizsgálandó területek:
+- activity definition;
+- activity instance;
+- run state;
+- seed;
+- belépési feltétel;
+- belépési költség;
+- jutalom;
+- ideiglenes run-only resource;
+- biztosított jutalom;
+- checkpoint;
+- kilépés;
+- visszavonulás;
+- megszakítás;
+- vereség;
+- biztonságos visszatérés;
+- lejárat;
+- új futam;
+- veszélyszint;
+- ajánlott tool és skill;
+- inventory risk;
+- item recovery;
+- difficulty;
+- adaptive difficulty kerülése vagy szabálya;
+- stage generation;
+- authored landmark;
+- finite expedition;
+- mine;
+- fishing;
+- harbor voyage;
+- optional combat;
+- combat elkülönítése a békés főjátéktól;
+- harci állapot;
+- sebzés;
+- gyógyulás;
+- game over hiánya;
+- mild consequence;
+- loot exploit;
+- offline tiltás vagy korlátozás;
+- appmegszakítás;
+- save-safe run;
+- mobilos irányítás;
+- teljesítmény és loading.
+
+======================================================================
+24. SESSION DESIGN, VISSZATÉRÉS ÉS ALACSONY NYOMÁSÚ JÁTÉK
+======================================================================
+
+Vizsgálandó területek:
+- 2–3 perces mikrosession;
+- 5–15 perces teljes értékű session;
+- hosszú session;
+- azonnali értelmes tevékenység;
+- 10–20 másodperces time-to-action cél;
+- welcome-back summary;
+- popupok minimalizálása;
+- mentett hely folytatása;
+- nearest safe point;
+- ajánlott következő lépés;
+- What’s Ready;
+- természetes megállási pontok;
+- bármikor kilépés;
+- automatikus mentés;
+- cleanup kötelezettség hiánya;
+- napi rutin kényszerének hiánya;
+- login streak tiltása;
+- FOMO tiltása;
+- fontos veszteség hiánya távollét alatt;
+- „five more minutes” kapcsolódó célokon keresztül;
+- manipulatív retention tiltása;
+- playtime reminder opcionálisan;
+- mobilos megszakítás;
+- resume UX;
+- session recommendation;
+- session length becslése;
+- current location figyelembevétele;
+- adaptive HUD;
+- common action két navigációs lépésen belül;
+- Scenic Mode;
+- alacsony nyomású visszatérés.
+
+======================================================================
+25. HIBÁK, KUDARC, VISSZAÁLLÍTÁS ÉS BIZTONSÁG
+======================================================================
+
+Vizsgálandó területek:
+- standard game over hiánya;
+- exhaustion;
+- collapse;
+- safe point;
+- ideiglenes következmény;
+- normál item loss tiltása;
+- expedition-only risk;
+- craft failure;
+- interrupted craft;
+- building placement protection;
+- skill respec;
+- confirmation;
+- undo window;
+- important-item sale protection;
+- buyback;
+- rare material spending warning;
+- event failure;
+- failed order;
+- difficult area warning;
+- checkpoint;
+- save backup;
+- recovery mode;
+- manual export/import;
+- stuck recovery;
+- invalid geometry;
+- hibás objektum;
+- hibás quest;
+- hibás jelenet;
+- hibás dependency;
+- hiányzó asset fallback;
+- networkfüggetlen helyi működés;
+- részleges rendszerhiba;
+- degradált mód;
+- világállapot megőrzése;
+- transaction rollback;
+- user-facing hibaüzenet;
+- developer diagnostics;
+- crash utáni helyreállítás;
+- adatvesztés tilalma.
+
+======================================================================
+26. UI, UX, HUD, MENÜK ÉS SCENIC MODE
+======================================================================
+
+Vizsgálandó területek:
+- portrait-first HUD;
+- B+ HUD irány;
+- profil;
+- erőforrások;
+- idő és időjárás;
+- fő cél;
+- kontextuális prompt;
+- állandó ACT gomb hiánya;
+- menü;
+- inventory;
+- tool collection;
+- map;
+- World Path;
+- quest;
+- profession;
+- building;
+- crafting;
+- farm;
+- trade;
+- storage;
+- settings;
+- debug UI;
+- adaptív HUD;
+- context-specific information;
+- kétlépéses navigáció;
+- panelmélység;
+- vissza gomb;
+- modal és non-modal ablakok;
+- mobil safe area;
+- touch target méret;
+- szövegméret;
+- hosszú lista;
+- kategóriák;
+- keresés;
+- filter;
+- drag és tap konfliktus;
+- toast;
+- hibajelzés;
+- progress;
+- loading;
+- saving indicator;
+- locked-state explanation;
+- requirement preview;
+- confirmation;
+- warning;
+- reduced motion;
+- colorblind-safe jelzés;
+- haptika;
+- hang;
+- balkezes mód;
+- Scenic Mode;
+- joystick elrejtése;
+- későbbi photo mode;
+- screenshot tisztaság;
+- localization readiness.
+
+======================================================================
+27. VIZUÁLIS RENDSZER, ASSETEK ÉS RENDERELÉS
+======================================================================
+
+Vizsgálandó területek:
+- művészeti alapirány;
+- warm cozy hand-painted stílus;
+- perspektíva;
+- fényirány;
+- árnyék;
+- outline;
+- paletta;
+- olvasható sziluett;
+- asset family;
+- ground;
+- forest;
+- buildings;
+- tools;
+- effects;
+- UI;
+- characters;
+- animals;
+- atlasz vagy külön sprite;
+- sprite registry;
+- stable sprite ID;
+- role és tag;
+- authored exact sprite;
+- fallback;
+- atlaszméret;
+- grid;
+- cella;
+- pivot;
+- drawSize;
+- collision metadata;
+- alpha;
+- seamless tile;
+- terrain;
+- animation frame;
+- restoration state;
+- seasonal variant;
+- weather variant;
+- damage state;
+- LOD;
+- culling;
+- batching;
+- draw order;
+- depth sorting;
+- camera;
+- viewport;
+- high-DPI;
+- mobilmemória;
+- asset preload;
+- on-demand load;
+- AtlasValidator;
+- asset report;
+- hiányzó grafika;
+- asset pipeline;
+- egy assetcsalád egy körben;
+- képalkotás és integráció külön;
+- telefonos vizuális teszt;
+- Scenic Mode minőség.
+
+======================================================================
+28. AUDIO, HAPTIKA ÉS HANGULATI VISSZAJELZÉS
+======================================================================
+
+Vizsgálandó területek:
+- audio manager;
+- zene;
+- régiós ambience;
+- napszak;
+- időjárás;
+- beltér;
+- interakció;
+- tool impact;
+- crafting completion;
+- building restoration;
+- UI confirm;
+- warning;
+- error;
+- NPC;
+- állatok;
+- activity és veszély;
+- zenei átmenet;
+- loop;
+- prioritás;
+- egyszerre szóló hangok korlátja;
+- ducking;
+- hangerőkategóriák;
+- mute;
+- háttérbe kerülés;
+- resume;
+- böngészős autoplay szabály;
+- mobil teljesítmény;
+- tömörítés;
+- asset loading;
+- hiányzó hang fallback;
+- haptika;
+- haptikus intenzitás;
+- csökkentett rezgés;
+- hozzáférhetőségi redundancia;
+- teljes adaptív soundscape későbbi határai.
+
+======================================================================
+29. HOZZÁFÉRHETŐSÉG ÉS BEÁLLÍTÁSOK
+======================================================================
+
+Vizsgálandó területek:
+- UI scale;
+- text scale;
+- contrast;
+- colorblind-safe mód;
+- színfüggetlen ikon és minta;
+- reduced motion;
+- villogás korlátozása;
+- haptika;
+- hangerők;
+- feliratok;
+- egyszerű nyelvezet;
+- tutorial visszanézhetőség;
+- input érzékenység;
+- joystick méret;
+- joystick hely;
+- balkezes mód;
+- tap duration;
+- hold alternatíva;
+- automatikus interakció beállítása;
+- kamera shake;
+- screen effects;
+- playtime reminder;
+- notification preferences;
+- profile és device setting szétválasztása;
+- eszközváltás;
+- nem támogatott beállítás fallback;
+- beállításmigráció;
+- privacy;
+- teljesítményprofil;
+- battery saver;
+- low memory mód.
+
+======================================================================
+30. ADATVEZÉRELT TARTALOM ÉS KONTRAKTUSOK
+======================================================================
+
+Vizsgálandó területek:
+- definíciós fájlok felosztása;
+- JSON vagy más adatstruktúra;
+- schema;
+- required és optional mezők;
+- stable ID;
+- namespace;
+- enum;
+- role;
+- tag;
+- version;
+- default;
+- validation;
+- cross-reference validation;
+- dependency graph;
+- alternate requirements;
+- tier;
+- prerequisite;
+- output;
+- unlock;
+- world state requirement;
+- localization key;
+- asset reference;
+- recipe;
+- building;
+- item;
+- resource;
+- NPC;
+- quest;
+- region;
+- scene;
+- activity;
+- weather;
+- event;
+- profession;
+- perk;
+- UI metadata;
+- error format;
+- warning format;
+- data report;
+- content authoring workflow;
+- szerkesztői eszköz szükségessége;
+- hot reload;
+- backward compatibility;
+- migration;
+- deprecation;
+- ismeretlen mezők kezelése;
+- hiányzó ID;
+- circular dependency validation;
+- runtime és build-time validáció;
+- content package határai.
+
+======================================================================
+31. MENTÉS, BACKUP, MIGRÁCIÓ ÉS EXPORT/IMPORT
+======================================================================
+
+Vizsgálandó területek:
+- save root;
+- save version;
+- section version;
+- fő mentés;
+- backup;
+- autosave;
+- delayed save;
+- critical save;
+- Save Now;
+- mentési ok;
+- checksum;
+- validation;
+- repair;
+- partial repair;
+- recovery mode;
+- safe state;
+- position recovery;
+- scene recovery;
+- process recovery;
+- transaction recovery;
+- app background save;
+- crash;
+- újratöltés;
+- több böngészőtab;
+- storage quota;
+- localStorage vagy IndexedDB;
+- atomi írás;
+- ideiglenes fájl;
+- backup rotation;
+- régi mentések;
+- prototípusmentés kompatibilitás;
+- migration chain;
+- removed content;
+- unknown item;
+- unknown object;
+- unknown quest;
+- obsolete data cleanup;
+- save size;
+- delta;
+- compactálás;
+- export;
+- import;
+- előnézet;
+- import előtti backup;
+- hibás import;
+- cross-device későbbi támogatás;
+- cloud save jövőbeli helye;
+- automatikus teszt;
+- korrupciós teszt;
+- megszakítási teszt;
+- felhasználói üzenetek.
+
+======================================================================
+32. TELJESÍTMÉNY, MOBILPLATFORM ÉS CSOMAGOLÁS
+======================================================================
+
+Vizsgálandó területek:
+- céltelefon-mátrix;
+- minimum eszköz;
+- browser;
+- PWA;
+- GitHub Pages teszt;
+- Capacitor;
+- Android;
+- iOS;
+- safe area;
+- orientation;
+- screen size;
+- DPR;
+- canvas resolution;
+- FPS cél;
+- frame budget;
+- CPU;
+- memória;
+- akkumulátor;
+- hőtermelés;
+- object count;
+- NPC count;
+- particle count;
+- draw call;
+- atlaszmemória;
+- cache;
+- unload;
+- preload;
+- background throttling;
+- resume;
+- storage;
+- offline;
+- app lifecycle;
+- notification interruption;
+- call interruption;
+- low power mode;
+- reduced quality;
+- adaptive LOD;
+- network hiánya;
+- boot time;
+- scene load time;
+- time-to-action;
+- crash report;
+- platformfüggetlen és platformfüggő kód;
+- proof build elfogadási feltételei.
+
+======================================================================
+33. TESZTELÉS, DEBUG, TELEMETRIA ÉS FEJLESZTŐI ESZKÖZÖK
+======================================================================
+
+Vizsgálandó területek:
+- unit test;
+- integration test;
+- system test;
+- save/load test;
+- migration test;
+- corruption test;
+- deterministic replay;
+- event log;
+- command log;
+- transaction log;
+- world state inspector;
+- object inspector;
+- scene inspector;
+- dependency graph viewer;
+- inventory inspector;
+- quest inspector;
+- time controls;
+- seed controls;
+- spawn controls;
+- performance overlay;
+- asset report;
+- validation report;
+- mobile interruption test;
+- touch test;
+- regression suite;
+- golden save;
+- old save fixtures;
+- content validation;
+- automated boot;
+- automated first loop;
+- progression blocker detection;
+- economy simulation;
+- anti-grind mérés;
+- action count;
+- session time;
+- resource flow;
+- optional privacy-respecting telemetry;
+- crash diagnostics;
+- log szintek;
+- production log korlátozása;
+- bug reprodukciós csomag.
+
+======================================================================
+34. BALANSZ, ANTI-GRIND ÉS JÁTÉKGAZDASÁGI MÉRÉS
+======================================================================
+
+Vizsgálandó területek:
+- tuning default és locked decision különbsége;
+- action duration;
+- movement speed;
+- interaction timing;
+- resource yield;
+- project requirement;
+- XP;
+- profession pace;
+- recipe cost;
+- tool upgrade cost;
+- building cost;
+- crop timing;
+- output capacity;
+- queue size;
+- prices;
+- bulk sale;
+- rare drop;
+- bad-luck protection;
+- session length;
+- time-to-goal;
+- alternative paths;
+- intermediate rewards;
+- visible progress;
+- batch action unlock;
+- convenience timing;
+- storage friction;
+- travel friction;
+- régi régiók relevanciája;
+- régi anyagok relevanciája;
+- daily cap hiánya;
+- FOMO tiltása;
+- pay-to-skip tiltása;
+- mandatory wait tiltása;
+- infinite automation tiltása;
+- grind evaluation test;
+- economy simulation;
+- playtest;
+- first-time user test;
+- long-term save test;
+- late-game stress test;
+- balance revision procedure.
+
+======================================================================
+35. TARTALMI STRUKTÚRA ÉS VILÁGROADMAP
+======================================================================
+
+Vizsgálandó területek:
+- fő falu;
+- forest;
+- Forester Hut;
+- farm;
+- harbor;
+- mine;
+- későbbi régiók;
+- régiók szerepe;
+- biome;
+- landmark;
+- resource family;
+- building family;
+- profession;
+- recipe family;
+- animal family;
+- activity;
+- collection;
+- world event;
+- seasonal content;
+- specialist;
+- restoration chain;
+- early guided sequence;
+- mine utáni elágazások;
+- horizontal és vertical content;
+- main path;
+- optional path;
+- endgame;
+- teljes világ restaurációja;
+- collection és mastery;
+- content mennyiség;
+- asset igény;
+- localization igény;
+- save impact;
+- dependency impact;
+- első vertical slice;
+- első public demo;
+- jövőbeli tartalom ne kényszerítse túltervezésre az engine-t.
+
+======================================================================
+36. PRODUKCIÓ, IMPLEMENTÁCIÓS SORREND ÉS DEFINITION OF DONE
+======================================================================
+
+Vizsgálandó területek:
+- baseline rögzítése;
+- egy rendszer vagy assetcsalád egyszerre;
+- engedélyezett és védett fájlok;
+- acceptance test;
+- regression test;
+- mérföldkövek;
+- P0, P1, P2 és P3 döntések;
+- vertical slice;
+- first public demo;
+- technikai foundation;
+- Asset Loader;
+- RoleResolver;
+- ground;
+- forest;
+- buildings;
+- Stage Generator;
+- Save Manager;
+- inventory;
+- gathering–crafting–restoration loop;
+- Forester Hut;
+- farm;
+- World Path;
+- professions;
+- economy;
+- harbor;
+- fishing;
+- mine;
+- storage networks;
+- export/import;
+- Capacitor proof;
+- tartalom és technika különválasztása;
+- art replacement és refactor külön;
+- feature creep;
+- speculative overengineering kerülése;
+- rendszer Definition of Done;
+- dokumentáció;
+- save-safe működés;
+- mobile interruption safety;
+- valós telefonos teszt;
+- fallback;
+- performance;
+- progression blocker hiánya;
+- release checklist;
+- rollback;
+- Git és verziókezelés.
+
+======================================================================
+37. MARKETING, IDENTITÁS ÉS KÜLSŐ KOMMUNIKÁCIÓ
+======================================================================
+
+Ez nem az első implementáció blokkolója, de a teljes auditnak érintenie kell.
+
+Vizsgálandó területek:
+- végleges műfaji megfogalmazás;
+- rövid tagline;
+- store page leírás;
+- fő különbségek más cozy játékokhoz képest;
+- hat identitáspillér;
+- fő screenshotok;
+- trailer üzenet;
+- vizuális logo irány;
+- névhasználat;
+- UI nélküli Scenic Mode marketingértéke;
+- játékosi ígéret és tényleges mechanikák összhangja;
+- ne ígérjünk nem létező rendszert;
+- demo scope és kommunikáció;
+- platformkommunikáció;
+- életkor és célközönség;
+- localization;
+- privacy és adatkezelési kommunikáció;
+- opcionális harc helyes bemutatása;
+- nem manipulatív monetizációs alapelv, ha később releváns.
+
+======================================================================
+38. KERESZTMETSZETI KÖTELEZŐ ELLENŐRZÉSEK
+======================================================================
+
+Minden kategóriánál külön ellenőrizni kell:
+
+38.1 Stabil azonosítók
+Minden tartós entitásnak és definíciónak legyen stabil, nem újrahasznált ID-ja.
+
+38.2 Verziózás és migráció
+Minden tartós adatváltozásnál legyen ismert a régi állapot kezelése.
+
+38.3 Tranzakcióbiztonság
+Pénz, tárgy, jutalom, építés, vásárlás és ownership ne maradhasson
+részben végrehajtott állapotban.
+
+38.4 Mobilos megszakítás
+Telefonhívás, értesítés, alkalmazásváltás, képernyőzár és bezárás
+ne okozzon adatvesztést vagy ismételt műveletet.
+
+38.5 Offline korlát
+Háttérfolyamat csak véges inputtal, véges queue-val, véges outputtal
+és rendszerspecifikus plafonnal működhet.
+
+38.6 Anti-exploit
+Időugrás, gyorsutazás, újratöltés, duplikált input, import és
+megszakítás nem hozhat létre többletjutalmat.
+
+38.7 Anti-grind
+A rendszer ne kérjen hosszú, döntés nélküli ismétlést látható
+köztes fejlődés és alternatív út nélkül.
+
+38.8 Visszaállíthatóság
+A játékos ne kerülhessen helyrehozhatatlan, blokkolt vagy
+érvénytelen állapotba.
+
+38.9 Magyarázhatóság
+Minden zárolt, hibás vagy inaktív funkció mondja meg:
+- mi hiányzik;
+- miért hiányzik;
+- hol szerezhető meg;
+- mi a következő értelmes lépés.
+
+38.10 Teljesítmény
+Minden rendszernek legyen aktív, háttér- és unload-viselkedése.
+
+38.11 Hozzáférhetőség
+A fontos állapot ne csak színnel vagy csak hanggal legyen közölve.
+
+38.12 Tesztelhetőség
+Minden rendszerhez legyen reprodukálható normál, megszakítási,
+hiba-, migrációs és regressziós teszt.
+
+======================================================================
+39. AZ AUDIT LEZÁRÁSÁNAK VÉGSŐ KRITÉRIUMAI
+======================================================================
+
+A dokumentumaudit akkor tekinthető kellően teljesnek a programozás
+megkezdéséhez, ha:
+
+- minden fenti kategóriát érintettünk;
+- minden rendszer hatásköre és felelőssége egyértelmű;
+- nincsenek rejtett dokumentumkonfliktusok;
+- a World State és a rendszerhatárok tiszták;
+- az objektum-, jelenet-, idő-, mentés- és tranzakciós alap lezárt;
+- a fő gameplay loop minden eleme definiált;
+- a dependency graph elkészíthető és validálható;
+- nincs ismert körkörös vagy lehetetlen fő progression chain;
+- minden tartós rendszer mentési és migrációs szabálya ismert;
+- a mobilos megszakításbiztonság minden releváns rendszerre kiterjed;
+- a vertical slice pontos tartalma meghatározható;
+- a P0 implementációs döntések elkülöníthetők;
+- a tuningértékek nem keverednek a strukturális döntésekkel;
+- a Definition of Done egységes;
+- az új Engine & Architecture Bible megírható az auditból;
+- az új adatkontraktusok és modulhatárok levezethetők;
+- az implementáció egyetlen rendszerrel, kontrolláltan megkezdhető.
+
+======================================================================
+40. ALAPELV
+======================================================================
+
+A cél nem az, hogy minél több dokumentum vagy auditpont készüljön.
+
+A cél az, hogy a programozás előtt:
+- minden fontos rendszernek legyen érthető szerepe;
+- a rendszerek ne mondjanak ellent egymásnak;
+- a mentés, idő és világállapot ne utólag legyen ráépítve;
+- ne kelljen működő rendszereket alapvető tervezési hibák miatt
+  újra és újra kidobni;
+- az első implementáció már egy hosszú távon bővíthető,
+  biztonságos alapra épüljön.
+
+A dokumentumaudit részletessége akkor hasznos, ha később kevesebb
+újraírást, kevesebb adatvesztést, kevesebb rejtett függőséget és
+gyorsabb, kiszámíthatóbb fejlesztést eredményez.
+
+VÉGE

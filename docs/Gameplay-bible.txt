@@ -1,0 +1,2490 @@
+READI WORLD
+GAMEPLAY & PROGRESSION BIBLE — VERSION 0.1
+
+STATUS
+Working design source of truth for gameplay, progression, economy direction, and player motivation.
+This document complements the Readi World Engine & Design Bible.
+Technical implementation remains governed by the Engine & Design Bible.
+
+CORE GAMEPLAY PROMISE
+Readi World is a calm, exploration-driven, creative progression game where the player restores an abandoned world through their own actions.
+
+The player is not pushed forward by long story scenes, mandatory dialogue, or artificial waiting timers.
+Progress is created through gathering, crafting, farming, tool upgrades, building restoration, exploration, animal care, cooking, fishing, mining, and visible world change.
+
+The intended feeling is:
+
+“Just five more minutes.”
+
+Those five minutes should come from connected goals and satisfying progress, not punishment, fear of missing out, or forced waiting.
+
+
+1. PLAYER FANTASY
+
+The player is both:
+
+- a settlement restorer
+- a freeform world builder
+
+The world begins incomplete, abandoned, or ruined.
+The player gradually restores it by gathering resources, improving skills, rebuilding locations, and unlocking new activities.
+
+The player should feel:
+
+- calm and safe
+- curious and exploratory
+- creative and constructive
+- free to choose a preferred activity
+- guided enough to always know what can be done next
+
+
+2. INITIAL WORLD UNLOCK CHAIN
+
+Current intended progression:
+
+forest and wood gathering
+→ forester hut restoration
+→ farm restoration
+→ harbor restoration
+→ mine restoration
+
+These locations begin ruined, abandoned, or unusable.
+
+They are not unlocked by story cutscenes.
+They are unlocked by the player’s actions, such as:
+
+- collecting required materials
+- reaching relevant skill levels
+- improving tools
+- crafting required components
+- restoring previous infrastructure
+- completing visible gameplay goals
+
+Unlock requirements must always be visible in advance.
+
+
+3. STORY DIRECTION
+
+Readi World is not story-driven.
+
+Locked direction:
+
+- no long mandatory conversations
+- no required cutscenes
+- no dialogue-heavy progression
+- no important system hidden behind text the player may skip
+- no story interruption that blocks normal gameplay
+
+Minimal world flavor may exist through:
+
+- short labels
+- environmental details
+- compact item descriptions
+- visual changes
+- brief system messages
+
+Gameplay itself is the main content.
+
+
+4. PRIMARY PROGRESSION FORMS
+
+Progress must be visible through three connected layers.
+
+4.1 Personal progression
+
+- general player level
+- separate activity skills
+- better tools
+- new abilities
+- movement improvements
+- mount access
+- helper animal access
+- efficiency improvements
+
+4.2 Content progression
+
+- new recipes
+- new crops
+- new meals
+- new animals
+- new crafting stations
+- new tools and tool modules
+- new resource types
+- new areas
+- new activities
+
+4.3 Visible world progression
+
+- ruined buildings become functional
+- new fields become usable
+- paths or access routes open
+- harbor becomes operational
+- mine becomes accessible
+- trees can later be permanently removed or replanted
+- player-controlled areas visibly change over time
+
+
+5. SESSION DESIGN
+
+A useful session should work in approximately 5–15 minutes.
+
+However, the game should also support much longer play without immediately running out of meaningful activity.
+
+The game must not force the player to stop.
+The player decides when to leave.
+
+Early-game loop:
+
+gather
+→ craft
+→ upgrade
+
+Later-game loop:
+
+collect completed production
+→ check farm
+→ care for animals
+→ gather resources
+→ craft
+→ cook
+→ fish or mine
+→ improve buildings
+→ prepare the next project
+
+The gameplay loop expands as the world opens.
+
+
+6. THE “FIVE MORE MINUTES” PRINCIPLE
+
+The player should continue because goals naturally connect.
+
+Example chain:
+
+- only two more logs are needed for an axe upgrade
+- the new axe unlocks access to a stronger tree
+- that wood is needed for a boat component
+- meanwhile a crop finishes growing
+- that crop unlocks a useful meal
+- the meal improves mining efficiency
+- mining materials are needed for the next tool
+
+This is the preferred source of long-term engagement.
+
+The game should avoid manipulative retention systems.
+The target is satisfying connected progress.
+
+
+7. NO ARTIFICIAL BUILDING WAIT TIMERS
+
+Locked rule:
+
+- no “return in eight hours” building upgrade
+- no payment-based speed-up
+- no forced session ending because construction is waiting
+- no major progress gate based only on real-time waiting
+
+Large upgrades are slowed by meaningful requirements instead.
+
+Example harbor restoration requirements may include:
+
+- sufficient forestry level
+- improved axe
+- processed planks
+- rope or plant fiber
+- coins
+- farm-produced material
+- forester hut development
+
+Progress should feel earned because multiple systems connect.
+
+
+8. GUIDED FREEDOM
+
+The player may choose a favorite activity and focus on it.
+
+Examples:
+
+- fish for a long session
+- farm
+- replant trees
+- cook
+- gather materials
+- care for animals
+- decorate or build
+- mine
+
+However, the player should always be able to see:
+
+- the current main milestone
+- two useful optional goals
+- available systems
+- where each system is located
+- what is needed to progress
+- what has already been learned
+
+Tutorial information must remain permanently reviewable.
+
+Proposed navigation concept:
+
+WORLD PATH / PROGRESS BOARD / VILLAGE JOURNAL
+
+The final name is not yet locked.
+
+The system should show:
+
+- one highlighted main goal
+- two recommended side goals
+- all discovered systems
+- partially hidden future unlocks
+- replayable explanations for already learned mechanics
+
+
+9. BUILDING AND VILLAGE GROWTH
+
+Building progression is a primary form of visible world growth.
+
+9.1 Restoration flow
+Ruined buildings are restored through visible prerequisites, preparatory tasks, gradual material contribution, visible construction stages, a short completion animation, and selected milestone interactions performed by the player.
+
+9.2 Completion
+Normal upgrades activate after a short visual sequence. Important milestone buildings may ask the player to perform one final action, such as clearing debris, placing a beam, hammering, lowering a bridge, or launching a restored boat.
+
+9.3 Building levels
+Buildings use three major visible tiers, with smaller functional upgrades between them.
+
+9.4 Upgrade rewards
+Building upgrades may unlock new recipes, activities, systems, regions, capacity, storage, convenience, animals, seeds, transport options, and production features. Upgrades should not rely only on minor percentage bonuses.
+
+9.5 Required and optional buildings
+Key building restoration may be required for main world progression. Maximum tiers are usually optional. Optional workshops and decorative buildings may remain fully optional.
+
+9.6 Village unlock structure
+The early game is guided and partly linear:
+forest gathering -> forester hut -> farm -> harbor -> mine
+
+After the teaching phase, progression opens into multiple branches such as smithy, animal care, kitchen, advanced forestry, expanded harbor routes, and specialized workshops.
+
+9.7 Placement
+Main landmarks use fixed authored locations. Smaller player-owned structures may be placed freely in eligible home or estate areas.
+
+9.8 Moving and dismantling
+Player-owned structures may be moved freely. Dismantling returns most materials.
+
+9.9 Player home
+The home supports storage, kitchen functions, wardrobe, collection displays, pets, rest bonuses, additional rooms, and outdoor extensions.
+
+9.10 Specialists
+A small number of functional specialists may arrive as the village develops. Core building functions should not require long dialogue. Specialists may add advanced services or rare recipes.
+
+9.11 Environmental transformation
+Restoration changes the building and its surroundings through repaired paths, lights, vegetation, props, work areas, boats, storage objects, and environmental animation. The player may further personalize restored areas.
+
+9.12 Village Level
+All building development contributes to a Village Level. Village Level may reward visual settlement upgrades, path improvements, lighting, decorations, shared storage bonuses, and milestone rewards. It should only rarely act as a hard progression gate.
+
+9.13 Upgrade requirement visibility
+Requirements are visible through the World Path, map indicators, the current HUD objective, and the building interface.
+
+9.14 Scenic Mode / Hide UI
+The player can hide all interface elements and enjoy the landscape, estate, animals, weather, time of day, animation, and environmental audio without text or markers.
+
+Scenic Mode hides:
+- HUD
+- resource counters
+- goal tracking
+- interaction labels
+- notifications
+- task markers
+- optionally the visible joystick
+
+Movement and the living world remain active. Scenic Mode may later become the basis of a screenshot or photo mode.
+
+9.15 Multiple projects
+The player may have one highlighted main building project and multiple prepared or partially funded projects.
+
+9.16 Maintenance
+Buildings do not decay and the village does not regress while the player is away. Selected advanced systems may consume operating materials, such as furnace fuel, voyage supplies, irrigation reserves, or machine energy.
+
+9.17 Open decisions
+Still to define: exact tier count per building, restoration visuals, specialist list, Village Level rewards, placement zones, dismantling refund, Scenic Mode controls, and the full branching unlock graph.
+
+10. TOOLS AND UPGRADES
+
+Tools communicate player intent, unlock resources, and provide long-term progression.
+
+10.1 Tool selection
+All owned tools remain available through a dedicated tool system. The game may automatically choose the relevant tool, but the player can override it. The selected tool determines which automatic or contextual interactions are active.
+
+Examples:
+- axe enables tree interaction
+- pickaxe enables stone and ore interaction
+- fishing rod enables fishing
+- watering can enables watering
+- selected seeds enable planting
+- placement mode enables decoration placement
+- empty hands prioritize movement and simple pickup
+
+10.2 Tool storage
+Tools use a separate Tool Collection and do not consume normal resource inventory capacity.
+
+10.3 Durability
+Normal tools do not break and do not require routine repair. Later special equipment may use charges, fuel, limited-use components, or optional maintenance.
+
+10.4 Base progression
+Base progression is linear and easy to understand:
+basic -> improved -> advanced -> expert
+
+Tool tiers should use world-appropriate names and materials. Different tools may use different material chains.
+
+10.5 Upgrade benefits
+The main benefit of upgrading a tool is access to new content. Upgrades may also improve speed, work power, yield, range, and convenience.
+
+10.6 Specialization timing
+Specialization begins after the basic linear progression, during the mid-game.
+
+10.7 Specialization branches
+Each tool may have two or three branches based on common principles such as speed, yield, rare resources, convenience, or land management.
+
+Example axe branches:
+- Lumberjack: faster chopping
+- Harvester: greater yield and rare-drop chance
+- Forester: saplings, relocation, permanent removal, managed woodland
+
+10.8 Changing specialization
+Choices matter but do not permanently ruin a save. Specialization may initially cost something to change, while long-term progression may allow every branch to be completed.
+
+10.9 Tool modules
+A limited module system may unlock in the mid- or late-game. Possible slots include head, grip, charm, and utility attachment.
+
+10.10 Material variation
+Selected rare materials may provide small stat improvements, unique bonuses, or visual changes without creating excessive duplicate tools.
+
+10.11 Upgrade locations
+Basic tools may be crafted by the player or upgraded at a basic workshop. Higher upgrades may require advanced stations, specialists, restored building tiers, or rare recipes.
+
+10.12 Previous tool handling
+The old tool is incorporated into the upgrade. The improved version becomes usable immediately after completion.
+
+10.13 Special tools
+Possible utility tools include insect net, shovel, pruning shears, geological hammer, treasure-finding tool, boat equipment, and special harvesting attachments.
+
+10.14 Insufficient tool feedback
+When a tool is too weak, the game shows a short message, the required tier, and where the upgrade is available. Help text should be concise and optional.
+
+10.15 Loadouts and presets
+All tools remain available, but the player may customize quick-access slots, activity presets, and preferred automatic selection.
+
+Possible presets:
+- farm
+- forest
+- fishing
+- building
+
+10.16 Open decisions
+Still to define: exact core tool list, tier names, material chains, specialization branches, respec cost, module count, module acquisition, automatic selection rules, quick-access layout, and special tool unlock order.
+
+11. RECIPE UNLOCKING
+
+Current direction: mixed recipe sources.
+
+Possible recipe sources:
+
+- automatic unlock at skill level
+- building restoration
+- building upgrade
+- found recipe pages
+- activity milestone
+- experimentation
+- special collection reward
+- mastery reward
+
+Recipe type should determine the source.
+
+Example:
+
+- basic tool recipe → skill milestone
+- building component → workshop or building level
+- special meal → found recipe
+- secret item → experimentation
+
+This system needs a dedicated later design block.
+
+
+12. AREA AND BUILDING UNLOCKS
+
+New areas should require multiple connected systems.
+
+Locked direction:
+
+- not one arbitrary level
+- not one huge material wall
+- not hidden requirements
+- requirements visible in advance
+- previous systems should meaningfully contribute
+
+Possible requirement categories:
+
+- skill threshold
+- correct tool
+- crafted component
+- coins
+- previous building restored
+- relevant resource bundle
+- activity-specific preparation
+
+The exact unlock graph will be designed later.
+
+
+13. ENERGY, FATIGUE, AND FOOD
+
+Locked direction:
+
+- no hard stamina that forces the player to stop
+- food provides useful temporary bonuses
+- playing without food remains possible
+
+Possible soft fatigue:
+
+- repeated activity gradually becomes slightly less efficient
+- the player may switch activities
+- resting, food, equipment, or helper systems improve efficiency
+- fatigue must never fully disable play
+
+Food bonus examples:
+
+- faster chopping
+- stronger mining action
+- easier fishing
+- increased crop yield chance
+- movement speed
+- rare material chance
+- longer gathering bonus
+- animal-care efficiency
+
+Cooking should be useful, not mandatory.
+
+
+14. REAL-TIME AND OFFLINE PROGRESSION
+
+Current direction: mixed real-time system.
+
+Usually immediate:
+
+- gathering
+- basic crafting
+- tool use
+- selling
+- building interaction
+
+Background progression:
+
+- crops grow
+- trees regrow
+- animals prepare products
+- processing machines complete loaded batches
+- current crafting queues may finish
+
+Locked offline principle:
+
+A process may finish its current cycle while the player is away,
+but it should not repeat forever without player involvement.
+
+Examples:
+
+- a tree regrows
+- a crop becomes mature but is not automatically harvested
+- an animal prepares one product and waits
+- a machine finishes the loaded batch
+- storage may hold a limited amount
+- skill XP is gained only through active player actions
+
+Nothing important should die or be destroyed because the player did not log in.
+
+
+15. TREE AND FOREST PROGRESSION
+
+Early game:
+
+- only designated trees can be harvested
+- harvested trees regrow automatically
+- stump remains until regrowth
+- regrowth continues offline
+- the player has limited control over the forest
+
+Later game:
+
+- higher Forestry or Farming-related progression allows permanent tree removal
+- saplings can be planted
+- trees can be placed in chosen valid locations
+- planted trees require growth time
+- the player may create managed woodland, orchards, or decorative tree areas
+
+This changes forestry from simple resource gathering into land management.
+
+Open question:
+
+Should permanent tree placement belong to Forestry, Farming, or a shared Land Management skill?
+
+
+16. FAILURE AND RECOVERY
+
+Failure should teach, redirect, or temporarily slow the player without destroying long-term progress.
+
+16.1 Game over
+There is no standard permanent game-over state. Separate optional challenge systems may use stricter rules, but the main game always provides a route back to play.
+
+16.2 Exhaustion or collapse
+If the player becomes fully exhausted or collapses, the player returns to a safe point, no important permanent progress is lost, and only a mild temporary consequence may apply.
+
+16.3 Item loss
+Normal world play does not randomly remove carried items. Selected dangerous optional activities may temporarily risk only items earned inside that activity, with a visible recovery route.
+
+16.4 Failed or abandoned expeditions
+Permanent rewards already secured remain. Temporary expedition-only resources may be lost, and the player returns to a safe checkpoint.
+
+16.5 Craft failure
+Normal crafting always succeeds. Only clearly marked late-game or special crafting may use a visible failure chance with shown risks and recovery options.
+
+16.6 Interrupted crafting
+Simple short crafts return all materials when cancelled. Long or partially completed crafts may return only part, but the exact recovery is shown before cancellation.
+
+16.7 Building placement validity
+The game should prevent meaningless or non-functional placement rather than allowing a hidden mistake.
+
+Placement preview must clearly show:
+- valid and invalid areas
+- collision
+- access requirements
+- required connections
+- operating radius
+- blocked entrances
+- missing water, path, power, or other dependencies
+
+If a building cannot function in a location:
+- placement is blocked, or
+- the building enters a clearly labeled inactive state, and
+- the player receives an explicit explanation before confirming
+
+Examples:
+- a water-dependent building cannot be placed outside water reach
+- a machine entrance cannot be blocked
+- an animal building requires enough usable surrounding space
+- a harbor structure requires a valid shoreline point
+- a processing station may require road or storage-network access
+
+Player-owned structures may be moved freely. Dismantling returns most materials. An early placement mistake must never permanently damage the save.
+
+16.8 Skill-tree recovery
+Skill choices may be reassigned for a moderate cost. Later progression may reduce or remove the respec cost.
+
+16.9 Undo and confirmation
+A short Undo window may exist for structure movement, decoration placement, item transfer, and simple inventory actions. Large progression choices require confirmation and use respec instead.
+
+16.10 Important-item sale protection
+Key and project items cannot be sold. Rare or goal-relevant items require warnings. Normal rare items may be recovered through limited buyback.
+
+16.11 Buyback
+Shops maintain a short buyback list limited by time, item count, shop session, or a combination of these.
+
+16.12 Rare-material spending
+Rare materials use explicit confirmation, current-goal warnings, item lock support, and a remaining-quantity preview.
+
+16.13 Event failure
+Failed or missed event goals may be retried, return later, or provide important functional rewards through another route.
+
+16.14 Failed trade orders
+Normal trade orders do not reduce reputation when ignored or completed slowly. Only an optional speed bonus may be lost.
+
+16.15 Entering difficult areas
+Before entering a difficult area, the game shows danger level, recommended tool or skill, possible item risk, nearest safe checkpoint, and the option to return.
+
+16.16 Checkpoints
+Safe checkpoints appear near activity entrances, between major expedition sections, and after meaningful milestones.
+
+16.17 Save recovery
+The save system uses versioned saves, automatic backup, migration, validation, and recovery mode. A damaged primary save should attempt to load the latest valid backup.
+
+16.18 Manual recovery options
+The player has one automatic backup, with later save export and import.
+
+16.19 Stuck-player recovery
+If the player becomes trapped or placed inside invalid geometry, the game may use automatic position recovery, Return Home, or Return to nearest safe point.
+
+16.20 Failure philosophy
+Failure may temporarily slow the player, but it must not permanently destroy the world or erase substantial invested time.
+
+The main game favors:
+- clear warning
+- understandable consequence
+- fast recovery
+- preserved long-term progress
+- retry without humiliation
+- no hidden permanent trap
+
+16.21 Open failure and recovery decisions
+Still to define:
+- exact exhaustion consequence
+- expedition item-risk rules
+- risky endgame craft rules
+- cancellation refund percentages
+- placement-validity checks per building type
+- inactive-building behavior
+- Undo duration
+- buyback limits
+- checkpoint spacing
+- backup retention rules
+- recovery-mode interface
+
+17. SESSION DESIGN
+
+Readi World must support meaningful play sessions of any length.
+
+17.1 Session length
+
+A full-value short session lasts around 5–15 minutes.
+
+Even 2–3 minutes should allow one useful action.
+
+17.2 Two- to three-minute activities
+
+A very short session may include:
+
+- collecting completed production
+- harvesting a few crops
+- refilling one machine queue
+- completing a short gathering route
+- contributing materials to a project
+- checking and changing a tracked goal
+- preparing one offline process
+
+17.3 Return flow
+
+On return, the game shows a short dismissible welcome-back summary.
+
+The player should reach the world immediately without passing through multiple mandatory popups.
+
+17.4 Resume position
+
+Normal play resumes at the saved location.
+
+If the saved position is dangerous, blocked, invalid, or inside broken geometry, the player resumes at the nearest safe point.
+
+17.5 Session-start guidance
+
+There is no mandatory session checklist.
+
+Optional guidance may show:
+
+- What’s Ready
+- recommended next step
+- active project progress
+- available short activities
+
+All guidance remains dismissible.
+
+17.6 Time to meaningful action
+
+During a normal return, the player should reach meaningful activity within roughly 10–20 seconds.
+
+This requires:
+
+- fast loading
+- minimal interruption
+- immediate movement control
+- visible ready states
+- no forced dialogue
+
+17.7 Session ending
+
+The player may leave at any time.
+
+The game saves automatically.
+
+A short non-blocking message may explain which prepared processes will continue offline.
+
+17.8 No cleanup requirement
+
+The player does not need to return home, empty every machine, or finish every activity before leaving.
+
+The complete current state is preserved.
+
+Dangerous expeditions clearly explain any consequences before exit.
+
+17.9 Five-more-minutes design
+
+Continued play is encouraged through:
+
+- nearly completed goals
+- connected activities
+- visible unlock chains
+- ready production
+- nearby opportunities
+
+The system must not use manipulative fear of missing out.
+
+17.10 Natural stopping points
+
+Natural stopping points include:
+
+- production queue started
+- crops planted
+- order delivered
+- project step completed
+- expedition checkpoint reached
+- inventory stored
+- new route unlocked
+- tracked goal updated
+
+17.11 Active action length
+
+Action duration depends on activity type.
+
+Frequent basic actions should rarely last longer than 2–3 seconds.
+
+Large milestone interactions may use longer animations.
+
+17.12 Interrupting actions
+
+Frequent actions may be interrupted by movement.
+
+Longer actions include a clear Cancel option.
+
+Cancellation follows the recovery rules defined in Chapter 16.
+
+17.13 Long sessions
+
+Longer sessions support switching between systems.
+
+Possible activities:
+
+- farming
+- gathering
+- crafting
+- building
+- decorating
+- animal care
+- exploration
+- expeditions
+- collection management
+- trade
+
+The game should not force the same short loop to repeat indefinitely.
+
+17.14 Daily routines
+
+There is no single mandatory daily routine.
+
+The player may choose between several useful activities.
+
+Skipping watering, animal care, trade, or gathering does not cause permanent punishment.
+
+17.15 Time-of-day access
+
+The four-hour world cycle allows players who always play at similar real-world times to experience different world phases.
+
+Important content should also use:
+
+- repeated time windows
+- alternative conditions
+- multiple access paths
+- later convenience upgrades
+
+17.16 Pause behavior
+
+Active gameplay and dangerous situations may pause.
+
+The long real-time world clock continues.
+
+Time-based background processes follow their normal offline rules.
+
+17.17 Adaptive HUD
+
+The HUD shows only information relevant to the current context.
+
+Examples:
+
+Farming:
+- selected seed
+- water state
+- tracked goal
+
+Mining:
+- tool
+- expedition capacity
+- checkpoint
+- exit status
+
+Building:
+- selected structure
+- placement validity
+- required materials
+
+17.18 Menu navigation
+
+Common functions should be reachable within approximately two navigation steps.
+
+Quick-access controls may be used for:
+
+- inventory
+- tools
+- tracked goals
+- map
+- current activity
+- storage transfer
+
+17.19 Session recommendations
+
+Optional recommendations may consider:
+
+- expected session length
+- current location
+- ready production
+- active goals
+- unlocked regions
+- available expeditions
+
+Recommendations can be disabled.
+
+17.20 Playtime reminders
+
+Optional configurable playtime reminders may be enabled by the player.
+
+They are never mandatory.
+
+17.21 Mobile interruption safety
+
+Phone calls, Messenger messages, notifications, app switching, screen switching, temporary backgrounding, and operating-system interruptions are treated as normal mobile behavior.
+
+When the game loses focus or moves to the background:
+
+- the current state saves immediately
+- active movement stops safely
+- short actions pause or cancel safely
+- long actions preserve their valid state
+- no item or progress disappears
+- no accidental repeated input continues
+- the player can resume without restarting the session
+
+Returning from another app should restore the game to the same valid state whenever possible.
+
+If the saved state is no longer safe or valid, recovery follows the nearest-safe-point rules.
+
+17.22 Session design principle
+
+There is no wrong session length in Readi World.
+
+The game must support:
+
+- useful micro-sessions
+- meaningful 5–15 minute sessions
+- relaxed long sessions
+- safe interruption
+- easy return
+- stopping at any time
+
+17.23 Open session decisions
+
+Still to define:
+
+- exact welcome-back card layout
+- loading-time target by device class
+- short-session recommendation rules
+- pause behavior per activity
+- quick-access HUD controls
+- playtime reminder options
+- action cancellation timing
+- app-background timeout behavior
+- resume animation and messaging
+
+18. WHAT MAKES READI WORLD DIFFERENT
+
+Readi World is not defined by a single mechanic. Its identity comes from how persistence, visible world change, flexible play, and low-pressure progression work together.
+
+18.1 Core differentiating promise
+
+Readi World is:
+
+A persistent, visibly changing small world that remembers the player and always feels easy to return to.
+
+18.2 Primary distinction
+
+The strongest distinction from other farming and cozy games is the combination of:
+
+- strong persistent world state
+- visible environmental transformation
+- meaningful short sessions
+- deeper interconnected systems
+
+Progress should not exist only in menus or numbers.
+
+18.3 Farming position
+
+Farming is important but does not dominate the entire game.
+
+The player may primarily identify as:
+
+- forester
+- farmer
+- miner
+- fisher
+- artisan
+- builder
+- explorer
+
+These paths remain valid and interconnected.
+
+18.4 Building identity
+
+The world combines:
+
+- fixed, world-important landmarks
+- authored village structure
+- freely customizable personal areas
+- movable smaller player-owned structures
+
+This preserves a recognizable world while allowing personal expression.
+
+18.5 Story role
+
+Story is mainly environmental.
+
+The world communicates through:
+
+- ruins
+- blocked paths
+- restored buildings
+- old objects
+- returning animals
+- changed landscapes
+- short functional text
+
+Long dialogue-heavy narrative is not required.
+
+18.6 Emotional tone
+
+The intended emotional mix is:
+
+- calm
+- curiosity
+- creativity
+- care
+- restoration
+- safety
+
+No single tone should erase the others.
+
+18.7 Personal player mark
+
+The player leaves a visible personal mark through:
+
+- village restoration
+- estate layout
+- decorations
+- profession choices
+- tools
+- collections
+- land management
+- world-state changes
+- visual style
+
+18.8 World generation identity
+
+The world uses:
+
+- a fixed recognizable structure
+- authored landmarks
+- deterministic rule-based variation
+- changing natural details
+- stable progression routes
+
+Important locations remain intentional. Natural variation may be generated by rules.
+
+18.9 Stable world, changing conditions
+
+The world is reliable but not static.
+
+Stable elements:
+
+- region layout
+- major landmarks
+- unlocked infrastructure
+- player-built progress
+
+Variable elements:
+
+- weather
+- mushrooms
+- rare plants
+- temporary gathering opportunities
+- trade demand
+- special events
+
+18.10 Game rhythm
+
+The core rhythm combines:
+
+- short active loops
+- longer background processes
+- flexible switching between activities
+- natural stopping points
+
+The game should not become a constant task checklist.
+
+18.11 Return experience
+
+Returning should feel like returning to a place, not opening a reward box.
+
+The game may show:
+
+- what changed
+- what is ready
+- what stopped
+- what opportunity is available
+- one optional recommended next step
+
+There is no pressure to act immediately.
+
+18.12 Long-term motivation
+
+Long-term motivation combines:
+
+- full world restoration
+- personal mastery
+- collections
+- visual transformation
+- self-expression
+- long-term specialization
+- optional optimization
+
+18.13 Optional optimization
+
+The game may support deep planning and optimization.
+
+Optimization is never mandatory for valid progress.
+
+A player who enjoys aesthetics, exploration, collection, or slow restoration is not playing incorrectly.
+
+18.14 Multiple valid paths
+
+There is no single correct progression route.
+
+Different professions and system combinations provide multiple comparable paths.
+
+Players may specialize without permanently locking away the rest of the game.
+
+18.15 Visible progression rule
+
+Every important form of progression should have a visible world-facing sign whenever possible.
+
+Examples:
+
+- upgraded tool appearance
+- restored building
+- opened road
+- changed forest
+- expanded farm
+- new animal presence
+- filled storage
+- improved harbor
+- new transport route
+
+18.16 Scenic identity
+
+Readi World includes a UI-free Scenic Mode.
+
+Scenic Mode supports:
+
+- observing the world
+- appreciating visual progress
+- calm uninterrupted play
+- later photo-mode expansion
+
+The world itself should be visually valuable.
+
+18.17 Mobile-first identity
+
+Readi World begins mobile-first and may later expand to more platforms.
+
+Mobile remains a primary design constraint for:
+
+- controls
+- UI scale
+- session length
+- interruption safety
+- navigation depth
+- performance
+- readability
+
+It must not feel like a compressed desktop game.
+
+18.18 Deliberate non-goals
+
+Readi World deliberately avoids:
+
+- long dialogue-heavy progression
+- punishing stamina
+- mandatory decay
+- daily taxes
+- login streak pressure
+- fear-of-missing-out design
+- compulsory daily routines
+- permanent failure traps
+
+Combat may exist only as optional, separated content.
+
+18.19 Genre description
+
+Readi World may be described as:
+
+A cozy persistent-world village restoration and life-sim sandbox.
+
+Hungarian concept:
+
+Nyugodt, tartós világú faluhelyreállító és élet-sandbox.
+
+18.20 Primary design filter
+
+Before adding a new system, ask:
+
+Does this strengthen the feeling that the world remembers the player, visibly grows with them, and feels good to return to?
+
+A system that only increases complexity, playtime, or content volume is not automatically valuable.
+
+18.21 Player-told story
+
+The intended personal story is:
+
+- I restored the village
+- I created my own estate
+- I developed through my own chosen path
+- I left a permanent visible mark on the world
+
+18.22 Final identity statement
+
+Restore a small world that remembers you, grows with you, and always feels good to return to.
+
+18.23 Differentiation pillars
+
+The final identity rests on six connected pillars:
+
+1. Persistent Memory
+The world remembers meaningful player actions.
+
+2. Visible Growth
+Important progress changes the world visually.
+
+3. Flexible Life Paths
+Farming is one of several equal professions.
+
+4. Low-Pressure Return
+Absence does not punish the player.
+
+5. Mobile-Native Sessions
+Short, long, and interrupted play all work naturally.
+
+6. Personal World Expression
+The village, estate, tools, skills, and environment visibly reflect the player.
+
+18.24 Open identity decisions
+
+Still to define:
+
+- final store-page genre wording
+- short marketing tagline
+- visual logo direction
+- first trailer message
+- strongest three screenshots
+- how much of the environmental story appears in text
+- exact Scenic Mode presentation
+- which visible transformations define the first playable demo
+
+19. ANTI-GRIND RULES
+
+Readi World should reward meaningful decisions, progression, and visible transformation rather than repetitive time consumption.
+
+19.1 Definition of grind
+
+Repetition becomes grind when it is:
+
+- mandatory
+- low in decision value
+- repeated for too long
+- disconnected from visible progress
+- lacking alternative routes
+- lacking meaningful intermediate rewards
+
+19.2 Acceptable repetition
+
+Acceptable repetition depends on the activity.
+
+Frequent basic activities should become faster, broader, more rewarding, or partially automated before they become regularly tiring.
+
+19.3 Evolving basic activities
+
+A basic activity may improve through:
+
+- faster execution
+- higher yield
+- larger area
+- new mechanics
+- better tools
+- partial automation
+- helper support
+- improved information
+
+Progression should change how an activity is performed, not only increase numbers.
+
+19.4 Batch actions
+
+Useful batch actions unlock gradually before repetition becomes exhausting.
+
+Examples:
+
+- Craft All
+- Plant Row
+- Harvest Area
+- Transfer All
+- Repeat Selected Batch
+- Fill Queue
+- Deposit Matching Items
+
+Batch actions remain protected by rare-item, goal-item, and storage warnings.
+
+19.5 Large project requirements
+
+Large projects use:
+
+- multiple stages
+- varied resource categories
+- visible construction progress
+- intermediate rewards
+- world changes after major steps
+
+Projects should not rely on a single enormous resource number.
+
+19.6 Alternative project materials
+
+Selected recipes and projects may accept multiple material types with balanced contribution values.
+
+Example:
+
+A structure may request construction timber points that can be supplied by:
+
+- planks
+- treated timber
+- reinforced beams
+
+Higher-value materials contribute more.
+
+19.7 Multiple economy paths
+
+The economy supports several comparable earning methods.
+
+Balance tools include:
+
+- rotating demand
+- transparent bulk-sale reduction
+- varied order types
+- profession-specific buyers
+- processed-goods value
+- regional trade opportunities
+
+Frequent balance changes should not randomly invalidate player choices.
+
+19.8 XP variety
+
+There is no hard daily XP limit.
+
+Progression rewards:
+
+- first discoveries
+- first crafts
+- new regions
+- rare activities
+- profession projects
+- collection milestones
+- varied meaningful actions
+
+Repeated low-level actions may gradually become less efficient.
+
+A soft variety-bonus model is preferred over harshly reducing predictable base XP.
+
+19.9 Progression limits
+
+There is no general daily or weekly progression cap.
+
+Rare special systems may use natural limits such as:
+
+- storage capacity
+- prepared input
+- expedition tickets earned through play
+- event windows
+- finite task queues
+
+These limits must not become hidden energy systems.
+
+19.10 Rare-resource acquisition
+
+Rare resources are:
+
+- uncommon
+- targetable
+- understandable
+- influenced by player preparation
+
+The game should show:
+
+- possible location
+- time or weather condition
+- required tool
+- useful skill
+- ways to improve the chance
+- known alternative source
+
+Long blind farming is not acceptable.
+
+19.11 Bad-luck protection
+
+Important progression-related rare drops use bad-luck protection.
+
+Possible forms:
+
+- increasing drop chance
+- guaranteed result after a threshold
+- fragment accumulation
+- alternative exchange
+- milestone reward
+
+Purely optional cosmetic drops may remain less protected.
+
+19.12 Alternative acquisition
+
+Important rare items may be acquired through multiple routes.
+
+Possible routes:
+
+- rare drop
+- collection reward
+- specialist trade
+- long-form project
+- mastery recipe
+- profession milestone
+- regional contract
+
+One route may be faster while another is more reliable.
+
+19.13 Inventory convenience
+
+Inventory management supports:
+
+- quick transfer
+- category transfer
+- partial transfer
+- deposit matching items
+- nearby storage use
+- later storage network access
+- player-defined storage priorities
+
+Inventory management should not become the main source of playtime.
+
+19.14 Machine convenience
+
+Machine repetition is reduced through:
+
+- larger batches
+- longer finite queues
+- production presets
+- connected storage
+- automatic transfer
+- clear ready-state indicators
+
+Automation always uses finite prepared input and finite output capacity.
+
+It cannot create an infinite production loop.
+
+19.15 Farming convenience
+
+Repeated planting and harvesting improve through:
+
+- row-based tools
+- area-based tools
+- helper animals
+- designated task zones
+- irrigation
+- finite seed assignments
+- finite harvest tasks
+
+Helpers and automation stop when:
+
+- the assigned area is complete
+- seeds run out
+- input runs out
+- output storage is full
+- the prepared task queue ends
+
+19.16 Tier requirements
+
+Later tiers should require broader system understanding rather than only larger quantities.
+
+Possible requirements:
+
+- workshop tier
+- profession milestone
+- infrastructure project
+- targeted rare component
+- tool upgrade
+- collection milestone
+- regional access
+
+Increasing a requirement from 200 stone to 12,000 stone is not meaningful progression.
+
+19.17 Waiting
+
+Background waiting is allowed when the player can continue with other meaningful activities.
+
+Waiting must not be the only available route forward.
+
+There is no general pay-to-skip or mandatory speed-up pressure.
+
+19.18 Returning to old regions
+
+Older regions remain relevant through:
+
+- new interactions
+- higher-tier gathering
+- processed-material needs
+- collection goals
+- special projects
+- improved traversal
+- alternative later sources
+
+Revisiting old areas should feel purposeful rather than like commuting punishment.
+
+19.19 Old materials
+
+Early materials remain useful through:
+
+- processed forms
+- mixed recipes
+- construction components
+- decoration
+- trade
+- selected advanced projects
+
+Late-game requirements use moderate quantities rather than massive resource drains.
+
+19.20 Convenience timing
+
+Convenience upgrades should unlock before repetition becomes regularly tiring.
+
+Convenience is not a reward for enduring grind.
+
+It is a progression tool that prevents grind from forming.
+
+19.21 Grind evaluation test
+
+A requirement should be reviewed when it has several of these traits:
+
+- high total time
+- many repeated identical inputs
+- few meaningful decisions
+- no alternative route
+- no intermediate reward
+- no visible world change
+- no mechanical evolution
+- excessive menu handling
+- travel without new purpose
+- storage friction
+
+Evaluation should consider:
+
+- time
+- number of repeated actions
+- number of decisions
+- available alternatives
+- visible progress
+- system variety
+- input burden
+
+19.22 Core anti-grind principle
+
+Repetition is acceptable only while it carries meaningful decision, progression, mastery, or visible change.
+
+Readi World does not consume the player’s time for its own sake.
+
+It turns the player’s decisions into a visibly changed world.
+
+19.23 Open anti-grind decisions
+
+Still to define:
+
+- exact batch-action unlock points
+- project stage sizes
+- material contribution ratios
+- bulk-sale reduction thresholds
+- XP variety-bonus values
+- bad-luck protection thresholds
+- storage-network unlock timing
+- machine queue sizes
+- helper task limits
+- crop area-tool sizes
+- old-region revisit rewards
+- anti-grind testing metrics
+
+20. SYSTEM DEPENDENCIES
+
+Readi World systems should support one another without trapping the player in circular or excessive requirements.
+
+20.1 Dependency philosophy
+Each major system has a clear independent entry point, limited early dependencies, deeper later connections, and at least one understandable progression route.
+
+20.2 Dependency count
+A new major system should usually require one primary prerequisite, optionally one secondary prerequisite, and only rarely a third clearly explained requirement.
+
+20.3 Progression structure
+The early game uses a guided sequence:
+
+forest and wood gathering
+→ forester hut
+→ farming
+→ harbor
+→ mine
+
+Later progression branches into profession-specific and world-project paths.
+
+20.4 Dependency types
+Dependencies may include resources, crafted components, profession milestones, tool tiers, buildings, infrastructure, world-state changes, regional access, and completed projects. A single unlock should use only a small readable combination.
+
+20.5 Visibility
+Most dependencies are visible before the player reaches them. Hidden requirements are reserved for optional discoveries and secrets.
+
+20.6 Player-facing presentation
+Dependencies appear through the World Path, building screens, recipe screens, profession pages, region previews, and tracked-goal explanations. Every locked feature explains what is missing and why it matters.
+
+20.7 Profession blocking
+No single profession may block the entire main progression path. Large world milestones may require several professions, but each contribution must be visible and reasonably accessible.
+
+20.8 Gathering and crafting
+Gathering is the primary raw-material source. Important crafting materials may also come from trade, project rewards, collections, specialist exchanges, exploration, and profession milestones. No mandatory component should depend on one opaque random source.
+
+20.9 Building and crafting
+Early buildings mainly require raw and simple processed materials. Later buildings may require crafted components, workshop access, profession milestones, infrastructure, and project stages.
+
+20.10 Farming dependencies
+Farming is usable independently early, then later connects to cooking, animal care, trade, flowers, soil improvement, automation, and village projects.
+
+20.11 Animal-care dependencies
+Animal care may benefit from farming but does not depend exclusively on it. Feed may also come from gathering, trade, shops, processing, and regional resources.
+
+20.12 Cooking dependencies
+Cooking connects farming, fishing, wild gathering, animal products, and trade. Shops provide basics and shortage relief, not the full high-tier cooking path.
+
+20.13 Economy dependencies
+Every major profession supports at least one viable economic route. Trade connects professions through demand, contracts, processed goods, regional buyers, and specialist requests.
+
+20.14 Progression and money
+Money is one progression tool, not the universal solution. Unlocks may instead require profession milestones, crafted components, world projects, exploration, or collections.
+
+20.15 Tools and professions
+Profession progress may unlock the ability to craft, upgrade, or specialize a tool. The tool must still be acquired or improved separately.
+
+20.16 Perk separation
+Profession perks change playstyle, profession mechanics, access, specialization, and workflow. Tool perks change the tool’s behavior, range, modules, targeting, and efficiency. They should not duplicate one another.
+
+20.17 Inventory and storage
+Early systems use carried inventory, nearby storage, and building-local storage. Later systems may use connected storage, routing, and remote access. The UI must always explain which sources are available.
+
+20.18 Offline dependencies
+Only prepared and clearly time-based processes progress offline. Offline progress depends on finite prepared input, a finite queue, valid output storage, and system-specific natural limits. No system may create an infinite offline loop.
+
+20.19 Quest dependencies
+Quests explain how systems connect and what a project unlocks, but normal use of a system should not require permanent quest tracking.
+
+20.20 Locked-system behavior
+A locked function shows a lock state, exact missing requirements, the source of each requirement, an optional recommended next goal, and alternative routes where available.
+
+20.21 Dependency graph and validation
+The design uses an explicit dependency graph.
+
+Each system, unlock, building, recipe, region, and project declares:
+- tier
+- prerequisites
+- outputs
+- systems unlocked
+- required world state
+- alternative requirements
+
+Validation detects:
+- circular dependencies
+- self-dependencies
+- impossible tier ordering
+- missing prerequisite IDs
+- recipes requiring their own outputs
+- buildings requiring their own services
+- systems requiring only later-tier outputs
+- mutually locked systems without a starter path
+
+20.22 Tier rules
+- a Tier 1 system cannot require Tier 2-only output
+- a Tier 2 system may use Tier 1 and visible Tier 2 prerequisites
+- a building cannot require its own service to be constructed
+- a recipe cannot require an item that only that recipe unlocks
+- every mandatory dependency chain needs a valid starting node
+- optional shortcuts may depend on later systems
+- every main-path lock needs at least one recoverable route
+
+20.23 Dependency principle
+System connections should deepen the game rather than merely delay access.
+
+The systems support one another; they do not hold one another hostage.
+
+One missing system must never trap the player in an unrecoverable progression state.
+
+20.24 Open dependency decisions
+Still to define:
+- exact system tiers
+- complete early dependency graph
+- branch points after the mine
+- profession cross-dependencies
+- required World Path nodes
+- dependency data format
+- validation error format
+- alternative-requirement syntax
+- mobile dependency previews
+- first-demo dependencies
+
+21. IMPLEMENTATION ORDER
+
+Readi World should be built through a stable technical foundation followed by small, complete, playable system chains.
+
+21.1 Primary implementation principle
+
+Development should combine:
+
+- stable technical foundations
+- a fast playable vertical slice
+- one system or asset family at a time
+- preserved save compatibility
+- continuous mobile testing
+
+The goal is not to create many partially implemented systems.
+
+21.2 First major technical milestone
+
+The first major technical milestone is Asset Loader v1.
+
+It must preserve the current working baseline.
+
+21.3 Asset Loader v1 scope
+
+Asset Loader v1 includes:
+
+- assets_manifest.json
+- sprite_registry.json integration
+- generic module loading
+- required, optional, and disabled module states
+- AtlasValidator
+- declared fallbacks
+- asset report
+- clear boot errors
+
+No art replacement belongs in this milestone.
+
+21.4 Role and tag resolver
+
+The next technical milestone after Asset Loader v1 is RoleResolver.
+
+It supports:
+
+- semantic role requests
+- tag filtering
+- deterministic compatible selection
+- exact sprite IDs for authored landmarks
+- fallback resolution
+
+21.5 Ground milestone
+
+The ground system is redesigned only after Asset Loader v1 and RoleResolver are stable.
+
+Ground is handled as one isolated asset and rendering milestone.
+
+21.6 Forest milestone
+
+The forest system follows the approved ground milestone.
+
+Forest work is divided into:
+
+1. asset specification
+2. atlas validation
+3. registry integration
+4. node data
+5. spawning
+6. harvesting
+7. respawn
+8. save support
+9. mobile testing
+
+21.7 Building milestone
+
+The building system follows stable ground and forest contracts.
+
+The first building milestone includes:
+
+- validated building assets
+- building definitions
+- placement data
+- collision
+- interaction points
+- contextual prompts
+- restoration states
+- save support
+
+Stage Generator integration follows afterward.
+
+21.8 Stage Generator v1
+
+Stage Generator v1 begins after stable ground, forest, and building contracts exist.
+
+It generates deterministic:
+
+- seeds
+- terrain roles
+- zones
+- paths
+- natural objects
+- spawn points
+- interaction points
+- clear zones
+
+Important landmarks remain authored.
+
+21.9 Save Manager timing
+
+Save Manager is strengthened before large persistent gameplay systems are added.
+
+Early Save Manager work includes:
+
+- versioned save data
+- migration
+- backup
+- validation
+- mobile interruption save
+- safe-position recovery
+
+Export and import follow later.
+
+21.10 Inventory timing
+
+Inventory foundation is implemented with or directly before the first full gathering loop.
+
+It must support:
+
+- categorized storage
+- item definitions
+- stack behavior
+- full-inventory protection
+- save and load
+- gathering rewards
+- crafting input checks
+
+21.11 First complete gameplay loop
+
+The first complete gameplay loop is:
+
+gathering
+→ inventory
+→ crafting
+→ building restoration or upgrade
+→ visible world change
+
+This loop must be fully playable before major expansion.
+
+21.12 First visible world transformation
+
+The first major visible transformation is:
+
+- restoration of the Forester Hut
+- followed by unlocking access to farming
+
+The player should clearly see the world change as a result of gathered and crafted materials.
+
+21.13 First vertical slice boundary
+
+The first vertical slice includes:
+
+- movement
+- camera
+- forest gathering
+- inventory
+- basic crafting
+- Forester Hut restoration
+- one visible world-state change
+- farm unlock
+- saving and reloading
+- mobile interruption safety
+- functional HUD and prompts
+
+The vertical slice ends at the moment farming becomes meaningfully available.
+
+21.14 Farming timing
+
+Farming is introduced in the second half of the first vertical slice or immediately after the forest-restoration loop is stable.
+
+Its first version should remain small:
+
+- soil plots
+- a few crops
+- planting
+- growth
+- harvesting
+- finite time progression
+- save support
+
+21.15 Harbor timing
+
+The harbor follows the stable farming core loop.
+
+The harbor introduces:
+
+- regional access
+- fishing or transport foundations
+- wider trade
+- new world restoration
+- access toward the mine
+
+21.16 Mine timing
+
+The mine follows the harbor and is implemented as a compact activity scene.
+
+Its first version includes:
+
+- entrance requirement
+- resource nodes
+- tool requirement
+- finite expedition structure
+- checkpoints
+- exit and recovery
+- save-safe state
+
+21.17 Quest and World Path timing
+
+Quest and World Path systems are implemented after the core gameplay loop works but before major content expansion.
+
+They should explain and connect working systems rather than hide unfinished ones.
+
+21.18 Profession progression timing
+
+Profession progression begins after the first gameplay loop is stable.
+
+Initial professions:
+
+- Forestry
+- Crafting
+
+Later additions:
+
+- Farming
+- Fishing
+- Mining
+- Cooking
+- Building
+- Trade
+
+Professions are added one at a time.
+
+21.19 Economy timing
+
+A simple economy follows the first complete loop.
+
+Initial economy scope:
+
+- basic selling
+- one or two buyers
+- simple orders
+- transparent prices
+- no advanced market simulation
+
+Expanded trade arrives with the harbor and later regions.
+
+21.20 Offline progression timing
+
+Offline progression is implemented together with the first genuine time-based processes.
+
+It is not added as a universal system afterward.
+
+Each supported activity must define:
+
+- prepared input
+- queue
+- output capacity
+- completion time
+- offline cap
+- return behavior
+
+21.21 Mobile interruption safety timing
+
+Mobile interruption safety is part of the core runtime, not late polish.
+
+It must work during:
+
+- movement
+- harvesting
+- crafting
+- farming
+- menus
+- scene transitions
+- app switching
+- notification interruptions
+
+21.22 UI implementation order
+
+UI is first implemented functionally.
+
+Functional UI must provide:
+
+- readable information
+- clear actions
+- mobile-safe controls
+- error feedback
+- locked-state explanation
+- save-safe interaction
+
+Full visual polish follows after system behavior is stable.
+
+21.23 Audio timing
+
+Audio begins after the first vertical slice works.
+
+First audio pass:
+
+- interaction feedback
+- harvesting impact
+- crafting completion
+- restoration milestone
+- UI confirmation
+- ambient world layer
+
+A full adaptive soundscape comes later.
+
+21.24 Capacitor proof build
+
+A Capacitor proof build is created after the core runtime and Save Manager are stable.
+
+The proof build validates:
+
+- touch input
+- safe areas
+- app background behavior
+- save persistence
+- performance
+- orientation
+- packaging compatibility
+
+21.25 First public demo
+
+The first public demo contains a small but complete restoration loop rather than many unfinished systems.
+
+Recommended demo scope:
+
+- one home-village area
+- one forest activity area
+- gathering
+- crafting
+- inventory
+- Forester Hut restoration
+- farm unlock
+- one short farming loop
+- visible persistent world change
+- reliable save and resume
+
+21.26 Prohibited implementation patterns
+
+Do not:
+
+- build several major systems simultaneously
+- replace multiple asset families at once
+- combine architecture refactoring with art replacement
+- rewrite index.html for every feature
+- add content before its supporting contract exists
+- polish unfinished systems instead of completing the loop
+- break save compatibility without an approved migration
+
+21.27 Definition of Done
+
+A system is complete only when it is:
+
+- functionally playable
+- integrated with its dependencies
+- saved and reloaded correctly
+- safe during mobile interruptions
+- tested on a real phone
+- supported by fallback behavior where applicable
+- documented in data and design
+- free of known progression blockers
+- regression-tested against existing systems
+
+Working once in a development session is not sufficient.
+
+21.28 Implementation principle
+
+Build one system at a time until it reaches a complete, playable, save-safe state.
+
+Follow the engine contract and dependency order.
+
+Do not build many unfinished systems.
+
+Build a small number of fully working chains.
+
+21.29 Recommended milestone sequence
+
+0. Freeze and verify baseline
+1. Asset Loader v1
+2. RoleResolver
+3. Ground system
+4. Forest system
+5. Building system
+6. Stage Generator v1
+7. Save Manager foundation
+8. Inventory foundation
+9. Gathering → crafting → restoration loop
+10. Forester Hut restoration
+11. Farm unlock and farming foundation
+12. Quest and World Path foundation
+13. Forestry and Crafting professions
+14. Basic economy
+15. Harbor restoration
+16. Fishing and wider trade
+17. Mine activity scene
+18. Mining profession
+19. Storage networks and convenience upgrades
+20. Save export and import
+21. Capacitor proof build
+22. OPEN DESIGN DECISIONS
+
+Open design decisions are intentional, documented questions that should be resolved at the correct milestone and with the appropriate evidence.
+
+22.1 Meaning of open decision
+
+An Open Design Decision is:
+
+- consciously unresolved
+- documented
+- connected to a milestone or decision condition
+- awaiting technical information, prototype evidence, playtesting, or balance data
+
+An open decision is not a forgotten idea.
+
+22.2 Priority levels
+
+Open decisions use both priority and milestone grouping.
+
+Priority levels:
+
+P0 — Blocker
+The next required system cannot proceed without this decision.
+
+P1 — Milestone Decision
+The decision must be resolved before a named milestone begins or ends.
+
+P2 — Tune Later
+A recommended default may be used until prototype or playtest data exists.
+
+P3 — Future
+The decision does not affect the first vertical slice or public demo.
+
+22.3 Decision timing
+
+A decision should normally be closed immediately before the dependent system is implemented.
+
+Experience, usability, performance, pacing, and balance decisions may remain open until a working prototype or measurable test exists.
+
+22.4 Decisions before prototypes
+
+Structural and technical decisions may be locked without a complete gameplay prototype when their constraints are understood.
+
+Experience-dependent values should remain temporary until tested.
+
+These include:
+
+- movement speed
+- interaction timing
+- camera smoothing
+- UI scale
+- inventory comfort
+- resource yield
+- prices
+- XP values
+- rare-drop rates
+
+22.5 Decision statuses
+
+Open design tracking uses these statuses:
+
+Open Question
+The question is documented but has no accepted default.
+
+Recommended Default
+A working default is accepted until evidence supports a change.
+
+Prototype Required
+The decision must be tested in a working implementation.
+
+Locked Decision
+The decision is approved and governs implementation.
+
+Deferred
+The decision is intentionally postponed to a later milestone.
+
+Rejected
+The option should not be implemented under the current design direction.
+
+Superseded
+A newer decision has replaced it.
+
+22.6 Recommended Default rule
+
+A Recommended Default acts as the current implementation baseline.
+
+It remains valid until:
+
+- prototype evidence
+- player testing
+- performance data
+- dependency conflict
+- accessibility need
+- approved design revision
+
+supports a change.
+
+Any change must record the reason.
+
+22.7 Revising locked decisions
+
+Locked decisions are not silently overwritten.
+
+A revision requires a Decision Log entry describing:
+
+- previous decision
+- proposed decision
+- player benefit
+- technical cost
+- dependency impact
+- save or migration impact
+- affected chapters and systems
+- approval status
+
+All affected documentation must then be updated.
+
+22.8 Open-decision record
+
+Each open-decision record includes:
+
+- unique ID
+- question
+- category
+- priority
+- status
+- current recommended default
+- decision owner or responsibility area
+- decide-before milestone
+- dependencies
+- test or evidence method
+- final decision
+- decision date
+- related Decision Log entry
+
+Example:
+
+ID: OD-INV-001
+Question: Exact first carried inventory capacity
+Category: Gameplay / UI
+Priority: P1
+Status: Prototype Required
+Recommended Default: 24 carried slots
+Decide Before: Inventory Foundation milestone completion
+Depends On: item categories, nearby storage access, phone UI
+Test Through: first vertical slice on target phones
+
+22.9 Unique identifiers
+
+Every tracked open decision receives a stable identifier.
+
+Identifier pattern:
+
+OD-[CATEGORY]-[NUMBER]
+
+Example categories:
+
+- OD-GAME
+- OD-UI
+- OD-SAVE
+- OD-ART
+- OD-TECH
+- OD-AUDIO
+- OD-PROD
+- OD-ACC
+
+Identifiers are never reused after a decision is rejected or superseded.
+
+22.10 Source of truth
+
+Individual chapters may include short open-decision notes.
+
+Chapter 22 is the central open-decision register.
+
+The chapter note and central register link through the same stable decision ID.
+
+Full entries should not be duplicated in several places.
+
+22.11 Grouping
+
+Open decisions are grouped by both category and milestone.
+
+Primary categories:
+
+- gameplay
+- progression
+- economy
+- UI and UX
+- technical architecture
+- save and migration
+- art
+- audio
+- accessibility
+- production
+- marketing
+
+Milestone grouping identifies when each decision becomes necessary.
+
+22.12 Immediate-priority decisions
+
+The highest-priority current open decisions are those required for the first vertical slice.
+
+These include:
+
+- Save Manager schema
+- first inventory capacity and categories
+- first item and resource definitions
+- first crafting recipes
+- Forester Hut restoration stages
+- vertical-slice asset list
+- first-demo dependency graph
+- first farming crop set
+- mobile performance targets
+- supported phone test matrix
+- milestone acceptance checklist
+
+Marketing, full profession trees, complete economy tuning, and endgame content are not immediate blockers.
+
+22.13 Vertical-slice content rule
+
+The vertical slice includes only the content required to complete the first restoration loop.
+
+It should not contain a small unfinished sample of every future system.
+
+The slice still requires sufficient visual quality to demonstrate the intended identity.
+
+22.14 Balance timing
+
+Balance values begin as explicit tuning defaults.
+
+They are refined system by system using:
+
+- playtime measurement
+- action-count measurement
+- resource-flow testing
+- session testing
+- player feedback
+- anti-grind evaluation
+- economy simulation where useful
+
+The entire final balance should not be locked before the relevant systems exist.
+
+22.15 Temporary balance values
+
+Temporary values use the status:
+
+Tuning Default
+
+Each Tuning Default includes:
+
+- current value
+- purpose
+- expected range
+- test condition
+- affected system
+- review milestone
+
+Tuning Defaults must remain visibly separate from Locked Decisions.
+
+22.16 Conflict handling
+
+When two documents or chapters conflict:
+
+1. The governing Engine & Design Bible takes precedence.
+2. The conflict is logged.
+3. The affected decisions are reviewed.
+4. One explicit resolution is approved.
+5. Every affected chapter and data contract is updated.
+6. Save, migration, and implementation impact is checked.
+
+A newer statement does not silently override an older locked decision.
+
+22.17 Rejected and superseded ideas
+
+Outdated ideas are not left as Open Questions.
+
+They receive:
+
+- Rejected status, or
+- Superseded status
+
+Each includes a short reason and, where useful, a reference to the replacement decision.
+
+Old records may move to an archive but retain their identifiers.
+
+22.18 Future status
+
+An idea may become Future when:
+
+- it is valuable but not necessary for the first demo
+- it does not affect the current core loop
+- the engine does not need special support for it now
+- implementing it now would create unnecessary scope
+
+Future status is not a promise of implementation.
+
+22.19 Future-system architecture
+
+Future systems such as optional combat receive only the architectural space that is naturally and cheaply required now.
+
+The project should not pre-build a generalized framework for every possible future idea.
+
+Avoid speculative overengineering.
+
+22.20 Prototype-required decisions
+
+A question becomes Prototype Required when it cannot be judged reliably through documentation alone.
+
+Typical examples:
+
+- joystick feel
+- movement speed
+- harvesting rhythm
+- camera smoothing
+- mobile UI size
+- inventory comfort
+- action interruption
+- loading behavior
+- performance
+- gameplay pacing
+
+The prototype should test the smallest version capable of answering the question.
+
+22.21 Review cadence
+
+Open decisions are reviewed:
+
+- at milestone start
+- before dependent implementation begins
+- at milestone completion
+- when a new dependency appears
+- when a conflict is discovered
+- when testing invalidates a Recommended Default
+
+The review should not reopen unrelated Locked Decisions.
+
+22.22 Final open-decision principle
+
+Decide only what is necessary for the next responsible step.
+
+Document every unresolved question.
+
+Use the correct evidence before locking a decision.
+
+Nothing should be forgotten, but nothing should be decided unnecessarily early.
+
+22.23 Initial central decision register
+
+P0 — Blockers for the next implementation work:
+
+- OD-TECH-001: Confirm deployed baseline and exact active project package
+- OD-TECH-002: Final Asset Loader v1 acceptance checklist
+- OD-TECH-003: Asset module state and fallback data contract
+- OD-TECH-004: AtlasValidator error and reporting format
+
+P1 — First vertical-slice decisions:
+
+- OD-SAVE-001: Save schema and version number
+- OD-SAVE-002: Backup and migration behavior
+- OD-GAME-001: First carried inventory capacity
+- OD-GAME-002: First resource and item categories
+- OD-GAME-003: Initial crafting recipe set
+- OD-GAME-004: Forester Hut restoration stages
+- OD-GAME-005: First farming crop set
+- OD-TECH-005: First-slice dependency graph format
+- OD-ART-001: Ground asset specification
+- OD-ART-002: Forest asset specification
+- OD-ART-003: Forester Hut restoration-state assets
+- OD-UI-001: First-slice HUD layout
+- OD-UI-002: Inventory mobile layout
+- OD-PROD-001: Target phone test matrix
+- OD-PROD-002: Vertical-slice performance targets
+- OD-PROD-003: Milestone acceptance checklist
+
+P2 — Prototype and tuning decisions:
+
+- OD-GAME-006: Movement speed
+- OD-GAME-007: Harvest action timing
+- OD-GAME-008: Resource yields
+- OD-GAME-009: First project material requirements
+- OD-UI-003: Floating joystick radius and sensitivity
+- OD-UI-004: Camera smoothing
+- OD-UI-005: Contextual prompt timing
+- OD-SAVE-003: App-background timeout behavior
+- OD-AUDIO-001: First feedback sound set
+
+P3 — Future decisions:
+
+- OD-GAME-010: Optional combat scope
+- OD-GAME-011: Full profession roster and mastery depth
+- OD-GAME-012: Endgame restoration structure
+- OD-UI-006: Full Scenic Mode and photo-mode features
+- OD-PROD-004: Final store-page genre wording
+- OD-ART-004: Final logo direction
+- OD-AUDIO-002: Full adaptive soundscape
+
+22.24 Bible completion status
+
+The Gameplay and Progression Bible contains all 22 planned foundation chapters.
+
+The document now defines:
+
+- gameplay identity
+- player fantasy
+- gameplay pillars
+- core loops
+- persistence
+- gathering
+- crafting
+- farming
+- building
+- tools
+- inventory
+- economy
+- quests
+- progression
+- offline behavior
+- failure and recovery
+- session design
+- differentiation
+- anti-grind rules
+- system dependencies
+- implementation order
+- open-decision governance
+
+Detailed values, content counts, asset specifications, data schemas, and balancing remain subject to the open-decision process.
+
+The foundation design phase is complete.
+
+The next responsible step is to resolve only the P0 decisions required for the first implementation milestone.

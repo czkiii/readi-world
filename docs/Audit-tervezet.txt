@@ -1,0 +1,2475 @@
+READI WORLD
+TELJES HÁTRALÉVŐ DOKUMENTUMAUDIT-TERVEZET
+
+Verzió: 0.1
+Készült: 2026-07-29
+
+======================================================================
+FONTOS STÁTUSZ
+======================================================================
+
+Ez a fájl NEM KANONIKUS és egyetlen benne szereplő ajánlás sem „Locked Decision”.
+
+A kanonikus döntések kizárólag a `docs/Dokumentumaudit.txt` fájlban találhatók.
+Abban az 1–105. auditpont és a 72.5 kiegészítő anti-exploit szabály lezárt.
+Ez a tervezet a 106. ponttól folytatja a számozást, de csak ajánlásokat,
+mérési kapukat és tulajdonosi döntési kérdéseket készít elő.
+
+Az itt szereplő pont csak akkor válhat kanonikussá, ha:
+
+1. a felhasználó kifejezetten elfogadja;
+2. a szükséges prototípus vagy mérés teljesíti a leírt kaput;
+3. az elfogadott szöveg külön bekerül a kanonikus auditba.
+
+======================================================================
+EGYETLEN CÉL ÉS HATÓKÖR
+======================================================================
+
+Cél:
+A `docs/Audit-terkep.txt` 9–40. fejezeteinek 105 után még nyitott
+kérdéseit végigvezetni, és a projekt alapelveivel összhangban álló,
+közérthető alapértelmezett ajánlást adni.
+
+Módosított fájl:
+- `docs/Audit-tervezet.txt`
+
+Védett tartalom:
+- `docs/Dokumentumaudit.txt` kanonikus döntései;
+- a referencia-prototípus, a candidate fájl, minden runtime-kód és asset;
+- a történeti források eredeti tartalma.
+
+Elfogadási feltételek:
+- minden hátralévő scope-fejezet szerepel;
+- minden auditpont négy egyértelmű C-ajánlást tartalmaz;
+- minden pont besorolása megmutatja, hogy önállóan elfogadható-e;
+- a végén külön lista mutatja a felhasználói döntést vagy mérést igénylő pontokat;
+- a tervezet nem állítja magáról, hogy kanonikus vagy lezárt.
+
+Regressziós ellenőrzés:
+- a kanonikus audit továbbra is 1–105-nél ér véget;
+- a 72.5 anti-exploit szabály változatlan;
+- nincs kód-, asset-, mentés- vagy referenciafájl-módosítás;
+- nincs sorszámduplikáció vagy kihagyás a tervezetben.
+
+======================================================================
+FORRÁSOK ÉS DÖNTÉSI SORREND
+======================================================================
+
+1. `docs/Dokumentumaudit.txt` — az 1–105. lezárt döntés elsőbbséget élvez.
+2. `docs/Audit-terkep.txt` — a teljes ellenőrzési hatókör.
+3. `docs/Gameplay-bible.txt` — ahol a kanonikus audit nem írja felül.
+4. `docs/Fajl-es-kep-protokoll.txt` — csak a még érvényes biztonságos
+   munkafolyamat-részek.
+5. A README-k és a referencia-prototípus — kizárólag a tényleges jelenlegi
+   állapot bizonyítékaként, nem jövőbeli kötelező architektúraként.
+
+======================================================================
+BESOROLÁSOK
+======================================================================
+
+ERŐS TECHNIKAI AJÁNLÁS
+Olyan alapértelmezés, amely a már lezárt architektúrából, adatbiztonságból,
+mobil app-életciklusból vagy determinisztikus működésből közvetlenül következik.
+
+LOCKED DECISION — KANONIKUS FÁJLBAN RÖGZÍTVE
+A felhasználó által kifejezetten jóváhagyott döntés, amelynek irányadó szövege
+már a `docs/Dokumentumaudit.txt` fájlban szerepel.
+
+TULAJDONOSI DÖNTÉS SZÜKSÉGES
+Ízlés-, márka-, történet-, üzleti vagy végleges scope-döntés. A tervezet
+biztonságos alapértelmezést ad, de ezt nem tekinti a felhasználó helyett lezártnak.
+
+PROTOTÍPUST VAGY MÉRÉST IGÉNYEL
+A helyes végleges érték csak használhatósági próbából, eszközmérésből,
+egyensúlytesztből vagy tartalomtesztből állapítható meg.
+
+KONFLIKTUS VAGY HIÁNY
+A források között feloldandó eltérés van, vagy nincs elegendő bizonyíték
+végleges ajánláshoz. Ilyen pont nem kerülhet automatikusan implementációba.
+
+KANONIKUSAN MÁR LEFEDETT — NEM ÚJ DÖNTÉS
+A pont scope-ját korábbi Locked Decision már lezárta. A bejegyzés csak
+kereszthivatkozás és lefedettségi bizonyíték; nem kell újra jóváhagyni,
+és nem kerülhet másodszor a kanonikus auditba.
+
+======================================================================
+JELÖLÉSI KONVENCIÓ
+======================================================================
+
+- A „C” itt az ajánlott változatot jelöli, nem lezárt választ.
+- A számok csak a kanonikus audit lehetséges folytatási sorrendjét adják.
+- A „Mérési kapu” objektív vagy megfigyelhető elfogadási feltétel.
+- A „Tulajdonosi kérdés” az a rövid döntés, amelyet a felhasználónak kell
+  meghoznia, ha a pontot később kanonizálni szeretné.
+
+======================================================================
+9. INTERAKCIÓS RENDSZER — MÉG NYITOTT RÉSZEK
+======================================================================
+
+106. AUDITJAVASLAT — Kézi, eszközös és együttműködő interakció
+
+106.1C — Az objektumok és épületek ugyanazon deklarált interakciós képességeken keresztül kínálnak műveleteket.
+106.2C — A kiválasztott eszköz új műveletjelölteket adhat, de nem kerülheti meg a jogosultság-, célpont- és foglalásellenőrzést.
+106.3C — Üres kéznél csak az interakciódefiníció által engedett műveletek kerülnek a jelöltek közé; rangsorolásuk a 93.2C–93.3C szabályt követi, a romboló vagy visszafordíthatatlan művelet pedig a definíció szerinti megerősítést igényli.
+106.4C — Több együttműködő objektumot igénylő művelet az összes résztvevő stabil ID-ját rögzíti, majd egyetlen atomi foglalásban és tranzakcióban dolgozza fel őket.
+
+Indoklás: Lezárja az objektum-, épület-, eszköz- és üreskezes interakció közös útvonalát, rejtett kivételek nélkül.
+Státusz: LOCKED DECISION — KANONIKUS FÁJLBAN RÖGZÍTVE
+
+107. AUDITJAVASLAT — Hatótáv, helyzeti feltételek és Scenic Mode
+
+107.1C — A hatótávot az interakciódefiníció és a célpont logikai interakciós alakzata adja; induláskor és commit előtt újraellenőrzendő.
+107.2C — Nézési irány, rálátás vagy pontos pozíció csak akkor követelmény, ha az interakciódefiníció deklarálja; a tolerancia konfigurálható profilból érkezik, végleges értéke használhatósági méréshez kötött.
+107.3C — Hatótávból kikerülő vagy eltakart célpontnál a művelet saját szabálya szerint szünetel vagy megszakad, érthető visszajelzéssel.
+107.4C — A Scenic Mode interakciós jogosultságait külön módpolicy deklarálja; belépéskor az aktív folyamat a 104., az inputváltás a 112. pont szabályát követi. Az engedélyezett állapotmódosító műveletekről a 231. pont dönt.
+
+Indoklás: A térbeli szabályok kiszámíthatók maradnak, a Scenic Mode pedig nem válik rejtett játékmechanikai állapottá.
+Státusz: TULAJDONOSI DÖNTÉS SZÜKSÉGES
+
+======================================================================
+10. JÁTÉKOS, MOZGÁS, INPUT ÉS KAMERA
+======================================================================
+
+108. AUDITJAVASLAT — Játékosazonosság, pozíció és biztonságos helyreállítás
+
+108.1C — A profil, a tartós Player ID és az aktuális runtime-avatar külön fogalom.
+108.2C — A mentett helyzet Scene ID-t, biztonságos horgonyt, pozíciót és szükséges mozgásállapotot tartalmaz; félkész mozgási képkocka nem mentődik.
+108.3C — Betöltéskor a spawnpont csak betöltött, járható, nem blokkolt és engedélyezett területen fogadható el.
+108.4C — A stuck recovery a legutóbbi érvényes biztonságos horgonyra helyez, és nem ismétel idő-, költség- vagy jutalomtranzakciót.
+
+Indoklás: A helyreállítás nem függ törékeny runtime-koordinátától, és nem nyit kihasználható visszatekerést.
+Státusz: LOCKED DECISION — KANONIKUS FÁJLBAN RÖGZÍTVE
+
+109. AUDITJAVASLAT — Mozgási állapotok és sebességmódosítók
+
+109.1C — Az input először mozgási szándékká alakul, amelyet a mozgásrendszer képkockasebességtől függetlenül validál.
+109.2C — A sebességmódosítók forrással, taggel, időtartammal, összevonási sorrenddel és alsó-felső korláttal rendelkeznek.
+109.3C — A gyalogos, zárolt és szerkesztési mozgás, valamint minden később jóváhagyott mount- vagy speciális mód deklarált állapot, validált átmenetekkel.
+109.4C — Ha mount vagy helper részt vesz a mozgásban, deklarált navigációs és ütközési profilt használ; stabil Object ID-t csak tartós példányként kap a 78. pont szerint, egyébként runtime handle-t használ, és nem módosítja ellenőrizetlenül a játékospozíciót.
+
+Indoklás: A mozgás bővíthető és determinisztikus marad anélkül, hogy minden új bónusz külön kivételt igényelne.
+Státusz: LOCKED DECISION — KANONIKUS FÁJLBAN RÖGZÍTVE
+
+110. AUDITJAVASLAT — Virtuális joystick érzete
+
+110.1C — A joystick aktív területe, indulási módja és maximális hüvelykujjútja konfigurálható legyen.
+110.2C — Radiális dead zone, válaszgörbe és enyhe simítás külön hangolható, irányváltási késés nélkül.
+110.3C — A játékos érzékenységi beállítást kap, de a végsebesség nem közvetlenül az eszköz pixelsűrűségétől függ.
+110.4C — A végleges értékeket több képernyőméreten, egykezes fogásban, lassú precíz és gyors irányváltási teszttel kell meghatározni.
+
+Indoklás: A jó joystickérzet dokumentumból nem dönthető el megbízhatóan.
+Státusz: PROTOTÍPUST VAGY MÉRÉST IGÉNYEL
+
+111. AUDITJAVASLAT — Egykezes, balkezes és későbbi alternatív irányítás
+
+111.1C — Az alapértelmezett jobbkezes profilban a virtuális joystick a képernyő jobb oldalán helyezkedik el.
+111.2C — Beállításból választható balkezes profil, amely tükrözi a vezérlőterületeket, de nem fordítja meg a világ irányait.
+111.3C — P0/P1-ben a joystick az elsődleges mozgásvezérlés. A tap-to-move technikailag később hozzáadható, de most nem része a scope-nak.
+111.4C — A joystick mérete, érzékenysége és pontos safe-area pozíciója konfigurálható, és az iPhone 16 Pro készüléken egykezes teszttel hangolandó.
+
+Indoklás: A jobbkezes alapelrendezés követi a projekt tulajdonosának tényleges használatát, miközben a tükrözhető profil és a konfigurálható pozíció hozzáférhető marad más játékosoknak.
+Státusz: LOCKED DECISION — KANONIKUS FÁJLBAN RÖGZÍTVE
+
+112. AUDITJAVASLAT — Egységes inputfeldolgozás és kontrollzárolás
+
+112.1C — A touch-, pointer- és egéresemények egy normalizált inputrétegben, kontaktazonosítóval alakulnak játékparanccsá.
+112.2C — Ugyanazon fizikai érintésből érkező touch és emulált pointer/click csak egy parancsot hozhat létre.
+112.3C — Fókuszvesztéskor minden lenyomott állapot és aktív gesztus biztonságosan felszabadul.
+112.4C — Menük, dialógusok és szerkesztési mód deklarált inputkontextust használnak; lezáráskor csak explicit állapotváltással adják vissza az irányítást.
+
+Indoklás: Megelőzi a beragadt joystickot, a kettős érintést és a menü mögötti véletlen műveleteket.
+Státusz: LOCKED DECISION — KANONIKUS FÁJLBAN RÖGZÍTVE
+
+113. AUDITJAVASLAT — Mozgási ütközés, triggerzónák és speciális terep
+
+113.1C — A mozgás a logikai collision shape-eket kérdezi le, nem a grafika látható pixeleit.
+113.2C — A triggerzónák nem blokkolnak; enter, stay és exit eseményeik stabil actor–shape átfedési kulccsal készülnek és ismétlődésszűrtek.
+113.3C — Víz, lejtő és más speciális terep deklarált traversal-képességet, sebességmódosítót vagy tiltást ad.
+113.4C — Az ütközésfeloldás stabil sorrendű, nagy elmozdulásnál áthaladásvédett, ismétlődő sikertelenségnél stuck recoveryt ajánl.
+
+Indoklás: Az objektumrendszer általános shape-szabályait konkrét mozgási szerződéssé teszi.
+Státusz: LOCKED DECISION — KANONIKUS FÁJLBAN RÖGZÍTVE
+
+114. AUDITJAVASLAT — Normál követő kamera
+
+114.1C — A kamera validált logikai célpontot követ, nem a nyers érintési koordinátát.
+114.2C — Dead zone, követési késés és maximális lemaradás profilozható, de egyik sem okozhat irányítási bizonytalanságot.
+114.3C — Korlátozott mozgási előrenézés használható, ha portré nézetben nem rejti el a közelgő veszélyt vagy célt.
+114.4C — Takarásnál és kameraütközésnél deklarált sorrendben eltolás, zoom vagy vizuális halványítás történik, majd sima visszaállás.
+
+Indoklás: Az alapelv már lezárt, de a tényleges kameraérzet és takaráskezelés készüléktesztet kíván.
+Státusz: PROTOTÍPUST VAGY MÉRÉST IGÉNYEL
+
+115. AUDITJAVASLAT — Szerkesztési kamera és gesztusütközések
+
+115.1C — A szerkesztési kamera pásztázható és zoomolható úgy, hogy a kijelölt objektum világkoordinátája ne változzon.
+115.2C — Zoomhatárai jelenet- és eszközprofilból érkeznek, és érdemben nagyobb áttekintést adnak a normál kameránál.
+115.3C — A pinch, kamerapásztázás és objektumhúzás egymást kizáró, egyértelmű gesztusállapotokat használ.
+115.4C — Kilépéskor a kamera biztonságos átmenettel tér vissza a játékoshoz; Reduced Motion esetén az átmenet rövidül vagy azonnali.
+
+Indoklás: A mobilos ujjkitakarás és a gesztusok összekeverése csak működő prototípuson ítélhető meg.
+Státusz: PROTOTÍPUST VAGY MÉRÉST IGÉNYEL
+
+116. AUDITJAVASLAT — Képernyőarány, orientáció és Reduced Motion
+
+116.1C — A játéklogika felbontásfüggetlen világkoordinátát, a HUD pedig safe-area-t és reszponzív korlátokat használ.
+116.2C — A portrait mód az elsődleges támogatott elrendezés; landscape csak külön HUD-, input- és kameratesztek teljesítése után minősül támogatottnak.
+116.3C — Reduced Motion csökkenti vagy kikapcsolja a kamerarázást, hosszú zoomot, lendületes átvezetést és parallaxismozgást, információvesztés nélkül.
+116.4C — Átméretezés, orientációváltás és fókuszváltás újrarendezi a nézetet és üríti az ideiglenes inputot, de nem módosítja a World State-et.
+
+Indoklás: A portrait-first irány így mérhető platform- és hozzáférhetőségi szerződéssé válik.
+Státusz: LOCKED DECISION — KANONIKUS FÁJLBAN RÖGZÍTVE
+
+======================================================================
+11. TEREPRENDEZÉS, ÉPÍTÉS ÉS ELHELYEZÉS — LEFEDETTSÉGI MEGJEGYZÉS
+======================================================================
+
+Ehhez a fejezethez nem szükséges új auditpont. Érdemi részeit már lefedik:
+
+- a kanonikus 8. és 12–39. pontok: mód, kijelölés, kameraelv, placement,
+  katalógus, jogosultság, mozgatás, rollback, mentés, elrakás és bontás;
+- az 52., 82. és 88–89. pontok: épületállapot, állapotgép, vizuális állapot
+  és tranzakciós átalakulás;
+- a 104. pont: app-életciklus és megszakítás;
+- a jelen tervezet 115., 156. és 163. pontjai: mobilos szerkesztési kamera,
+  építési fázis és grafikai fallback.
+
+Új pont készítése itt a lezárt döntések tartalmi ismétlése lenne.
+
+======================================================================
+12. INVENTORY, TÁRGYAK, ERŐFORRÁSOK ÉS TÁROLÓK
+======================================================================
+
+117. AUDITJAVASLAT — Item- és resource-definíciók
+
+117.1C — Minden item- és resource-definíció stabil ID-val és tartalmi verzióval rendelkezik.
+117.2C — A definíció tartalmazza a kategóriákat, tageket, stackelési szabályt, alapviselkedést és engedélyezett komponenseket.
+117.3C — A registry a tartalom aktiválása előtt ellenőrzi az ID-egyediséget, a hivatkozásokat és a kötelező mezőket; az ellenőrzés build-, betöltési vagy fejlesztői validációs lépésben történhet.
+117.4C — A definíció nem másolódik a mentésbe; a mentés csak az azonosítót és az instance- vagy eltérésállapotot tárolja.
+
+Indoklás: Megakadályozza a tartalmi adatok és mentett példányállapot összekeverését.
+Státusz: LOCKED DECISION — KANONIKUS FÁJLBAN RÖGZÍTVE
+
+118. AUDITJAVASLAT — Stackek és egyedi tárgypéldányok
+
+118.1C — Csak azonos merge key-jel rendelkező tárgyak stackelhetők; a kulcsba minden játékmenetileg eltérő állapot bekerül.
+118.2C — Az egyedi eszközök, modulozott, sérült vagy más tartós állapotú tárgyak stabil Instance ID-t kapnak.
+118.3C — A mennyiség egész szám, validált minimum- és maximumértékkel; nulla mennyiségű stack nem marad fenn.
+118.4C — Minőség, ritkaság, állapot, tartósság és modulok csak akkor léteznek instance-adatként, ha a definíció használja őket.
+
+Indoklás: Egyértelművé teszi, mi vonható össze, és megelőzi az állapotvesztő stackelést.
+Státusz: LOCKED DECISION — KANONIKUS FÁJLBAN RÖGZÍTVE
+
+119. AUDITJAVASLAT — Kulcs-, projekt- és védett tárgyak
+
+119.1C — A kulcs- és projekttárgy külön deklarált szerep, nem név vagy inventorykategória alapján felismerhető kivétel.
+119.2C — A játékosi item lock tiltja az eladást, eldobást, bontást és automatikus receptfelhasználást, amíg a játékos fel nem oldja; a rendszer- vagy projektvédelem csak validált állapotváltással szüntethető meg.
+119.3C — Eladhatóságot és fogyaszthatóságot a definíció és az aktuális állapot együtt határoz meg.
+119.4C — Védett tárgyon végzett romboló művelet strukturált indokot és szükség esetén külön megerősítést kér.
+
+Indoklás: Kritikus tárgy nem veszhet el általános gyorsművelettel vagy automatizálással.
+Státusz: LOCKED DECISION — KANONIKUS FÁJLBAN RÖGZÍTVE
+
+120. AUDITJAVASLAT — Hordozott inventory kapacitásmodellje
+
+120.1C — Az alapmodell stackhely-alapú, korlátozott számú hordozható hellyel; ne legyen általános súlyszámítás.
+120.2C — A Tool Collection, kulcstárgyak és más külön gyűjtemények ne fogyasszák a normál hordozott helyeket.
+120.3C — A kapacitás adatvezérelt és fejleszthető, de nem változhat egy aktív tranzakció közepén ellenőrizetlenül.
+120.4C — Minden jutalom- és áthelyezési művelet előre kiszámítja a szükséges helyet és a lehetséges célhelyeket.
+
+Indoklás: A slotmodell mobilon könnyebben érthető, de a korlátozás erőssége közvetlenül befolyásolja a játék ritmusát.
+Státusz: TULAJDONOSI DÖNTÉS SZÜKSÉGES
+
+121. AUDITJAVASLAT — Megtelt inventory, overflow és elveszett jutalom
+
+121.1C — Szabályosan megszerzett jutalom kapacitáshiány miatt nem semmisülhet meg.
+121.2C — A kézbesítési sorrend: hordozott inventory, eredeti outputtároló, majd külön recovery storage vagy mailbox.
+121.3C — Földre ejtés csak tudatos vagy kifejezetten definiált művelet lehet, stabil azonosítóval és biztonságos felszedési idővel.
+121.4C — Overflow esetén a játék közli a tárgy helyét és a visszavétel módját, rejtett automatikus törlés nincs; normál eladásnál korlátozott, előre jelzett buyback-lista adhat védelmet a véletlen eladás ellen.
+
+Indoklás: A no-loss elv illik a cozy irányhoz, de a recovery storage vagy mailbox végleges formája termékdöntés.
+Státusz: TULAJDONOSI DÖNTÉS SZÜKSÉGES
+
+122. AUDITJAVASLAT — Tartós tárolók és épülethelyi készletek
+
+122.1C — Minden tartós tároló stabil Object ID-val, Inventory komponenssel, kapacitással és hozzáférési szabállyal rendelkezik.
+122.2C — Az épülethelyi tárolás nem azonos a játékos inventoryjával; tulajdonosa és helye külön nyilvántartott.
+122.3C — Input-, output- és általános tároló logikailag külön rekesz lehet akkor is, ha egy UI-ban jelenik meg.
+122.4C — Tároló mozgatása, elrakása vagy bontása előtt a tartalom sorsa kötelezően validálandó.
+
+Indoklás: A tárolótartalom nem válik épülethez kötött, elveszthető rejtett adattá.
+Státusz: LOCKED DECISION — KANONIKUS FÁJLBAN RÖGZÍTVE
+
+123. AUDITJAVASLAT — Közeli tárolás, storage network és távoli hozzáférés
+
+123.1C — Közeli tároló csak deklarált hatótáv vagy fizikai kapcsolat alapján vehető igénybe.
+123.2C — A storage network feloldható infrastruktúra legyen, explicit hálózati gráffal, ne minden láda automatikus globális összevonása.
+123.3C — A távoli olvasás, kézi kivétel és automatikus receptfelhasználás külön jogosultságként szabályozható.
+123.4C — Recept vagy termelés konkrét forrástárolókból foglal, és a foglalás alatt is megőrzi az alapanyag tulajdonosi helyét.
+
+Indoklás: A globális készlet kényelmes, de erősen átírja a logisztikát és az épülethálózat jelentőségét.
+Státusz: TULAJDONOSI DÖNTÉS SZÜKSÉGES
+
+124. AUDITJAVASLAT — Tárgyáthelyezési műveletek
+
+124.1C — Minden áthelyezés atomi source–destination tranzakció; a tárgy nem tűnhet el a két hely között.
+124.2C — Részleges áthelyezés csak a játékos által választott mennyiséggel vagy előre közölt kapacitáskorláttal történhet.
+124.3C — Ha Quick Transfer vagy Transfer All támogatott, előbb teljes áthelyezési tervet készít, majd stabil rendezési sorrendben commitol.
+124.4C — Ha Deposit Matching támogatott, csak jelen lévő vagy deklaráltan elfogadott kategóriát mozgat, és tiszteletben tartja a lockot és reservationt.
+
+Indoklás: A kényelmi műveletek ugyanazt a duplikáció- és elvesztésvédelmet használják, mint az egyedi mozgatás.
+Státusz: LOCKED DECISION — KANONIKUS FÁJLBAN RÖGZÍTVE
+
+125. AUDITJAVASLAT — Mobilos inventory- és storage-UI
+
+125.1C — Mobilon a tárgylista, részletek és áthelyezés ne igényeljen apró drag-and-drop célpontokat; legyen érintéses alternatíva.
+125.2C — Rendezés, kategóriaszűrés, keresés, kedvencek és menthető presetek ugyanazon lekérdezési modellre épüljenek.
+125.3C — Látható legyen a forrástároló, kapacitás, rezervált mennyiség, zárolás és az adott művelet várható eredménye.
+125.4C — A fontos műveletek nagy érintési területet, képernyőolvasó-nevet és nem csak színalapú állapotjelzést kapnak.
+
+Indoklás: A megfelelő információs sűrűség és átviteli gesztus csak telefonos prototípuson állítható be.
+Státusz: PROTOTÍPUST VAGY MÉRÉST IGÉNYEL
+
+126. AUDITJAVASLAT — Inventory-migráció és integritásvédelem
+
+126.1C — Ismeretlen item ID karanténozott legacy-placeholderként marad vissza, amíg migráció vagy visszatérítés nem rendezi.
+126.2C — Törölt vagy felosztott item ID explicit verziózott migrációs táblát használ.
+126.3C — Tranzakcióazonosítók és inventory-invariánsok felismerik a duplikációt, negatív mennyiséget és tulajdon nélküli instance-t.
+126.4C — Appmegszakításkor csak a teljesen commitolt áthelyezés marad meg; a többi visszaáll vagy idempotensen folytatódik.
+
+Indoklás: A korábbi 50. pont alapmodelljét teljes migrációs és megszakításbiztonsági szerződéssé egészíti ki.
+Státusz: LOCKED DECISION — KANONIKUS FÁJLBAN RÖGZÍTVE
+
+======================================================================
+13. ESZKÖZÖK, KÉPESSÉGEK ÉS SPECIALIZÁCIÓ
+======================================================================
+
+127. AUDITJAVASLAT — Alapeszközlista, Tool Collection és automatikus választás
+
+127.1C — Az induló eszközlista külön, adatvezérelt tartalmi jegyzék legyen; pontos elemei a vertical slice tevékenységeiből következzenek.
+127.2C — A tartósan megszerzett eszközök külön Tool Collectionben élnek, nem foglalnak normál inventoryhelyet.
+127.3C — Az automatikus választás az érvényes eszközök közül a legkisebb szükséges capability- és tiermegfelelést választja.
+127.4C — A játékosi felülírás vagy activity preset elsőbbséget élvez, ha érvényes; ellenkező esetben okot és ajánlott eszközt mutat.
+
+Indoklás: A rendszer szerződése meghatározható, de a konkrét induló roster jelenleg nincs lezárva a forrásokban.
+Státusz: TULAJDONOSI DÖNTÉS SZÜKSÉGES
+
+128. AUDITJAVASLAT — Tool tier és upgrade chain
+
+128.1C — Minden fejleszthető eszköz deklarált tierlánccal és capability-változásokkal rendelkezik.
+128.2C — A régi eszköz az upgrade tranzakció részeként beépül az újba, nem marad véletlen duplikátumként.
+128.3C — Az upgrade helyszíne, anyagai és egyéb feltételei előre láthatók, és csak teljes validáció után vonódnak le.
+128.4C — Sikeres upgrade után az új eszköz azonnal használható, a quick access és preset hivatkozások migrálódnak.
+
+Indoklás: A tierstruktúra tempója és helyszínei a progression érzetét határozzák meg.
+Státusz: TULAJDONOSI DÖNTÉS SZÜKSÉGES
+
+129. AUDITJAVASLAT — Tartósság, fuel és charge
+
+129.1C — Ne legyen általános, minden eszközre kötelező tartósságromlás.
+129.2C — Fuel, charge vagy operating material csak különleges, előre jelzett eszközképességnél használható.
+129.3C — Kimerülés letiltja az adott különleges képességet, de nem semmisíti meg és nem teszi tartósan használhatatlanná az eszközt.
+129.4C — Fogyasztás csak a művelet commitpontján történik, menthető és megszakításbiztos állapottal.
+
+Indoklás: A karbantartási nyomás alapvető játékélmény-döntés; a javaslat az alacsony nyomású irányt követi.
+Státusz: TULAJDONOSI DÖNTÉS SZÜKSÉGES
+
+130. AUDITJAVASLAT — Tool module rendszer
+
+130.1C — A modulslotok típusa és száma eszköztierből és definícióból származik.
+130.2C — Head, handle, charm és utility csak kompatibilitási tagként legyen alapértelmezett kategória, ne hardkódolt kivételrendszer.
+130.3C — Modul behelyezése és kivétele atomi tranzakció; foglalt, zárolt vagy aktívan használt eszköz nem módosítható.
+130.4C — Upgrade vagy migráció során inkompatibilissé váló modul biztonságosan visszakerül a tulajdonosi készletbe.
+
+Indoklás: A modulrendszer mélysége, slotmennyisége és elérési tempója designválasztás.
+Státusz: TULAJDONOSI DÖNTÉS SZÜKSÉGES
+
+131. AUDITJAVASLAT — Eszközhatások és capability-gate-ek
+
+131.1C — Minden ténylegesen támogatott eszközhatás külön, típusos módosító; a lehetséges hatások közé tartozhat sebesség, hozam, hatótáv és hozzáférés, rare-drop módosító pedig csak a 139. pont jóváhagyása esetén aktív.
+131.2C — A capability- vagy tierkövetelmény nem váltható ki pusztán nagyobb hatékonysági bónusszal.
+131.3C — A módosítók stabil sorrendben, deklarált stacking szabállyal és biztonságos korlátokkal számolódnak.
+131.4C — Az eszköz részletei az effektív értéket és annak fő forrásait is megmutatják.
+
+Indoklás: Elválasztja a „meg tudom csinálni” és a „gyorsabban/jobban csinálom” fogalmát.
+Státusz: LOCKED DECISION — KANONIKUS FÁJLBAN RÖGZÍTVE
+
+132. AUDITJAVASLAT — Eszközspecializáció és respec
+
+132.1C — A tool perk és profession perk külön fejlődési réteg, még ha egymást módosíthatják is.
+132.2C — Kölcsönösen kizáró specializációs ág csak egyértelmű előnézettel és megerősítéssel választható.
+132.3C — Respec lehetséges, előre jelzett költséggel vagy korláttal, de nem veszít véglegesen egyedi tárgyat.
+132.4C — Az összes ág későbbi feloldása csak külön endgame-szabályként történhet, nem rejtett automatikus jutalomként.
+
+Indoklás: Az ágak kizárólagossága, respecára és endgame-szabadsága játékosidentitási döntés.
+Státusz: TULAJDONOSI DÖNTÉS SZÜKSÉGES
+
+133. AUDITJAVASLAT — Különleges eszközök és vizuális fejlődés
+
+133.1C — A különleges eszköz új capabilityt vagy egyértelmű játékmeneti variánst adjon, ne csak nagyobb számértéket.
+133.2C — Tier- és modulváltozás csak akkor kap külön világmodell-grafikát, ha az assetkészlet támogatja; egyébként biztonságos overlay vagy UI-jelzés használható.
+133.3C — Az aktív eszköz és animáció az interakció commitolt logikai állapotából oldódik fel.
+133.4C — Elégtelen tier vagy hibás eszköz röviden megnevezi a hiányt és a következő megszerzési vagy fejlesztési lépést.
+
+Indoklás: A különleges eszközök tartalma és látható fejlődésének mélysége art- és scope-döntés.
+Státusz: TULAJDONOSI DÖNTÉS SZÜKSÉGES
+
+134. AUDITJAVASLAT — Quick access, activity preset és mobilos váltás
+
+134.1C — A quick access ne legyen kötelező manuális eszközcsere minden alapinterakció előtt.
+134.2C — Az activity preset eszközpreferenciákat és műveleti beállításokat tárol, de nem tartalmazhat érvénytelen tárgypéldány-hivatkozást.
+134.3C — Mobilon az eszközváltás legfeljebb egy rövid, stabil felületrétegen keresztül elérhető.
+134.4C — Automatikus váltáskor a HUD röviden mutatja a választott eszközt, de ismétlődő műveletnél nem spammel értesítést.
+
+Indoklás: A megfelelő gyorselérés és információmennyiség használhatósági tesztet igényel.
+Státusz: PROTOTÍPUST VAGY MÉRÉST IGÉNYEL
+
+135. AUDITJAVASLAT — Eszközhasználat mentése és megszakítása
+
+135.1C — Minden eszközspecifikus fogyó- vagy tartós állapot csak validált interakciós tranzakción keresztül változhat.
+135.2C — Appváltás és megszakítás a 104. pont szerinti interakciós fázisszabályt használja, külön eszközspecifikus kerülőút nélkül.
+135.3C — Ismételt input ugyanazzal a tranzakcióazonosítóval nem alkalmazhat újra eszközfogyasztást, állapotváltozást vagy hozamot.
+135.4C — Hiányzó vagy migráció után érvénytelen aktív eszköz esetén biztonságos alapválasztás és magyarázó jelzés történik.
+
+Indoklás: Az általános tranzakciós szabályokat az eszközök fogyó és tartós állapotára alkalmazza.
+Státusz: LOCKED DECISION — KANONIKUS FÁJLBAN RÖGZÍTVE
+
+======================================================================
+14. GYŰJTÉS, KITERMELÉS ÉS TERMÉSZETI ERŐFORRÁSOK
+======================================================================
+
+136. AUDITJAVASLAT — Resource node definíció és identitás
+
+136.1C — A node-definíció tartalmazza a harvestable role-t, régiót, spawnfeltételeket, szükséges capabilityt és állapotgépet.
+136.2C — Az authored node tartós Object ID-t kap, ha eltávolítása vagy állapota hosszú távon számít.
+136.3C — A tartós generált node stabil, betöltési sorrendtől független azonosítót kap; ez reprodukálható kulcsból származhat vagy explicit menthető, míg ideiglenes node-nak runtime handle elegendő.
+136.4C — Az alapdefiníció és az instance-delta külön tárolódik és külön validálható.
+
+Indoklás: Nagy nodeszám mellett is reprodukálható és migrálható marad a természet.
+Státusz: LOCKED DECISION — KANONIKUS FÁJLBAN RÖGZÍTVE
+
+137. AUDITJAVASLAT — Node-állapot, depletion, respawn és újratelepítés
+
+137.1C — A node elérhető, foglalt, kitermelt, stump/depleted és más szükséges állapotait deklarált állapotgép kezeli.
+137.2C — Respawn idő, feltétel és felső korlát alapján történik; nem írhat felül játékosi épületet vagy tartós világváltozást.
+137.3C — Végleges eltávolítás tartós tombstone vagy területi delta, amelyet normál regeneráció nem töröl.
+137.4C — Újratelepítés új kontrollált instance-t vagy deklarált visszaállítást hoz létre, nem éleszti fel véletlenül a régi foglalásokat.
+
+Indoklás: Elkülöníti a megújuló kitermelést a tartós földhasználati változástól.
+Státusz: LOCKED DECISION — KANONIKUS FÁJLBAN RÖGZÍTVE
+
+138. AUDITJAVASLAT — Harvest művelet és jutalomcommit
+
+138.1C — Az eszköz-, tier-, skill-, hatótáv- és nodeállapot-követelmény induláskor és commit előtt ellenőrződik.
+138.2C — Az action timing adatvezérelt és az interakciós fázisrendszert használja.
+138.3C — A nodeállapot és a definíció szerinti eredmények — hozam, esetleges drop és esetleges skill XP — egyetlen atomi eredménytranzakcióban véglegesülnek.
+138.4C — Commit előtti megszakítás nem ad hozamot; commit utáni ismételt esemény nem adhat második jutalmat.
+
+Indoklás: A kitermelés nem kap külön, duplikálható jutalomútvonalat.
+Státusz: LOCKED DECISION — KANONIKUS FÁJLBAN RÖGZÍTVE
+
+139. AUDITJAVASLAT — Véletlen drop és bad-luck protection
+
+139.1C — A drop roll seedelt, reprodukálható és a harvest tranzakcióhoz rögzített.
+139.2C — A garantált, súlyozott és ritka drop külön táblarétegként definiálható.
+139.3C — Bad-luck protection jutalomcsaládonként vezetett, korlátozott számlálóval működik, és siker után deklaráltan visszaáll.
+139.4C — Progressionkritikus tárgy ne függjön korlátlan, védelem nélküli ritka dobástól.
+
+Indoklás: A véletlen mennyisége és a pity-rendszer erőssége közvetlen játékélmény-döntés.
+Státusz: TULAJDONOSI DÖNTÉS SZÜKSÉGES
+
+140. AUDITJAVASLAT — Régió-, időjárás-, napszak- és szezonfeltételek
+
+140.1C — A megjelenési és harvestfeltételek külön deklarálhatók régió, időjárás, napszak és szezon szerint.
+140.2C — A már megjelent node sorsát feltételváltáskor saját szabály dönti el; nem tűnik el aktív interakció alatt.
+140.3C — Ritka természeti erőforrások területi és időbeli maximumot kaphatnak.
+140.4C — A játék az ismert feltételeket érthetően jelzi, de a még fel nem fedezett tartalmat nem spoilerezi teljesen.
+
+Indoklás: A feltételes gyűjtés felfedezést vagy frusztrációt is okozhat, ezért tartalmi döntés.
+Státusz: TULAJDONOSI DÖNTÉS SZÜKSÉGES
+
+141. AUDITJAVASLAT — Célzott megszerzési információ és alternatív források
+
+141.1C — A felfedezett erőforrások ismert régiója, ideje, eszközigénye és alternatív forrása kereshető legyen.
+141.2C — Progressionkritikus alapanyag legalább egy kiszámítható megszerzési útvonallal rendelkezzen.
+141.3C — Gyűjtési útvonal jelölhető vagy követhető, de ne váljon kötelező automatikus útvonallá.
+141.4C — Alternatív forrás lehet kereskedelem, feldolgozás, jutalom vagy más régió, deklarált gazdasági korláttal.
+
+Indoklás: Meghatározza, mennyire támaszkodik a játék emlékezetre, keresgélésre és véletlenre.
+Státusz: TULAJDONOSI DÖNTÉS SZÜKSÉGES
+
+142. AUDITJAVASLAT — Ismétléscsökkentés, area harvest és helper
+
+142.1C — Area harvest csak megszerzett tool tierhez, skillhez vagy fejlesztéshez kötve nyíljon meg.
+142.2C — A tömeges művelet ugyanazokat a node-onkénti jogosultsági és jutalomszabályokat tartsa be.
+142.3C — Helper csak véges területre, nodehalmazra vagy feladagszámra kaphat megbízást.
+142.4C — Az automatizálás csökkentse az ismételt koppintást, de ne termeljen input, terület és időkorlát nélkül.
+
+Indoklás: Az anti-grind kényelme és a kézi gyűjtés értéke közötti arány designkérdés.
+Státusz: TULAJDONOSI DÖNTÉS SZÜKSÉGES
+
+143. AUDITJAVASLAT — Offline regeneráció, save delta és anti-exploit
+
+143.1C — Offline regeneráció megbízható időreferenciából, determinisztikusan és nodetípusonkénti felső korláttal számolódik.
+143.2C — Időmanipuláció nem ad extra spawnciklust; gyanús ugrás biztonságos maximumra korlátozódik büntetés nélkül.
+143.3C — Csak a seedtől eltérő nodeállapot, időbélyeg és tartós eltávolítás kerül mentésbe.
+143.4C — Betöltéskor a regeneráció nem írhat felül építést, földhasználati változást vagy aktív rezervációt.
+
+Indoklás: Alkalmazza a lezárt háttérszimulációs és anti-exploit elveket nagy nodeszámra.
+Státusz: LOCKED DECISION — KANONIKUS FÁJLBAN RÖGZÍTVE
+
+144. AUDITJAVASLAT — Nagy nodeszám és mobilos közelségi gyűjtés
+
+144.1C — Node-keresés térbeli indexet használ; távoli node-ok nem futtatnak teljes interakciós frissítést.
+144.2C — A vizuális és logikai aktivitási távolság külön profilozható.
+144.3C — Automatikus közelségi harvest a 101–102. pont szerinti célpontzárat, cooldown- és duplikációvédelmet használja.
+144.4C — A nodesűrűség, lekérdezési költség és frame-idő reprezentatív alsó kategóriás telefonon mérendő.
+
+Indoklás: A megfelelő sűrűség és automatikus aktiválási távolság valós készüléken állapítható meg.
+Státusz: PROTOTÍPUST VAGY MÉRÉST IGÉNYEL
+
+======================================================================
+15. CRAFTING, FELDOLGOZÁS ÉS TERMELÉS
+======================================================================
+
+145. AUDITJAVASLAT — Receptdefiníció és verzió
+
+145.1C — Minden recept stabil Recipe ID-val és tartalmi verzióval rendelkezik.
+145.2C — Inputok, alternatív inputcsoportok, mennyiségek, outputok és melléktermékek strukturáltan deklaráltak.
+145.3C — A recept feloldási állapota külön progressionadat; nem a receptfájl jelenléte jelenti a feloldást.
+145.4C — A registry ellenőrzi az item-, állomás-, requirement- és outputhivatkozásokat.
+
+Indoklás: A recept tartalma, elérhetősége és aktív instance-a nem keveredik össze.
+Státusz: LOCKED DECISION — KANONIKUS FÁJLBAN RÖGZÍTVE
+
+146. AUDITJAVASLAT — Craftingjogosultság és munkaállomás
+
+146.1C — A recept által deklarált workstation capability, building tier, profession és tool requirement külön validálható feltétel.
+146.2C — Minden hiányzó követelmény látható és játékosbarát következő lépésre fordítható.
+146.3C — A feltételek sorba állításkor és tényleges induláskor is ellenőrződnek.
+146.4C — Időközben érvénytelenné vált állomásnál a job saját életciklus-szabálya dönt a várakozásról, megszakításról vagy explicit kompatibilis célpontra migrálásról; az alapanyagok sorsát az 51.2C és 104.2C szabály kezeli.
+
+Indoklás: Nem indulhat olyan munka, amelynek állomása vagy jogosultsága csak a UI szerint volt érvényes.
+Státusz: LOCKED DECISION — KANONIKUS FÁJLBAN RÖGZÍTVE
+
+147. AUDITJAVASLAT — Azonnali, hosszú és részleges crafting
+
+147.1C — Azonnali craft csak rövid, egycommitpontos művelet legyen; hosszabb folyamat tartós jobállapotot kap.
+147.2C — A hosszú craft deklarált fázisokból állhat, de részleges output csak akkor jár, ha a recept ezt kifejezetten meghatározza.
+147.3C — Cancel esetén az aktuális fázishoz tartozó, előre látható refundszabály érvényes.
+147.4C — A játék mindig mutatja a hátralévő időt, a megszakíthatóságot és a várható canceleredményt.
+
+Indoklás: A crafting büntetési és időmodellje közvetlenül alakítja a játék ritmusát.
+Státusz: TULAJDONOSI DÖNTÉS SZÜKSÉGES
+
+148. AUDITJAVASLAT — Queue, batch, Craft All és Repeat
+
+148.1C — Minden queue véges, adatvezérelt limittel és stabil sorrenddel.
+148.2C — Ha batch craft támogatott, menthető mennyiséggel vagy determinisztikusan kibontott jobokkal működik.
+148.3C — Ha Craft All támogatott, a kérés pillanatában biztonságosan kiszámított véges maximumot jelenti.
+148.4C — Ha Repeat támogatott, csak előkészített véges inputból dolgozik, és input-, output-, fuel- vagy jogosultsághiánynál leáll; végtelen loop nincs.
+
+Indoklás: A kényelmi funkciók nem válhatnak korlátlan háttértermeléssé.
+Státusz: LOCKED DECISION — KANONIKUS FÁJLBAN RÖGZÍTVE
+
+149. AUDITJAVASLAT — Machine state és működési függőségek
+
+149.1C — A gép idle, running, paused/blocked, completed és error állapotokat használ, deklarált átmenetekkel.
+149.2C — Energia, fuel és víz ciklusonként vagy fázisonként, előre meghatározott ponton foglalódik és fogy.
+149.3C — Worker dependency csak explicit recept- vagy gépszabály lehet.
+149.4C — Függőség megszűnése biztonságos ponton szüneteltet, nem törli a jobot és nem ismétli meg a már commitolt eredményt.
+
+Indoklás: Az energia-, fuel- és workerigény jelenléte és gyakorisága játékmeneti scope-döntés.
+Státusz: TULAJDONOSI DÖNTÉS SZÜKSÉGES
+
+150. AUDITJAVASLAT — Outputkapacitás és megtelt kimenet
+
+150.1C — A gép outputja saját, előre ellenőrizhető kapacitással rendelkezik.
+150.2C — Megtelt outputnál a következő ciklus commit előtt megáll; új inputot nem fogyaszt.
+150.3C — Már elkészült, de át nem vett output tartósan megmarad és ugyanazzal a tranzakcióval csak egyszer vehető át.
+150.4C — Outputfelszabadítás után a folyamat csak új validációval folytatódik.
+
+Indoklás: Kizárja az offline és kapacitáshatáron történő tárgyvesztést vagy duplikációt.
+Státusz: LOCKED DECISION — KANONIKUS FÁJLBAN RÖGZÍTVE
+
+151. AUDITJAVASLAT — Offline crafting és véges automatizálás
+
+151.1C — Távollét alatt csak az előre sorba állított véges jobok haladhatnak.
+151.2C — Az eredményt eltelt idő, queue, input, fuel és outputkapacitás együttesen korlátozza.
+151.3C — Offline eredmény egyetlen idempotens visszatérési tranzakcióban számolódik és rögzül.
+151.4C — Repeat vagy Craft All nem hoz létre új batch-et távollét alatt a már jóváhagyott mennyiségen túl.
+
+Indoklás: Konkretizálja a 45–46. és 72.5. pont anti-exploit szabályait craftingra.
+Státusz: LOCKED DECISION — KANONIKUS FÁJLBAN RÖGZÍTVE
+
+152. AUDITJAVASLAT — Minőség és különleges kockázatos receptek
+
+152.1C — Minőségi output csak deklarált képletből, input-, skill-, tool- és állomásmódosítókból származhat.
+152.2C — Normál craftingnak ne legyen rejtett hibaesélye.
+152.3C — Kockázat csak különleges, előre megjelölt receptnél használható, teljes lehetséges eredményelőnézettel.
+152.4C — Véletlen minőség vagy kimenet seedelt és a job tranzakciójához rögzített.
+
+Indoklás: A minőség és kudarc jelenléte gazdasági és érzelmi játékélmény-döntés.
+Státusz: TULAJDONOSI DÖNTÉS SZÜKSÉGES
+
+153. AUDITJAVASLAT — Crafting-UI, értesítés és gazdasági előnézet
+
+153.1C — A receptnézet együtt mutatja az inputot, alternatívákat, időt, követelményeket, outputot és elérhető kapacitást.
+153.2C — A queue állapota, blokkolás oka és cancel következménye egy helyen látható.
+153.3C — Több befejezés értesítése összevonható; fontos vagy blokkolt job külön megmarad.
+153.4C — Batch előtt a teljes alapanyagköltség és várható output látható, nem csak az egy darabra jutó érték.
+
+Indoklás: Az információs sűrűséget és a queue kezelését mobilos prototípuson kell ellenőrizni.
+Státusz: PROTOTÍPUST VAGY MÉRÉST IGÉNYEL
+
+154. AUDITJAVASLAT — Crafting anti-grind és automation
+
+154.1C — Automatizálás progressionnel oldódhat fel, és az ismételt kezelést csökkenti, nem a döntéseket távolítja el.
+154.2C — Minden automatizált rendszer véges input-, queue-, idő- és outputkorláttal rendelkezik.
+154.3C — A kézi crafting maradjon életképes; az automation ne tegyen kötelezővé hosszú passzív várakozást.
+154.4C — A szükséges ismétlésszámot, sorhosszt és visszatérési gyakoriságot később mérési adatok alapján kell balanszolni.
+
+Indoklás: Az automation mélysége alapvető pacing- és játékosügynökségi döntés.
+Státusz: TULAJDONOSI DÖNTÉS SZÜKSÉGES
+
+======================================================================
+16. ÉPÜLETEK, RESTAURÁCIÓ ÉS FALUINFRASTRUKTÚRA
+======================================================================
+
+155. AUDITJAVASLAT — Épületdefiníció és instance
+
+155.1C — BuildingDefinition és BuildingInstance külön adatmodell, stabil Building/Object ID-val.
+155.2C — Az authored landmark, player-owned és közösségi épület deklarált tulajdonosi és mozgathatósági típust kap.
+155.3C — Restauráció, tier, működés, tárolás és kapcsolatok külön komponensállapotként tárolódnak.
+155.4C — A mentés csak az instance-állapotot és definíciótól való eltérést tárolja.
+
+Indoklás: A korábbi általános objektum- és mentésdöntéseket konkrét épületkontraktussá teszi.
+Státusz: LOCKED DECISION — KANONIKUS FÁJLBAN RÖGZÍTVE
+
+156. AUDITJAVASLAT — Restaurációs szakaszok és mérföldkő-akció
+
+156.1C — A restauráció deklarált fázisgráf: beadott anyagok, előkészítő feladatok és szükséges világfeltételek alkotják.
+156.2C — A beadott anyagok fázisonkénti tranzakciós ledgerben maradnak, és nem használhatók fel kétszer.
+156.3C — Jelentős helyreállítás végén rövid, kézi játékosi milestone action véglegesítheti a fázist.
+156.4C — A vizuális építési fázis csak commitolt restaurációs állapotot jelenít meg; félkész input nem vált grafikát.
+
+Indoklás: A restauráció érzelmi súlya és interaktivitása tulajdonosi játékélmény-döntés.
+Státusz: TULAJDONOSI DÖNTÉS SZÜKSÉGES
+
+157. AUDITJAVASLAT — Tierstruktúra és funkcionális fejlesztések
+
+157.1C — Az épületek tierszáma adatvezérelt; ne legyen minden épületre kötelezően három.
+157.2C — Tier upgrade és kisebb funkcionális fejlesztés külön mechanika lehet, eltérő követelményekkel.
+157.3C — Minden upgrade deklarálja az új capabilityt, kapacitást, szolgáltatást és vizuális állapotot.
+157.4C — Upgrade atomi állapotváltás; hiba esetén az előző működő tier marad aktív.
+
+Indoklás: A fejlesztési mélység és az épületenkénti tierszám tartalmi scope-döntés.
+Státusz: TULAJDONOSI DÖNTÉS SZÜKSÉGES
+
+158. AUDITJAVASLAT — Épületműködés, kapacitás és operating material
+
+158.1C — Az épület működő, inaktív, blokkolt és fejlesztés alatt állapotokat használ.
+158.2C — Szolgáltatás, input, output és kapacitás deklarált komponenseken keresztül érhető el.
+158.3C — Ne legyen általános épületromlás vagy kötelező karbantartás; operating material csak indokolt speciális funkciónál szerepeljen.
+158.4C — Inaktív vagy blokkolt épület megőrzi tartalmát, és érthetően megnevezi a hiányzó feltételt.
+
+Indoklás: A fenntartási nyomás és termelési komplexitás alapvető cozy-design döntés.
+Státusz: TULAJDONOSI DÖNTÉS SZÜKSÉGES
+
+159. AUDITJAVASLAT — Faluszint és vizuális világátalakulás
+
+159.1C — A faluszint commitolt restaurációs és közösségi mérföldkövekből származik, nem elkölthető erőforrásként működik.
+159.2C — Minden faluszint előre definiált szolgáltatás-, terület- vagy tartalomjutalmat old fel.
+159.3C — Utak, fények, növényzet és propok szintfüggő vizuális profilból változnak.
+159.4C — Automatikus világátalakulás nem törölhet vagy mozgathat játékosi objektumot; konfliktusnál biztonságos alternatív elhelyezés szükséges.
+
+Indoklás: A faluszint jelentősége és jutalomtempója a játék fő progressionérzetét határozza meg.
+Státusz: TULAJDONOSI DÖNTÉS SZÜKSÉGES
+
+160. AUDITJAVASLAT — Játékosotthon és személyre szabható terek
+
+160.1C — A szobák és kültéri bővítések külön feloldható, tartósan személyre szabható zónák.
+160.2C — Tárolás, konyha és gyűjtemény capabilityként kapcsolódik a házhoz, nem külön hardkódolt menülogikával.
+160.3C — A dekorációs állapot a normál tereprendezési szabályokat használja, belső térre szabott collision- és snap-profillal.
+160.4C — A személyre szabás adhat kényelmi vagy gyűjteményi jutalmat, de ne legyen kötelező blokkolója a fő haladásnak.
+
+Indoklás: Az otthon funkcionális és kozmetikai súlya játékosi identitásdöntés.
+Státusz: TULAJDONOSI DÖNTÉS SZÜKSÉGES
+
+161. AUDITJAVASLAT — Út-, víz-, energia- és storage-hálózat
+
+161.1C — Minden hálózat explicit csatlakozási pontokból és stabil gráfkapcsolatokból épül.
+161.2C — Placement preview mutatja a szükséges és létrejövő kapcsolatokat.
+161.3C — Mozgatás vagy hálózatváltozás után az érintett komponensek stabil sorrendben számolódnak újra.
+161.4C — Kapcsolatvesztés biztonságosan szünetelteti az érintett működést; tartalmat és már commitolt eredményt nem töröl.
+
+Indoklás: A hálózatok összetettsége és kötelezősége jelentősen meghatározza az építési játék mélységét.
+Státusz: TULAJDONOSI DÖNTÉS SZÜKSÉGES
+
+162. AUDITJAVASLAT — Több restaurációs projekt és részleges finanszírozás
+
+162.1C — Egyszerre több projekt fogadhat részleges hozzájárulást.
+162.2C — Egy projekt kiemelhető fő célként, de ez nem zárolja automatikusan a többit.
+162.3C — Minden beadás tranzakciós, projekt- és fázisazonosítóhoz kötött.
+162.4C — Refundszabály projekt- és fázisspecifikus, beadás előtt látható; mérföldkő után nem változhat visszamenőleg.
+
+Indoklás: A párhuzamos projektek száma és a visszatérítés megengedő volta pacing-döntés.
+Státusz: TULAJDONOSI DÖNTÉS SZÜKSÉGES
+
+163. AUDITJAVASLAT — Épülettartalom migrációja és grafikai fallback
+
+163.1C — A tartós instance szerkezetét vagy jelentését érintő BuildingDefinition-változás verziózott migrációt igényel; kizárólag vizuális vagy nem állapothordozó metadata-változás nem.
+163.2C — Hiányzó tier-, restaurációs vagy működési grafika biztonságos generikus vizuális profilt és diagnosztikai jelzést használ.
+163.3C — Eltávolított épülettípus tartalmát, projektinputját és tulajdonosi értékét explicit migráció vagy visszatérítés rendezi.
+163.4C — Migráció után érvénytelen pozíció vagy hálózati kapcsolat a már lezárt biztonságos elrakási/fallback szabályt használja.
+
+Indoklás: Tartalomfrissítés nem teheti betölthetetlenné a falut vagy láthatatlanná a fontos épületet.
+Státusz: LOCKED DECISION — KANONIKUS FÁJLBAN RÖGZÍTVE
+
+164. AUDITJAVASLAT — Első épületi vertical slice: Forester Hut
+
+164.1C — A Forester Hut legyen az első teljes épületi vertical slice: restauráció, tier, input/output, tárolás, specialistakapcsolat és vizuális állapot együtt.
+164.2C — A farm, harbor és mine ekkor csak deklarált interfésszel vagy tesztstubbal kapcsolódjon, ne teljes párhuzamos rendszerként.
+164.3C — Elfogadásához mentés, appmegszakítás, megtelt output, mozgatási tiltás és migrációs fallback teszt szükséges.
+164.4C — Minden kötelező vizuális fázishoz registry-bejegyzés és hiányzó asset fallback tartozzon.
+
+Indoklás: A térkép ezt ajánlja első vertical slice-ként, de a milestone kiválasztása tulajdonosi scope-jóváhagyást igényel.
+Státusz: TULAJDONOSI DÖNTÉS SZÜKSÉGES
+
+======================================================================
+17. FARM, NÖVÉNYEK, ÁLLATOK ÉS FÖLDHASZNÁLAT
+======================================================================
+
+165. AUDITJAVASLAT — Soil plot és növényinstance
+
+165.1C — Minden tartós soil plot stabil Plot ID-t és külön talaj-, víz- és foglaltsági állapotot kap.
+165.2C — A növényfajta definíció, az elültetett növény pedig plothivatkozással rendelkező instance-állapot.
+165.3C — Az ültetés ideje, növekedési fázis, módosítók és harvest state validált mezők.
+165.4C — Egy ploton egyszerre csak a definíció által engedett növény- vagy növénycsoport lehet aktív.
+
+Indoklás: Stabil alapot ad növekedéshez, offline számításhoz és migrációhoz.
+Státusz: LOCKED DECISION — KANONIKUS FÁJLBAN RÖGZÍTVE
+
+166. AUDITJAVASLAT — Növekedési szimuláció
+
+166.1C — A növekedés a közös világidőből és deklarált fázisküszöbökből számolódik.
+166.2C — Víz, talaj, évszak, időjárás és egyéb módosító típusos, stabil sorrendben alkalmazott hatás.
+166.3C — Hosszabb eltelt idő determinisztikus, szakaszos vagy képletalapú számítással dolgozódik fel; bármely játékmeneti felső korlát a 45.3C szerinti, külön deklarált növényrendszer-szabály, nem implementációs mellékhatás.
+166.4C — Növénydefiníció frissítése az aktív példányokat verziózott migrációval kezeli.
+
+Indoklás: Nem szükséges minden növényt képkockánként szimulálni, és ugyanaz az idő mindig ugyanazt az állapotot adja.
+Státusz: LOCKED DECISION — KANONIKUS FÁJLBAN RÖGZÍTVE
+
+167. AUDITJAVASLAT — Érés, betakarítás és offline növekedés
+
+167.1C — Az érett növény büntetésmentes mature waiting állapotban marad, nem romlik el pusztán a távollét miatt.
+167.2C — Offline idő alatt a növény megérhet, de alapból nem takarítja be magát és nem termel ismételt ciklust.
+167.3C — Hozam és minőség betakarításkor, egyetlen tranzakcióban véglegesül.
+167.4C — Automatikus betakarítás csak külön feloldott, véges kapacitású rendszerként engedhető.
+
+Indoklás: A hervadás, automatikus harvest és távolléti nyomás a cozy hangulatot közvetlenül érinti.
+Státusz: TULAJDONOSI DÖNTÉS SZÜKSÉGES
+
+168. AUDITJAVASLAT — Soros műveletek, öntözés és farmhelper
+
+168.1C — Row planting és area watering feloldható tömegművelet, előnézettel és egyetlen validált erőforrás-tranzakcióval.
+168.2C — Az irrigation deklarált lefedettséggel, vízforrással és kapacitással működik.
+168.3C — Helper csak véges plotlistára, területre vagy feladagmennyiségre kaphat megbízást.
+168.4C — Tömegművelet kihagyja az érvénytelen plotot, és a végén tételesen vagy összevontan jelzi az eredményt.
+
+Indoklás: Az automatizálás mértéke és feloldási ideje az anti-grind és progression egyensúlya.
+Státusz: TULAJDONOSI DÖNTÉS SZÜKSÉGES
+
+169. AUDITJAVASLAT — Földterület, orchard és erdőgazdálkodási határ
+
+169.1C — Új termőterület deklarált területi és progressionfeltételekkel oldható fel.
+169.2C — Orchard növényei hosszú életű, tartós objektumok, nem normál rövid ciklusú cropstackek.
+169.3C — Farming és forestry eltérő földhasználati szerep; ugyanazon terület átalakítása explicit művelet.
+169.4C — Átültetés, kivágás és tartós talajátalakítás előnézetet, jogosultságot és commitált világállapot-változást igényel.
+
+Indoklás: A földhasználat szabadsága és a két profession határa tartalmi világdesign-döntés.
+Státusz: TULAJDONOSI DÖNTÉS SZÜKSÉGES
+
+170. AUDITJAVASLAT — Állatdefiníció, instance és lakóhely
+
+170.1C — Az állatfaj definíciója tartalmazza a lakóhely-, kapacitás-, gondozási és outputszabályokat.
+170.2C — Fontos egyedi állat stabil Animal ID-t és teljes instance state-et kap; egyszerű csoport a lezárt 53.2C szerint aggregálható.
+170.3C — Minden állat vagy csoport pontosan egy érvényes lakóhelyhez vagy átmeneti biztonságos állapothoz tartozik.
+170.4C — Áthelyezés atomi módon frissíti a régi és új lakóhely kapacitását, tulajdonát és állatállapotát.
+
+Indoklás: Megelőzi az eltűnő, két helyen szereplő vagy lakóhely nélküli állatokat.
+Státusz: LOCKED DECISION — KANONIKUS FÁJLBAN RÖGZÍTVE
+
+171. AUDITJAVASLAT — Gondozás, hangulat és állati output
+
+171.1C — Feed, gondozás és hangulat enyhe termelési vagy kapcsolati módosító legyen, ne gyors büntetési spirál.
+171.2C — Az output deklarált ciklusból és állapotból származik, saját kapacitásba kerül.
+171.3C — Megtelt output leállítja az új termelést, de nem törli a már elkészült terméket és nem károsítja az állatot.
+171.4C — Gondozási input és output ugyanazt a foglalási és tranzakciós védelmet használja, mint más termelőrendszer.
+
+Indoklás: A gondozás kötelező gyakorisága és a hangulat hatása érzelmi terhelést szab meg.
+Státusz: TULAJDONOSI DÖNTÉS SZÜKSÉGES
+
+172. AUDITJAVASLAT — Szaporodás, különleges állatok és távollét
+
+172.1C — Szaporodás opt-in, előfeltételekkel, férőhellyel és populációs felső korláttal működik.
+172.2C — Különleges állatok tartós egyedi példányok, eltérő capabilityvel vagy narratív szereppel.
+172.3C — Távollét alatt állat nem hal meg, nem tűnik el és nem veszít tartós kapcsolatértéket.
+172.4C — Offline állati termelés véges, input-, idő- és outputkapacitás által korlátozott.
+
+Indoklás: A szaporítási mélység és távolléti következmény alapvető játékhangulati döntés.
+Státusz: TULAJDONOSI DÖNTÉS SZÜKSÉGES
+
+173. AUDITJAVASLAT — Farmkapcsolatok: tárolás, cooking és trade
+
+173.1C — Ha egy farmépület vagy plot a 161. pontban jóváhagyott storage- vagy infrastruktúrakapcsolatot használ, a kapcsolat explicit és validálható; egyébként nem követelhető meg.
+173.2C — Cooking csak foglalható, engedélyezett farmoutputot használhat, nem fogyaszthat zárolt vagy más projekthez rezervált tárgyat.
+173.3C — A trade kézi játékosi parancsot vagy külön jóváhagyott automatikus eladási szabályt használ; puszta hálózati kapcsolat nem ad eladási jogosultságot.
+173.4C — Csak deklaráltan kötelező kapcsolat vagy kapacitás hiánya szüneteltethet folyamatot, érthető blokkolási indokkal.
+
+Indoklás: Az összekapcsolt rendszerek ugyanazon tulajdonosi és tranzakciós szabályokat tartják be.
+Státusz: TULAJDONOSI DÖNTÉS SZÜKSÉGES
+
+174. AUDITJAVASLAT — Mobilos farmműveletek és háttérteljesítmény
+
+174.1C — Tömeges ültetés, öntözés és betakarítás nagy érintési célponttal és területi előnézettel működik.
+174.2C — Távoli plotok és csoportos állatok aggregált háttérszimulációt használnak.
+174.3C — Csak változott plot-, crop- és állatdelták kerülnek mentésre.
+174.4C — Nagy farmnál mérni kell a betöltést, háttérszámítást, mentésméretet, frame-időt és egy tömegművelet inputterhelését.
+
+Indoklás: A használható területméret és tömegműveleti UI csak készülékméréssel zárható le.
+Státusz: PROTOTÍPUST VAGY MÉRÉST IGÉNYEL
+
+======================================================================
+18. NPC-K, LAKOSOK, SPECIALISTÁK ÉS KAPCSOLATOK
+======================================================================
+
+175. AUDITJAVASLAT — Fontos és tömeges NPC-k adatmodellje
+
+175.1C — A fontos NPC stabil NPC ID-t, definíciót és külön mentett instance state-et kap.
+175.2C — Tömeges háttér-NPC archetipikus vagy aggregált állapotú lehet, ha egyedi története és tulajdona nincs.
+175.3C — Jelenet, lakóhely, munkahely, kapcsolat és aktuális feladat stabil ID-hivatkozás.
+175.4C — Fontos NPC és tömeges NPC közötti átalakítás explicit migráció, nem runtime-optimalizációs mellékhatás.
+
+Indoklás: Csak a játékmenetileg jelentős személyek igényelnek teljes perzisztenciát.
+Státusz: LOCKED DECISION — KANONIKUS FÁJLBAN RÖGZÍTVE
+
+176. AUDITJAVASLAT — Napi rutin, időjárás és jelenetek közötti mozgás
+
+176.1C — A napi rutin időablakos, hely-, szerep- és feltételalapú schedule-bejegyzésekből áll.
+176.2C — Időjárási és eseményvariánsok deklarált prioritással módosítják az alaprutint.
+176.3C — Jelenetek közötti mozgás indulási és várható érkezési állapotot tárol; nem szükséges végig teljes útvonalat szimulálni.
+176.4C — A szolgáltatás UI-ja előre jelzi az NPC elérhetőségét és ismert következő visszatérését.
+
+Indoklás: A rutin részletessége és kiszámíthatósága világélmény- és kényelmi döntés.
+Státusz: TULAJDONOSI DÖNTÉS SZÜKSÉGES
+
+177. AUDITJAVASLAT — Schedule conflict, háttérszimuláció és offline állapot
+
+177.1C — Ütköző schedule-bejegyzésnél eseményprioritás, sürgősség és stabil tie-break dönt.
+177.2C — Érvénytelen célhely vagy munkahely esetén az NPC deklarált biztonságos fallback rutint használ.
+177.3C — Nem betöltött jelenetben csak a fontos hely-, szolgáltatás-, esemény- és termelési állapot szimulálódik.
+177.4C — Offline idő alatt csak korlátozott, determinisztikus NPC-változások történnek; fontos eredmény visszatérési összefoglalóba kerül.
+
+Indoklás: Megakadályozza az egyszerre több helyen lévő NPC-t és a szükségtelen teljes háttér-AI-t.
+Státusz: LOCKED DECISION — KANONIKUS FÁJLBAN RÖGZÍTVE
+
+178. AUDITJAVASLAT — Specialisták, szolgáltatások, kereskedők és workerek
+
+178.1C — A specialist, merchant és worker deklarált, kombinálható role/capability, nem külön NPC-osztály.
+178.2C — A szolgáltatás elérhetőségét NPC-, épület-, idő- és világállapot-feltételek együtt adják.
+178.3C — Building assignment atomi tranzakció, amely mind az NPC, mind az épület foglaltságát frissíti.
+178.4C — Hiányzó vagy áthelyezett specialistánál a szolgáltatás nem tűnik el magyarázat nélkül; állapotot és következő lépést mutat.
+
+Indoklás: A szerepek száma, kombinálhatósága és szolgáltatásfüggősége tartalmi döntés.
+Státusz: TULAJDONOSI DÖNTÉS SZÜKSÉGES
+
+179. AUDITJAVASLAT — Kapcsolati állapot és ajándékozás
+
+179.1C — A kapcsolat értékei, szintjei és feloldásai adatvezérelt Relationship State-ben tárolódnak.
+179.2C — Ajándékozás egyedi tranzakció, cooldownnal és ugyanazon tárgy ismételt levonása elleni védelemmel.
+179.3C — Ne legyen kötelező napi ajándékgrind vagy távolléti kapcsolatromlás.
+179.4C — Jelentős kapcsolatváltozás érthető okot és feloldott következményt mutat.
+
+Indoklás: A kapcsolatépítés intenzitása és jutalmai játékosi kötődést meghatározó döntések.
+Státusz: TULAJDONOSI DÖNTÉS SZÜKSÉGES
+
+180. AUDITJAVASLAT — Párbeszéd és nem blokkoló történeti kommunikáció
+
+180.1C — Az alapkommunikáció rövid, funkcionális és megszakítható legyen.
+180.2C — Hosszabb történeti dialógus ritka, átugorható vagy gyorsítható, és később összefoglalóból visszanézhető.
+180.3C — Kötelező hosszú dialógus ne zárja el tartósan az alapfunkciókat vagy a játékból való kilépést.
+180.4C — Döntést vagy jutalmat tartalmazó párbeszéd külön menthető dialoguestate-et és idempotens eredménytranzakciót használ.
+
+Indoklás: A narratíva mennyisége és prezentációja kifejezetten tulajdonosi kreatív döntés.
+Státusz: TULAJDONOSI DÖNTÉS SZÜKSÉGES
+
+181. AUDITJAVASLAT — NPC által kiváltott világ- és gazdasági változások
+
+181.1C — NPC csak validált parancson és World State-tranzakción keresztül módosíthat épületet, készletet vagy világállapotot.
+181.2C — NPC-inventory csak ott legyen teljesen részletes, ahol kereskedelem, történet vagy tulajdon miatt szükséges; egyébként aggregálható.
+181.3C — NPC-termelés input-, idő-, worker- és outputkorlátos, és nem hozhat létre végtelen háttérgazdaságot.
+181.4C — NPC nem fogyaszthat játékosi, zárolt vagy rezervált erőforrást explicit jogosultság nélkül.
+
+Indoklás: Az NPC-k gazdasági önállóságának mértéke és láthatósága világdesign-döntés.
+Státusz: TULAJDONOSI DÖNTÉS SZÜKSÉGES
+
+182. AUDITJAVASLAT — NPC eltűnés, visszatérés és eseményütközés
+
+182.1C — Fontos NPC eltűnése explicit történeti, utazási, ideiglenes vagy eltávolított állapot, nem hiányzó runtime-objektum.
+182.2C — Visszatérés érvényes lakóhelyet, munkahelyet, schedule-t és függő feladatokat újravalidál.
+182.3C — Eltávolított NPC-re mutató quest-, building- vagy relationship-hivatkozás explicit tartalmi migrációt kap; ennek hiányában biztonságos feloldatlan vagy blokkolt állapot és diagnosztikai jelzés marad, automatikus személycsere nélkül.
+182.4C — Egymással ütköző események stabil prioritás és kizárási csoport alapján választódnak ki.
+
+Indoklás: A tartalmi változás nem törheti el a világot vagy hagyhat félbe nem teljesíthető függőségeket.
+Státusz: LOCKED DECISION — KANONIKUS FÁJLBAN RÖGZÍTVE
+
+183. AUDITJAVASLAT — NPC-tulajdon és közösségi objektumok
+
+183.1C — Az objektum tulajdonosa lehet játékos, konkrét NPC, épület, csoport vagy közösség, egységes ownership-hivatkozással.
+183.2C — Használat, mozgatás, eladás és erőforrás-felhasználás külön jogosultságként kezelhető.
+183.3C — Tulajdonosváltás atomi módon frissíti a hozzáférést, tárolást és kapcsolódó világállapotot.
+183.4C — NPC-rutin vagy világátalakulás nem írhatja felül engedély nélkül a játékos személyes elhelyezését.
+
+Indoklás: A személyes és közösségi tér határa világ- és játékosügynökségi döntés.
+Státusz: TULAJDONOSI DÖNTÉS SZÜKSÉGES
+
+184. AUDITJAVASLAT — NPC-UI, hozzáférhetőség és nagy populáció teljesítménye
+
+184.1C — Csak a helyzetileg releváns NPC kap állandó nevet, promptot vagy státuszjelzést; a tömeg nem tölti meg a HUD-ot.
+184.2C — Szolgáltatás, elérhetőség és blokkolási ok vizuálisan és szövegesen is felismerhető.
+184.3C — Dialógus és interakció nagy érintési célpontot, olvasható tempót, feliratot és képernyőolvasó-alternatívát kap.
+184.4C — Nagy NPC-számnál LOD, ritkított háttérfrissítés és aggregált szimuláció használható; a költség reprezentatív telefonon mérendő.
+
+Indoklás: A HUD-sűrűség, olvashatóság és egyidejű NPC-mennyiség csak működő jelenetben zárható le.
+Státusz: PROTOTÍPUST VAGY MÉRÉST IGÉNYEL
+
+======================================================================
+19. KÜLDETÉSEK, WORLD PATH, TÖRTÉNET ÉS FELFEDEZÉS
+======================================================================
+
+185. AUDITJAVASLAT — Quest-adatmodell és életciklus
+
+185.1C — Minden küldetés verziózott Quest ID-t használ; a változatlan definíció és a mentett Quest Instance állapot külön adat.
+185.2C — Minden érdemi objective és subgoal saját stabil azonosítót, típust, feltételt és validálható progressziót kap.
+185.3C — Az aktív, teljesített, halasztott, elutasított, sikertelen és újra elérhető állapotok csak deklarált átmenetekkel változhatnak.
+185.4C — A mentés csak az instance-deltákat és szükséges időbélyegeket tárolja; definícióváltáskor verziózott migráció fut.
+
+Indoklás: Ez tovább részletezi az 54. kanonikus döntést, és megakadályozza az elvesző progresszt, hibás objective-hivatkozást és mentésfüggő eltérést.
+Státusz: LOCKED DECISION — KANONIKUS FÁJLBAN RÖGZÍTVE
+
+186. AUDITJAVASLAT — Elfogadás, időzítés, sikertelenség és újrapróbálás
+
+186.1C — Fő útvonalhoz vagy alapvető rendszerhez tartozó küldetés nem járhat le véglegesen, és nem teheti helyrehozhatatlanul sikertelenné a mentést.
+186.2C — Az elfogadás, halasztás és elutasítás következménye előre látható; nélkülözhetetlen tartalom elutasítás után is visszaszerezhető úton elérhető marad.
+186.3C — Az opcionális időzített küldetés deklarálja az időforrást, a pause- és offline-viselkedést, a lejáratot, valamint a retry vagy visszatérési szabályt.
+186.4C — Visszafordíthatatlan világváltozás előtt egyértelmű előnézet és megerősítés szükséges, az eredmény pedig tranzakciósan véglegesül.
+
+Indoklás: A lejárat, kudarc és visszafordíthatatlanság közvetlenül befolyásolja a játék nyugodt tónusát és a játékos szabadságát.
+Státusz: TULAJDONOSI DÖNTÉS SZÜKSÉGES
+
+187. AUDITJAVASLAT — World Path és függőségi gráf
+
+187.1C — Minden World Path node stabil Node ID-val és deklarált ismert, részben ismert, zárolt, feloldott és teljesített állapottal rendelkezik.
+187.2C — A node követelményei, alternatív feltételei, kimenetei és feloldott rendszerei explicit dependency graphban szerepelnek.
+187.3C — Minden zárolt node megnevezi a hiányzó feltételt, annak forrását és — ahol van — az alternatív útvonalat.
+187.4C — Automatikus validáció tiltja a körkörös, önmagára hivatkozó, hiányzó és kezdőpont nélküli kötelező függőségeket.
+
+Indoklás: A World Path így magyarázza a rendszerek kapcsolatát, de nem válik láthatatlan questkapuvá vagy progressziós csapdává.
+Státusz: LOCKED DECISION — KANONIKUS FÁJLBAN RÖGZÍTVE
+
+188. AUDITJAVASLAT — Történeti és felfedezési irány
+
+188.1C — A történet elsődlegesen játékon, környezeten és látható világváltozáson keresztül jelenik meg.
+188.2C — Nincs hosszú kötelező párbeszéd, kötelező átvezető vagy kihagyható szöveg mögé rejtett fontos rendszerismeret.
+188.3C — A titkok és rejtett felfedezések opcionálisak; a fő útvonal szükséges feltételei előre megismerhetők.
+188.4C — A fő út, melléktartalom és titkos tartalom külön jelölést és eltérő jutalmazási szerepet kap; a „World Path”, „Progress Board” és „Village Journal” közül a végleges játékosoldali név külön tulajdonosi döntés marad.
+
+Indoklás: Ez a játék tónusát, szövegmennyiségét és tartalmi identitását rögzítené, ezért nem pusztán technikai döntés.
+Státusz: TULAJDONOSI DÖNTÉS SZÜKSÉGES
+
+189. AUDITJAVASLAT — Tutorial, célkövetés és mobilos megjelenítés
+
+189.1C — Minden rendszerbemutató később is visszanézhető és szükség esetén újrajátszható.
+189.2C — Egyszerre egy kiemelt fő cél és legfeljebb néhány opcionális ajánlás jelenik meg, de egyik sem kényszerít kötelező trackingre.
+189.3C — A HUD csak tömör állapotot mutat; a részletes dependency preview külön, mobilbarát nézetben nyitható meg.
+189.4C — A térképi jelölések, locked-state magyarázatok és progresszió színfüggetlen ikonnal, olvasható szöveggel és skálázható felülettel működnek.
+
+Indoklás: Az információsűrűség, a célok száma és a mobilos navigáció csak működő telefonos prototípusban ítélhető meg megbízhatóan.
+Státusz: PROTOTÍPUST VAGY MÉRÉST IGÉNYEL
+
+190. AUDITJAVASLAT — Jutalom, world event és tartalmi migráció
+
+190.1C — Questjutalom, story flag és visszafordíthatatlan világváltozás egyetlen atomi, tranzakcióazonosítóval védett eredménycsomagban véglegesül.
+190.2C — Ugyanaz az objective- vagy world-event eredmény újratöltés után sem számolható el kétszer.
+190.3C — Eltávolított vagy átstrukturált quest/objective explicit, verziózott migrációs szabályt kap; a szabály biztonságos lezárást vagy helyettesítést választhat, kompenzációt pedig csak külön jóváhagyott tartalmi döntés alapján adhat.
+190.4C — Automatikus teszt ellenőrzi a sorrendtől független progresszt, retryt, lejáratot, mentés-visszatöltést és hibás hivatkozásokat.
+
+Indoklás: A questrendszer közvetlenül módosítja a jutalmakat és a tartós világot, ezért ugyanazok az atomi és idempotens szabályok vonatkoznak rá, mint más rendszerekre.
+Státusz: LOCKED DECISION — KANONIKUS FÁJLBAN RÖGZÍTVE
+
+======================================================================
+20. PROGRESSION, PROFESSIONÖK, SKILLEK ÉS JUTALMAZÁS
+======================================================================
+
+191. AUDITJAVASLAT — Progression-adatmodell
+
+191.1C — Minden profession, skill, mastery, perk, specialization, milestone, collection entry és reward type stabil, verziózott azonosítót használ.
+191.2C — A definíciók különülnek el a játékos mentett XP-, szint-, feloldás-, mastery-, collection- és választási állapotától.
+191.3C — A feloldások validált eseménnyel, idempotensen kerülnek a profilba; a UI nem lehet igazságforrás.
+191.4C — Átnevezett vagy eltávolított progresszióelem explicit, verziózott migrációs szabályt kap; helyettesítés vagy visszatérítés csak az adott elem jóváhagyott tartalmi szabálya alapján történhet.
+
+Indoklás: Ez illeszkedik a központi World State-hez és a 49. profilmentési döntéshez.
+Státusz: LOCKED DECISION — KANONIKUS FÁJLBAN RÖGZÍTVE
+
+192. AUDITJAVASLAT — Professionstruktúra és érvényes életutak
+
+192.1C — A professionök több, egymással összehasonlítható, önmagában is értelmes játékstílust támogatnak.
+192.2C — Egyetlen profession sem lehet kizárólagos kötelező kapu a teljes fő útvonalhoz; összetett mérföldkőhöz alternatív hozzájárulás szükséges.
+192.3C — Az általános játékosszint legfeljebb széles körű jelző vagy kényelmi feloldás legyen, ne írja felül a professionök saját identitását.
+192.4C — A kezdő professionlista, a későbbi roster és a mastery mélysége külön tartalmi scope-döntésként kerüljön lezárásra.
+
+Indoklás: A professionök pontos száma, szerepe és a general level jelentős gameplay- és scope-döntés.
+Státusz: TULAJDONOSI DÖNTÉS SZÜKSÉGES
+
+193. AUDITJAVASLAT — XP és anti-grind jutalmazás
+
+193.1C — A rendszer első felfedezést, first craftot, mérföldkövet, projektet és változatos értelmes műveletet erősebben jutalmaz, mint az alacsony szintű ismétlést.
+193.2C — Nincs általános napi vagy heti XP-cap, login streak vagy rejtett energiakorlát.
+193.3C — A variety bonus és az ismételt alacsony szintű művelet csökkenő hatékonysága lágy, érthető és nem nullázza le a kiszámítható alapjutalmat.
+193.4C — Az ismételhető jutalom deklarált resetet, cooldownt, ciklusazonosítót és idempotens jóváírást használ; fontos ritka progressziós jutalomhoz bad-luck protection vagy alternatív beszerzési út tartozik.
+
+Indoklás: Ez alapvetően meghatározza, milyen viselkedést jutalmaz a játék és mennyire válik grindossá.
+Státusz: TULAJDONOSI DÖNTÉS SZÜKSÉGES
+
+194. AUDITJAVASLAT — Perk, specializáció és respec
+
+194.1C — A specializáció a középső játékban nyílik meg, és eltérő munkafolyamatot vagy képességet ad, nem pusztán kis százalékos bónuszt.
+194.2C — A profession perk és a tool perk külön felelősséget kap, ugyanazt a bónuszt nem duplikálják.
+194.3C — A választás számít, de nem ronthatja el végleg a mentést; a respec költsége előre látható és tranzakciósan biztonságos.
+194.4C — Késői fejlődés megengedheti több ág teljesítését, de ennek pontos mélysége és ára külön scope-döntés.
+
+Indoklás: A specializáció visszafordíthatósága, mélysége és végjátéka közvetlenül alakítja a játékos identitását.
+Státusz: TULAJDONOSI DÖNTÉS SZÜKSÉGES
+
+195. AUDITJAVASLAT — Háromrétegű és látható fejlődés
+
+195.1C — A progression személyes, tartalmi és látható világfejlődési rétegeket kapcsol össze.
+195.2C — Fontos mérföldkő lehetőség szerint vizuális változást is okoz a világban, eszközön, épületen vagy régióban.
+195.3C — A Village Level főként összegző és jutalmazó rendszer; csak ritkán lehet kötelező hard gate.
+195.4C — A jutalomstruktúra funkcionális, világváltoztató, ritka és kozmetikai jutalmakat használ, nem csak százalékos növekedést.
+
+Indoklás: A Village Level szerepe és a jutalomhierarchia a játék identitásának és hosszú távú motivációjának része.
+Státusz: TULAJDONOSI DÖNTÉS SZÜKSÉGES
+
+196. AUDITJAVASLAT — Progressziós tempó, capek és mérés
+
+196.1C — XP-görbe, szintküszöb, soft cap, hard cap, perkérték és jutalommennyiség csak Tuning Default lehet működő rendszer előtt.
+196.2C — A tempót sessionhossz, szükséges akciószám, ismétlődési arány és látható mérföldközök alapján kell mérni.
+196.3C — A catch-up rendszer nem ad büntető távolléti hátrányt és nem helyettesíti automatikus végtelen fejlődéssel az aktív játékot.
+196.4C — Verzióváltáskor regressziós szimuláció ellenőrzi, hogy régi profil nem kerül lehetetlen, visszafelé fejlődő vagy duplán jutalmazott állapotba.
+
+Indoklás: A progression érzete számszerű mérést és valódi játékidőt igényel; dokumentumból nem állapítható meg.
+Státusz: PROTOTÍPUST VAGY MÉRÉST IGÉNYEL
+
+======================================================================
+21. GAZDASÁG, KERESKEDELEM ÉS PÉNZNEMEK
+======================================================================
+
+197. AUDITJAVASLAT — Pénznem, ledger és tranzakció
+
+197.1C — Minden pénznem stabil Currency ID-val és egész számú, pontos reprezentációval rendelkezik.
+197.2C — Vásárlás, eladás, jutalom, költség és refund az inventoryval egyetlen atomi tranzakcióban változik.
+197.3C — Minden tranzakció egyedi azonosítót, okkódot és szükséges price/version hivatkozást kap.
+197.4C — Megismételt kérés, újratöltés vagy appmegszakítás nem vonhat le és nem írhat jóvá kétszer.
+
+Indoklás: A ledger-alapú, atomi gazdaság az item duplication és részleges vásárlás alapvető védelme.
+Státusz: LOCKED DECISION — KANONIKUS FÁJLBAN RÖGZÍTVE
+
+198. AUDITJAVASLAT — Pénz szerepe, kereskedők és boltok
+
+198.1C — A pénz fontos eszköz, de nem válik minden feloldás és ritka tárgy univerzális megoldásává.
+198.2C — A kereskedők, buyer specializációk és a kikötői vagy más régióközi kereskedők értelmes profession-, régió-, szállítási és kínálati kapcsolatot adnak, nem pusztán azonos menüt más kinézettel.
+198.3C — A shop stock, refresh, vásárlási és eladási szabály előre látható, a kulcs- és projekttárgyak pedig nem eladhatók.
+198.4C — A pénznemek pontos száma, a bolttípusok és a specialist exchange tartalmi köre külön jóváhagyást igényel.
+
+Indoklás: A pénz szerepe és a kereskedői struktúra alapvető gazdasági és scope-döntés.
+Státusz: TULAJDONOSI DÖNTÉS SZÜKSÉGES
+
+199. AUDITJAVASLAT — Order és contract rendszer
+
+199.1C — Minden order és contract előre mutatja a kért tárgyat, mennyiséget, határidőt, alapjutalmat és opcionális bónuszt.
+199.2C — A normál rendelés figyelmen kívül hagyása vagy lassú teljesítése nem okoz tartós büntetést; legfeljebb látható speed bonus vész el.
+199.3C — Az átadás atomi, részleges teljesítés csak deklarált szabállyal történhet, és megszakításkor nem veszhet el tárgy.
+199.4C — Kötelező funkcionális jutalom nem függhet egyetlen lejáró szerződéstől vagy egyetlen kereskedőtől.
+
+Indoklás: A rendelés időnyomása és következménye a cozy tónust, a jutalomritmust és a FOMO-szintet érinti.
+Státusz: TULAJDONOSI DÖNTÉS SZÜKSÉGES
+
+200. AUDITJAVASLAT — Kereslet, kínálat és több megélhetési út
+
+200.1C — Minden nagy profession legalább egy életképes, átlátható pénzkereseti utat kap.
+200.2C — A rotating demand és a gazdasági esemény stabil Event ID-val, kezdettel, lejárattal, érintett kínálattal és árverzióval működik; lehetőséget ad, de nem teszi értéktelenné váratlanul a játékos korábbi specializációját vagy készletét.
+200.3C — A bulk-sale reduction előre látható, fokozatos és alternatív eladási lehetőségekkel együtt működik.
+200.4C — A feldolgozott termék értéke figyelembe veszi az alapanyagot, aktív munkát, időt, kapacitást és kockázatot.
+
+Indoklás: Ezek határozzák meg, hogy a gazdaság támogatja-e a több érvényes életutat, vagy egyetlen optimális farmolásra szűkül.
+Státusz: TULAJDONOSI DÖNTÉS SZÜKSÉGES
+
+201. AUDITJAVASLAT — Árak, infláció és balansz
+
+201.1C — Alapár, buy/sell spread, refreshidő, bulk threshold, épület- és toolköltség kezdetben külön Tuning Default.
+201.2C — A pénznyelő rendszerek értelmes kényelmi, fejlesztési vagy önkifejezési értéket adnak, nem napi adóként vagy kényszerű romlásként működnek.
+201.3C — Gazdasági szimuláció ellenőrzi a korai, közép- és késői játék bevételét, kiadását, készletfelhalmozását és inflációját.
+201.4C — Árváltozás nem módosítja visszamenőleg az aktív tranzakciót vagy elfogadott contractot; azok rögzített árverziót használnak.
+
+Indoklás: A konkrét árak és gazdasági tempó csak erőforrás-flow és sessionadatok alapján hangolható.
+Státusz: PROTOTÍPUST VAGY MÉRÉST IGÉNYEL
+
+202. AUDITJAVASLAT — Offline kereskedelem és exploitvédelem
+
+202.1C — Offline kereskedelem csak előre elkészített, véges rendelést vagy tranzakciót fejezhet be; nem generálhat végtelen vásárlási-eladási ciklust.
+202.2C — Minden offline folyamat véges inputtal, queue-val, outputkapacitással és rendszer-specifikus felső korláttal működik.
+202.3C — Azonos tárgypéldány egyszerre csak egy inventoryban, orderben, shopban vagy feldolgozásban lehet lefoglalva.
+202.4C — Automatikus invariáns- és hibateszt ellenőrzi a negatív pénzt, duplikációt, refundot, árváltást és appmegszakítást.
+
+Indoklás: Ez a már lezárt tranzakciós, reservation- és offline szabályokat alkalmazza a gazdaságra.
+Státusz: LOCKED DECISION — KANONIKUS FÁJLBAN RÖGZÍTVE
+
+======================================================================
+22. IDŐ, NAPSZAK, IDŐJÁRÁS, ÉVSZAK ÉS OFFLINE FOLYAMATOK
+======================================================================
+
+203. AUDITJAVASLAT — Kanonikus világóra
+
+203.1C — Egy verziózott World Clock szolgáltatás az egyetlen igazságforrás minden játékidőhöz.
+203.2C — A futó session monoton időt használ; közvetlen rendszeróra-lekérdezést egyetlen játékrendszer sem végezhet.
+203.3C — A World Clock a 65.1C és 65.3C szerinti globális időt szolgáltatja minden jelenetnek; regionális rendszer csak deklarált prezentációs vagy időjárási eltérést használhat, külön folyamatidőt nem.
+203.4C — Az időállapot menthető, validálható és migrálható; hibás referencia esetén biztonságos korrekció történik.
+
+Indoklás: Egyetlen időszolgáltatás nélkül az offline, termelési, időjárási és fast-travel folyamatok eltérő eredményt adhatnak.
+Státusz: LOCKED DECISION — KANONIKUS FÁJLBAN RÖGZÍTVE
+
+204. AUDITJAVASLAT — Világciklus és időablakok
+
+204.1C — A négyórás valós idejű világciklus ajánlott kiinduló érték, de nem végleges szám prototípusos sessionteszt előtt.
+204.2C — A napszakváltás adatvezérelt és vizuálisan fokozatos; az időfázisok nem okoznak hirtelen olvashatatlanságot.
+204.3C — Fontos rendszer vagy fő tartalom nem köthető egyetlen rövid időablakhoz; ismétlődő ablak vagy alternatív hozzáférés szükséges.
+204.4C — Az évszakok időtartama, sorrendje és valós/játékidő-kapcsolata külön mérhető tuningdöntés.
+
+Indoklás: A ciklushossz és az időablakok hozzáférhetőségét csak eltérő játékosi időbeosztással végzett teszt mutatja meg.
+Státusz: PROTOTÍPUST VAGY MÉRÉST IGÉNYEL
+
+205. AUDITJAVASLAT — Időjárás, évszak és ritka jelenségek
+
+205.1C — A regionális időjárás közös alapállapotból és korlátozott, deklarált helyi eltérésekből épül fel.
+205.2C — Időjárás és évszak lehetőségeket és változatosságot adhat, de a távollét vagy rossz idő nem rombolhat le fontos tartós fejlődést.
+205.3C — Ritka világjelenség előre jelezhető, ismétlődő vagy alternatív úton elérhető; fontos funkcionális jutalom nem válhat FOMO-forrássá.
+205.4C — A szezonális gameplayhatások, regionális különbségek és ritka események pontos köre külön tartalmi scope-döntés.
+
+Indoklás: Ez nem pusztán időtechnika, hanem hangulat-, tartalom- és jutalmazási irány.
+Státusz: TULAJDONOSI DÖNTÉS SZÜKSÉGES
+
+206. AUDITJAVASLAT — Offline folyamatok
+
+206.1C — Offline csak deklaráltan támogatott, előre elkészített folyamat halad; aktív játékosi XP vagy végtelen automatikus ismétlés nem történik.
+206.2C — A számítás kezdő- és végidőbélyegből, véges inputból, véges queue-ból, outputkapacitásból és rendszerspecifikus capből készül.
+206.3C — Minden offline folyamat eltárolja az utolsó feldolgozott időpontot vagy ciklusazonosítót, ezért ugyanaz az eltelt idő újratöltéskor nem számolható el ismét.
+206.4C — Input-, queue- vagy outputkorlát elérésekor a folyamat az első nem végrehajtható ciklusnál veszteség nélkül leáll, és a 46. döntés szerinti összefoglalóban jelenik meg.
+
+Indoklás: Ez közvetlenül következik a 45–46. és 74. kanonikus döntésekből.
+Státusz: LOCKED DECISION — KANONIKUS FÁJLBAN RÖGZÍTVE
+
+207. AUDITJAVASLAT — Pause, app-életciklus és utazás
+
+207.1C — Minden pause-képes kontextus explicit időpolitikát deklarál a helyi szimulációra és a háttérfolyamatokra; az egyes menük és aktivitások konkrét politikája saját definíciójukban marad.
+207.2C — Tereprendezési módban a korábban lezárt 12. döntés szerinti részleges pause működik.
+207.3C — Appháttérbe kerüléskor az időreferencia és az aktív folyamat biztonságos checkpointot kap; resume előtt az eltelt idő egyszer kerül feldolgozásra.
+207.4C — Fast travel és más időugrás ugyanazt az időfeldolgozási útvonalat használja, ezért nem duplázhat termelési ciklust.
+
+Indoklás: Egységes időfeldolgozás nélkül a pause, háttérbe kerülés és utazás exploitot vagy állapoteltérést okozhat.
+Státusz: LOCKED DECISION — KANONIKUS FÁJLBAN RÖGZÍTVE
+
+208. AUDITJAVASLAT — Óramanipuláció, időzóna és teljesítményteszt
+
+208.1C — Nyári/téli időszámítás és időzónaváltás nem adhat negatív eltelt időt vagy ismételt jutalmat.
+208.2C — Gyanús rendszeróra-változás büntetés helyett korlátozott, magyarázható korrekciót és diagnosztikai bejegyzést eredményez.
+208.3C — Minden offline eredmény folyamat- és tranzakcióazonosítóval idempotens.
+208.4C — Tesztmátrix fedi a nagy előre- és hátraugrást, DST-t, időzónát, hosszú távollétet, appkillt, low-memory resume-ot és gyenge telefonos teljesítményt.
+
+Indoklás: Az időhibák ritkák, de közvetlenül veszélyeztetik a mentést és a gazdaságot.
+Státusz: LOCKED DECISION — KANONIKUS FÁJLBAN RÖGZÍTVE
+
+======================================================================
+23. AKTIVITÁSOK, EXPEDÍCIÓK ÉS OPCIONÁLIS HARC
+======================================================================
+
+209. AUDITJAVASLAT — Activity- és run-adatmodell
+
+209.1C — Minden activity verziózott Activity ID-val, külön definícióval és külön menthető run instance állapottal rendelkezik.
+209.2C — A run seed, belépési feltételek, költségek, veszélyszint, checkpointok és jutalomtáblák a létrehozáskor rögzülnek.
+209.3C — Az ideiglenes run-only resource elkülönül a tartós inventorytól, a biztosított jutalom pedig explicit secured állapotot kap.
+209.4C — Futó run verzióváltáskor explicit verziópolitika szerint a mentett szabállyal befejeződik, migrálódik vagy biztonságosan lezárul; kompenzáció csak külön jóváhagyott tartalmi szabályból következhet.
+
+Indoklás: Ez kiterjeszti a 67–69. kanonikus aktivitási döntéseket egy teljes adatkontraktussá.
+Státusz: LOCKED DECISION — KANONIKUS FÁJLBAN RÖGZÍTVE
+
+210. AUDITJAVASLAT — Run-életciklus — kanonikusan már lefedett
+
+210.1C — A belépési commitot a 69.2C kanonikus döntés már lefedi.
+210.2C — A kilépést és megszakítást a 69.3–69.4C kanonikus döntések már lefedik.
+210.3C — A seedet és a tartós vagy ideiglenes eredmény szétválasztását a 67.3–67.4C kanonikus döntések már lefedik.
+210.4C — Az app-életciklust a 104.3–104.4C kanonikus döntések már lefedik; új auditdöntés csak a run-lejárati policyhez szükséges.
+
+Indoklás: A run nem kerülhet félkész jelenetbe, és reload nem használható jutalom- vagy seed-rerollra.
+Státusz: KANONIKUSAN MÁR LEFEDETT — NEM ÚJ DÖNTÉS
+
+211. AUDITJAVASLAT — Kockázat, vereség és nehézség
+
+211.1C — Belépés előtt látható a veszélyszint, ajánlott tool/skill, checkpoint, lehetséges item risk és visszatérési szabály.
+211.2C — Nincs standard game over; vereség biztonságos pontra visz, legfeljebb enyhe és előre ismert következménnyel.
+211.3C — Normál inventory nem vész el; kockázat legfeljebb deklarált expedíció-only tárgyakra vonatkozhat, látható recovery route-tal.
+211.4C — Rejtett dinamikus nehézség nincs; bármilyen adaptive difficulty csak külön jóváhagyott, magyarázható szabállyal működhet.
+
+Indoklás: Az item risk, vereség és nehézség erősen meghatározza a cozy játék tónusát.
+Státusz: TULAJDONOSI DÖNTÉS SZÜKSÉGES
+
+212. AUDITJAVASLAT — Activity-portfólió és pályagenerálás
+
+212.1C — Az expedíciók véges, elérhető befejezéssel és természetes visszatérési pontokkal rendelkeznek.
+212.2C — A generált pályarészek determinisztikus seedből készülnek, az egyedi landmarkok és fontos progressionhelyek authored elemek maradnak.
+212.3C — A bánya, horgászat, kikötői út és más aktivitás csak közös run-szerződést használ, de saját játékszabályt és UX-et kap.
+212.4C — Az első demó és későbbi verzió pontos activity-portfólióját külön scope-döntés határozza meg.
+
+Indoklás: A rendszer közös alapja technikailag ajánlható, de a megvalósítandó aktivitások száma és mélysége tulajdonosi scope.
+Státusz: TULAJDONOSI DÖNTÉS SZÜKSÉGES
+
+213. AUDITJAVASLAT — Opcionális harc
+
+213.1C — Harc csak opcionális, elkülönített tartalom lehet, és nem blokkolhatja a békés fő progressziót.
+213.2C — A harci állapot, sebzés, gyógyulás, célzás és kilépés külön deklarált rendszerként működik.
+213.3C — A harci jutalom fontos funkcionális része alternatív békés útvonalon is megszerezhető.
+213.4C — A konkrét harci scope, ritmus, ellenféltípusok és kockázat P3/Future döntés maradjon külön tulajdonosi jóváhagyásig.
+
+Indoklás: A Gameplay Bible maga is jövőbeli nyitott döntésként kezeli a harcot; automatikus lezárása jelentős scope- és identitásváltozás lenne.
+Státusz: TULAJDONOSI DÖNTÉS SZÜKSÉGES
+
+214. AUDITJAVASLAT — Exploitvédelem, mobilos irányítás és teljesítmény
+
+214.1C — Reward commit, checkpoint és run completion tranzakcióazonosítóval, idempotensen működik.
+214.2C — Offline a veszélyes vagy aktív ügyességi run nem játszódik le automatikusan; legfeljebb a mentett biztonságos állapot őrződik meg.
+214.3C — Reload, appkill és hálózat nélküli újraindítás ugyanazt a seedet, secured rewardot és checkpointot állítja vissza.
+214.4C — A mobilvezérlés, loading, memóriacsúcs, frame time és megszakításbiztonság csak céltelefonos prototípus után tekinthető elfogadottnak.
+
+Indoklás: A szerződés erős iránya adott, de az aktivitások irányítása és teljesítménye valós készüléket igényel.
+Státusz: PROTOTÍPUST VAGY MÉRÉST IGÉNYEL
+
+======================================================================
+24. SESSION DESIGN, VISSZATÉRÉS ÉS ALACSONY NYOMÁSÚ JÁTÉK
+======================================================================
+
+215. AUDITJAVASLAT — Sessionhossz és time-to-action
+
+215.1C — A játék támogasson 2–3 perces hasznos mikrosessiont, 5–15 perces teljes értékű sessiont és szabadon hosszabb játékot.
+215.2C — Normál visszatéréskor a célzott time-to-meaningful-action 10–20 másodperc.
+215.3C — A gyakori alapműveletek rövidek, a hosszabb interakciók csak érdemi mérföldköveknél indokoltak.
+215.4C — A sessioncélokat betöltési idővel, első inputig eltelt idővel és első érdemi eredményig eltelt idővel kell mérni.
+
+Indoklás: A megadott idősávok jó kiindulók, de készülék- és gameplayteszt nélkül nem végleges acceptance értékek.
+Státusz: PROTOTÍPUST VAGY MÉRÉST IGÉNYEL
+
+216. AUDITJAVASLAT — Welcome-back és biztonságos folytatás
+
+216.1C — Visszatéréskor a játék közvetlenül a világba vezet, legfeljebb egy rövid, bezárható összefoglalóval.
+216.2C — Normál esetben a mentett pozíció folytatódik; veszélyes, blokkolt vagy hibás helyzetben a legközelebbi biztonságos pont.
+216.3C — A summary csak azt mutatja, mi készült el, mi állt le és mi igényel figyelmet; nem reward-box sorozat.
+216.4C — A resume layout, animáció, üzenethossz és popupviselkedés céltelefonon validálandó.
+
+Indoklás: A visszatérés élménye UX-kérdés, és kis képernyőn könnyen túlterhelővé válhat.
+Státusz: PROTOTÍPUST VAGY MÉRÉST IGÉNYEL
+
+217. AUDITJAVASLAT — Alacsony nyomású játékszabály
+
+217.1C — A játékos bármikor kiléphet; nincs kötelező hazatérés, cleanup vagy napi checklist.
+217.2C — Nincs login streak, kötelező napi rutin, FOMO-alapú főjutalom vagy távollét miatti fontos veszteség.
+217.3C — Kihagyott öntözés, állatgondozás, kereskedés vagy gathering nem okoz tartós büntetést.
+217.4C — A játék hosszabb sessiont kapcsolódó célokkal és látható fejlődéssel ösztönöz, nem mesterséges időnyomással.
+
+Indoklás: Ez a Readi World érzelmi és retention-filozófiájának központi tulajdonosi döntése.
+Státusz: TULAJDONOSI DÖNTÉS SZÜKSÉGES
+
+218. AUDITJAVASLAT — Ajánlások és adaptív HUD
+
+218.1C — A What’s Ready és next-step ajánlások opcionálisak, bezárhatók és teljesen kikapcsolhatók.
+218.2C — Az ajánlás figyelembe veheti a becsült sessionhosszt, helyet, kész folyamatokat, aktív célt és feloldott aktivitásokat.
+218.3C — Az adaptív HUD csak az aktuális kontextushoz szükséges információt mutatja, miközben a közös funkciók nagyjából két navigációs lépésen belül maradnak.
+218.4C — Az ajánlási szabályt belső feladatteszt, task completion és félrenyomási mérés alapján kell finomítani, nem engagement-maximalizálás alapján.
+
+Indoklás: Az ajánlások hasznossága, sűrűsége és irányító ereje csak UX-prototípuson mérhető.
+Státusz: PROTOTÍPUST VAGY MÉRÉST IGÉNYEL
+
+219. AUDITJAVASLAT — Természetes megállási pontok, reminder és Scenic Mode
+
+219.1C — A termelés indítása, projektlépés, checkpoint, tárolás és célfrissítés jól felismerhető természetes megállási pont.
+219.2C — A playtime reminder kizárólag opcionális, konfigurálható és nem jutalmazza a figyelmen kívül hagyását.
+219.3C — Scenic Mode nyugodt, UI-mentes megfigyelést és mozgást támogat, nem rejt el visszafordíthatatlan veszélyt vagy kötelező információt.
+219.4C — A five-more-minutes célkapcsolás, reminder és Scenic Mode pontos prezentációja külön tulajdonosi UX-döntés.
+
+Indoklás: Ezek a játék hangulatát és etikus retentionirányát alakítják.
+Státusz: TULAJDONOSI DÖNTÉS SZÜKSÉGES
+
+220. AUDITJAVASLAT — Mobilos megszakítás és autosave
+
+220.1C — Fókuszvesztéskor a mozgási input leáll, és a 104.3C szerinti biztonságos checkpoint- és mentési kísérlet indul; a rendszer nem feltételezi, hogy az operációs rendszer felfüggesztése előtt a tartós írás biztosan befejeződik.
+220.2C — Visszatéréskor korábbi érintés, joystick-állapot vagy Interaction Request nem aktiválódhat újra.
+220.3C — Hosszú háttérben töltött idő ugyanazt az offline feldolgozást használja, mint a teljes bezárás.
+220.4C — Hívás, értesítés, appváltás, képernyőzár, folyamatkill és low-memory újraindítás kötelező regressziós teszt.
+
+Indoklás: Ez a már lezárt mobilos interakciós és mentési szerződések session-szintű alkalmazása.
+Státusz: LOCKED DECISION — KANONIKUS FÁJLBAN RÖGZÍTVE
+
+======================================================================
+25. HIBÁK, KUDARC, VISSZAÁLLÍTÁS ÉS BIZTONSÁG
+======================================================================
+
+221. AUDITJAVASLAT — Kudarcfilozófia
+
+221.1C — A főjátékban nincs végleges game over vagy jelentős tartós fejlődést törlő kudarc.
+221.2C — Exhaustion vagy collapse biztonságos pontra helyez, legfeljebb enyhe, ideiglenes és előre ismert következménnyel.
+221.3C — Normál világban nincs véletlen item loss; kivétel csak külön jelölt opcionális aktivitásban, recovery route-tal.
+221.4C — A kudarc tanít, átirányít vagy röviden lassít, de nem alázza meg és nem zárja csapdába a játékost.
+
+Indoklás: A konkrét kudarcélmény és következmény a cozy tónus alapvető tulajdonosi döntése.
+Státusz: TULAJDONOSI DÖNTÉS SZÜKSÉGES
+
+222. AUDITJAVASLAT — Craft-, event- és activity-kudarc
+
+222.1C — Normál crafting mindig sikeres; kockázatos crafting csak későbbi, külön jelölt tartalom lehet.
+222.2C — Megszakított craft visszatérítése fázisfüggő és megerősítés előtt pontosan látható.
+222.3C — Failed order vagy kihagyott event nem zárhat ki nélkülözhetetlen funkcionális jutalmat; retry vagy alternatív út szükséges.
+222.4C — Expedíciós vereség a már secured jutalmat megőrzi, és csak előre jelzett run-only kockázatot alkalmazhat.
+
+Indoklás: A craft failure, event failure és expedíciós kockázat gameplay- és balanszfilozófia.
+Státusz: TULAJDONOSI DÖNTÉS SZÜKSÉGES
+
+223. AUDITJAVASLAT — Undo-szabály összehangolása
+
+223.1C — Az első verzióban és az első vertical slice-ban nincs általános Undo-rendszer.
+223.2C — A még nem commitolt mozgatás vagy szerkesztés megszakítása az eredeti pozíciót állítja vissza; ez nem Undo-history.
+223.3C — Commitolt item transfer, eladás, dekoráció vagy más művelet nem kap utólagos Undo-ablakot; a hibát validáció, előnézet és szükség esetén megerősítés előzi meg.
+223.4C — A Gameplay Bible korábbi Undo-lehetőséget említő állítása felülírt történeti javaslat, nem elfogadott funkció.
+
+Indoklás: Az általános Undo elhagyása egyszerűbb és biztonságosabb tranzakciós modellt ad; a véletlen hibákat művelet előtti védelem kezeli.
+Státusz: LOCKED DECISION — KANONIKUS FÁJLBAN RÖGZÍTVE
+
+224. AUDITJAVASLAT — Játékosvédelmi UX
+
+224.1C — Kulcs- és projekttárgy nem adható el; ritka vagy aktuális célhoz szükséges tárgy külön figyelmeztetést kap.
+224.2C — Ritka anyag költése megmutatja a felhasználást, a megmaradó mennyiséget és az érintett aktív célt.
+224.3C — Fontos, fejlesztett vagy egyedi objektum lebontása részletes megerősítést kér; hétköznapi művelet nem kap felesleges modalt.
+224.4C — Buyback-limit, respec-költség, megerősítési szintek és figyelmeztetési küszöbök telefonos UX-teszttel finomítandók.
+
+Indoklás: A túl kevés védelem adatvesztést, a túl sok megerősítés pedig mobilos súrlódást okoz.
+Státusz: PROTOTÍPUST VAGY MÉRÉST IGÉNYEL
+
+225. AUDITJAVASLAT — Stuck recovery és degradált mód
+
+225.1C — Érvénytelen pozíció validált recovery policyt indít, amely biztonságos spawnra helyez vagy explicit visszatérési műveletet kínál; a konkrét játékosoldali UX külön prototípusos döntés.
+225.2C — Hibás objektum, quest, scene vagy dependency izolálható; nem teheti betölthetetlenné az egész világállapotot.
+225.3C — Hiányzó asset deklarált fallbacket használ, a logikai objektumállapot megmarad.
+225.4C — Súlyos részleges hiba Recovery Mode-ot vagy degradált működést indít, érthető játékosüzenettel és részletes fejlesztői diagnosztikával.
+
+Indoklás: A részleges tartalomhiba nem válhat teljes mentésvesztéssé.
+Státusz: LOCKED DECISION — KANONIKUS FÁJLBAN RÖGZÍTVE
+
+226. AUDITJAVASLAT — Crash, rollback és adatvesztés elleni teszt
+
+226.1C — Többrendszeres hiba a 76.2C és 76.4C szerinti rollbacket használja, és megőrzi a sikertelen tranzakció diagnosztikai azonosítóját.
+226.2C — Crash recovery a 43.1–43.4 szerint fut; a fő mentés csak sikeres validáció vagy javítás után írható vissza.
+226.3C — A játék alapfunkciói hálózat nélkül helyben működnek; külső szolgáltatás hibája nem sértheti a World State-et.
+226.4C — Kötelező fault-injection teszt fedi az írás közbeni killt, hibás adatblokkot, elfogyó tárhelyet, hiányzó assetet és tranzakció közbeni megszakítást.
+
+Indoklás: A „nincs adatvesztés” csak visszaállítható backup- és hibainjektálási bizonyítékkal tekinthető teljesítettnek.
+Státusz: LOCKED DECISION — KANONIKUS FÁJLBAN RÖGZÍTVE
+
+======================================================================
+26. UI, UX, HUD, MENÜK ÉS SCENIC MODE
+======================================================================
+
+227. AUDITJAVASLAT — Portrait-first adaptív HUD
+
+227.1C — A HUD portré módra és safe area-kra készül, a világot nem takarja állandó, túlméretezett kezelőréteg.
+227.2C — Profil, fontos erőforrás, idő vagy időjárás és tracked goal csak a szükséges tömörségben jelenik meg.
+227.3C — Nincs permanens ACT gomb; egyetlen stabil kontextuális prompt működik a 101–103. döntések szerint.
+227.4C — A B+ HUD csak vizuális kiindulás; a konkrét elrendezés, méret és információsűrűség telefonos prototípust igényel.
+
+Indoklás: A HUD pontos használhatósága képernyőméret-, kéz- és játékkontextus-függő.
+Státusz: PROTOTÍPUST VAGY MÉRÉST IGÉNYEL
+
+228. AUDITJAVASLAT — Információs architektúra és navigáció
+
+228.1C — Inventory, tools, map, World Path, quest, profession, building, crafting, farm, trade, storage és settings következetes főmenü-hierarchiát használ.
+228.2C — Gyakori funkció nagyjából két navigációs lépésen belül elérhető, de ritka adminisztratív funkció nem terheli a HUD-ot.
+228.3C — A vissza gomb viselkedése panelenként deklarált: alnézetet zár, majd modalt, végül a főmenüt; mentetlen kritikus állapotnál megerősít.
+228.4C — A játékos utolsó biztonságos menühelye megőrizhető, de hibás vagy eltávolított panelnél felsőbb fallback nyílik meg.
+
+Indoklás: A menümélység és gyorselérés feladat-alapú mobiltesztet igényel.
+Státusz: PROTOTÍPUST VAGY MÉRÉST IGÉNYEL
+
+229. AUDITJAVASLAT — Touch, lista és egykezes használat
+
+229.1C — Minden interaktív elem safe area-kompatibilis, megfelelő touch targettel és skálázható szöveggel működik.
+229.2C — A drag és tap külön küszöböt, vizuális állapotot és megszakítási szabályt használ, hogy ne váltson ki véletlen műveletet.
+229.3C — Hosszú listához kategória, keresés, filter, rendezés és pozíciómegőrzés használható, ahol a tartalommennyiség indokolja.
+229.4C — Balkezes és jobbkezes elrendezést, valamint kis és nagy telefonon egykezes elérhetőséget valós készüléken kell mérni.
+
+Indoklás: A pontos méretek és gesztusküszöbök dokumentumból nem dönthetők el.
+Státusz: PROTOTÍPUST VAGY MÉRÉST IGÉNYEL
+
+230. AUDITJAVASLAT — Állapot- és hibavisszajelzés
+
+230.1C — Loading, progress, saving, success, warning és error külön, egységes komponenseket használ.
+230.2C — A 102.3C és 103.3C locked-state- és hibamagyarázati szerződése minden panelre, menüre és modal/non-modal UI-ra érvényes.
+230.3C — A 103.4C prioritási, összevonási és megjelenítési korlátja minden toastra érvényes; a fontos eredmény tartós naplóból vagy összefoglalóból később is elérhető.
+230.4C — Egyetlen kritikus állapot sem közölhető csak színnel, hanggal vagy haptikával.
+
+Indoklás: Ez közvetlenül alkalmazza a 102–103. interakciós és hozzáférhetőségi döntéseket az egész UI-ra.
+Státusz: LOCKED DECISION — KANONIKUS FÁJLBAN RÖGZÍTVE
+
+231. AUDITJAVASLAT — Scenic Mode és későbbi photo mode
+
+231.1C — Scenic Mode elrejti a HUD-ot, countereket, goal trackinget, promptokat, értesítéseket és task markereket.
+231.2C — A világ, mozgás, időjárás, állatok, animáció és ambience tovább működik; a joystick külön beállítással rejthető.
+231.3C — Veszélyes vagy visszafordíthatatlan helyzetben a mód nem rejthet el kötelező biztonsági figyelmeztetést.
+231.4C — Screenshot-, kameravezérlés- és photo-mode-bővítés külön későbbi scope, nem része automatikusan az első Scenic Mode-nak.
+
+Indoklás: A Scenic Mode pontos szabadsága és photo-mode-határa vizuális és termékscope-döntés.
+Státusz: TULAJDONOSI DÖNTÉS SZÜKSÉGES
+
+232. AUDITJAVASLAT — Lokalizáció, hozzáférhetőség és UI-elfogadás
+
+232.1C — Játékosnak látható szöveg stabil string ID-ból érkezik, nem kerül közvetlenül rendszerlogikába vagy grafikába.
+232.2C — A layout kezeli a hosszabb fordítást, többes számot, sortörést, nagy text scale-t és hiányzó lokalizáció fallbacket.
+232.3C — Reduced motion, colorblind-safe jelzés, hangerő vagy haptika és balkezes mód ugyanazon komponensekben működik, nem utólagos külön rétegként.
+232.4C — UI Definition of Done része a kis vagy nagy telefon, safe area, text scale, hosszú fordítás, touch és képernyőkép-alapú regressziós teszt.
+
+Indoklás: A konkrét töréspontok és skálák vizuális, készülékes ellenőrzést igényelnek.
+Státusz: PROTOTÍPUST VAGY MÉRÉST IGÉNYEL
+
+======================================================================
+27. VIZUÁLIS RENDSZER, ASSETEK ÉS RENDERELÉS
+======================================================================
+
+233. AUDITJAVASLAT — Art direction és assetcsaládok
+
+233.1C — Az alapirány meleg, cozy, kézzel festett vagy storybook jellegű, tiszta sziluettel és enyhén döntött top-down nézettel.
+233.2C — A perspektíva, fényirány, árnyék, outline és paletta közös art guide szerint működik minden assetcsaládnál.
+233.3C — Ground, forest, buildings, tools, effects, UI, characters és animals külön családspecifikációt és elfogadási mintát kap.
+233.4C — A pontos paletta, outline-erősség, karakterarány és végleges vizuális részletesség tulajdonosi art-direction jóváhagyást igényel.
+
+Indoklás: A magas szintű irány adott, de a konkrét stílusdöntéseket nem szabad technikai automatizmusként lezárni.
+Státusz: TULAJDONOSI DÖNTÉS SZÜKSÉGES
+
+234. AUDITJAVASLAT — Sprite registry és szemantikus feloldás
+
+234.1C — Minden használható vizuális asset stabil Sprite ID-val, verziózott registrybe kerül.
+234.2C — A játékrendszer alapból role-t és taget kér, nem fájlnevet; exact Sprite ID csak authored landmarkhoz vagy pontos animációs állapothoz használható.
+234.3C — Minden kéréshez deklarált fallbacklánc és diagnosztikai eredmény tartozik.
+234.4C — Assetaktiválást manifest és registry vezérel; a böngésző nem próbál mappát szkennelni.
+
+Indoklás: Ez rendererfüggetlen, cserélhető és validálható assetkapcsolatot ad.
+Státusz: LOCKED DECISION — KANONIKUS FÁJLBAN RÖGZÍTVE
+
+235. AUDITJAVASLAT — Geometriai és atlaszmetaadat
+
+235.1C — Minden sprite deklarálja a forrásterületet, pivotot, drawSize-t, alpha-szabályt és szükséges collision- vagy interakciós metaadatot.
+235.2C — Atlasz esetén grid, cella, padding, frame-sorrend és maximális textúraméret automatikusan validálódik.
+235.3C — Külön sprite és atlasz azonos logikai registry-kontraktust használ, ezért csomagolási forma nem szivárog a gameplaykódba.
+235.4C — Kötelező, gameplayt befolyásoló metaadat hiánya validációs hiba, és megakadályozza az érintett asset vagy modul aktiválását; csak explicit opcionális vizuális metaadat használhat deklarált fallbacket, minden eset naplózva.
+
+Indoklás: A metaadat-szerződés erős technikai alap; az atlaszméret maga később mérhető.
+Státusz: LOCKED DECISION — KANONIKUS FÁJLBAN RÖGZÍTVE
+
+236. AUDITJAVASLAT — Vizuális állapotok és variánsok
+
+236.1C — Restoration, animation, seasonal, weather és damage state a logikai állapotból feloldott vizuális profil, nem külön igazságforrás.
+236.2C — A variánsok explicit kompatibilitást és rendezett fallbacket használnak.
+236.3C — Animáció frame-je és ideiglenes effektje újragenerálható; csak a játékmenetileg fontos állapot mentődik.
+236.4C — Ha asset vagy variáns stabil ID-ja vagy kompatibilitási szerződése változik, kiadás előtt alias, migráció vagy fallback szükséges; kompatibilis, azonos ID alatti grafikai csere validációt és asset reportot igényel.
+
+Indoklás: Ez megakadályozza, hogy a grafika és a World State eltérjen egymástól.
+Státusz: LOCKED DECISION — KANONIKUS FÁJLBAN RÖGZÍTVE
+
+237. AUDITJAVASLAT — Seamless terrain és assetpipeline
+
+237.1C — Ground tile csak akkor fogadható el seamlessként, ha négy irányban ismételhető, és technikai 3×3 teszten látható varrat nélkül átmegy.
+237.2C — Az AI vagy alkotói „seamless” megnevezés önmagában nem elfogadási bizonyíték.
+237.3C — Egy körben egy assetcsalád változhat; képalkotás, technikai validáció és runtime-integráció külön lépés.
+237.4C — Minden kör asset reportot, vizuális összehasonlítást és regressziós ellenőrzést készít.
+
+Indoklás: Ez megfelel a projekt rögzített assetbiztonsági és terrain-szabályainak.
+Státusz: LOCKED DECISION — KANONIKUS FÁJLBAN RÖGZÍTVE
+
+238. AUDITJAVASLAT — Renderer, draw order és mobilos teljesítmény
+
+238.1C — A Canvas-jellegű megjelenítés marad, de a konkrét saját renderer vagy könyvtár kiválasztása követelménylista és benchmark előtt nyitott.
+238.2C — Draw order és depth sorting deklarált layerből, lábpontból vagy pivotból és stabil tie-breakből készül.
+238.3C — Culling, batching, LOD, high-DPI scale, preload, on-demand load és cache-korlát célkészülék-profil alapján működik.
+238.4C — A rendererjelöltek azonos jelenettel, azonos assetmennyiséggel, frame time-, memória- és betöltési méréssel hasonlítandók össze.
+
+Indoklás: A 7. kanonikus döntés szándékosan nyitva hagyta a konkrét rendertechnológiát.
+Státusz: PROTOTÍPUST VAGY MÉRÉST IGÉNYEL
+
+239. AUDITJAVASLAT — Vizuális QA és Scenic Mode minőség
+
+239.1C — AtlasValidator, missing-asset report és vizuális golden screenshot teszt kerül a pipeline-ba.
+239.2C — Kötelező készülékes ellenőrzés fedi a kis kijelzőt, high-DPI-t, low-memory profilt, nappalt, éjszakát és időjárási variánst.
+239.3C — Scenic Mode-ban a világ UI nélkül is olvasható, a fontos sziluettek, mélység és interakciós terek nem esnek szét.
+239.4C — Az elfogadás rögzített minőségi és teljesítménybudgethez kötött, nem pusztán ahhoz, hogy az asset egyszer betöltődik.
+
+Indoklás: A vizuális minőség és mobilos stabilitás csak renderelt, célkészülékes bizonyítékkal zárható le.
+Státusz: PROTOTÍPUST VAGY MÉRÉST IGÉNYEL
+
+======================================================================
+28. AUDIO, HAPTIKA ÉS HANGULATI VISSZAJELZÉS
+======================================================================
+
+240. AUDITJAVASLAT — Audio-event rendszer
+
+240.1C — A játékrendszerek szemantikus Audio Event ID-t küldenek, nem közvetlen hangfájlt játszanak le.
+240.2C — Egy központi Audio Manager kezeli a kategóriát, prioritást, concurrency limitet, cooldownt, loopot és duckingot.
+240.3C — Az audioesemények vizuális állapotot nem módosíthatnak; a gameplay marad igazságforrás.
+240.4C — Hiányzó vagy sikertelen hang csendes, naplózott fallbacket kap, és nem blokkolhatja az interakciót.
+
+Indoklás: Ez cserélhető asseteket, kontrollált mixet és biztonságos hiánykezelést ad.
+Státusz: LOCKED DECISION — KANONIKUS FÁJLBAN RÖGZÍTVE
+
+241. AUDITJAVASLAT — Zene és adaptív soundscape
+
+241.1C — A soundscape régió, napszak, időjárás és beltér alapján rétegzett, fokozatos átmenetekkel működhet.
+241.2C — A zene és ambience támogatja a nyugalmat, kíváncsiságot, gondoskodást és helyreállítást, nem kelt folyamatos sürgetést.
+241.3C — Az activity- és veszélyzene elkülönülhet, de nem törheti meg indokolatlanul a békés főjáték hangulatát.
+241.4C — A zenei paletta, régiós identitások és teljes adaptív rendszer mélysége külön audio- és artirányú tulajdonosi döntés.
+
+Indoklás: A hangzás érzelmi identitás és jelentős tartalmi scope, nem automatikus technikai választás.
+Státusz: TULAJDONOSI DÖNTÉS SZÜKSÉGES
+
+242. AUDITJAVASLAT — Interakciós és UI-visszajelző hangok
+
+242.1C — Tool impact, craft completion, restoration, UI confirm, warning, error, NPC és animal esemény külön szemantikus hangprofilt kaphat.
+242.2C — A siker-, warning- és errorhang együtt működik vizuális és — ahol támogatott — haptikus visszajelzéssel.
+242.3C — Gyakori művelet hangja cooldownt, variációt és egyszerre szóló példányszám-korlátot kap.
+242.4C — A konkrét első feedback sound set, hangerőarány és ismétlési komfort rövid vertical-slice tesztben zárandó le.
+
+Indoklás: A megfelelő visszajelzés és a fárasztó ismétlődés határa meghallgatás nélkül nem dönthető el.
+Státusz: PROTOTÍPUST VAGY MÉRÉST IGÉNYEL
+
+243. AUDITJAVASLAT — App-életciklus és audiobeállítások
+
+243.1C — Music, ambience, SFX és UI külön hangerőkategóriát és mute-ot használ; voice vagy dialogue kategória csak akkor készül, ha külön jóváhagyott tartalom valóban igényli.
+243.2C — Háttérbe kerüléskor a hang kontrolláltan felfüggesztődik; resume nem indít duplikált loopot vagy késleltetett effektet.
+243.3C — Böngészős autoplay-korlát esetén az Audio Manager az első valódi játékosi inputig vár, érthető fallbackkel.
+243.4C — Nem támogatott haptika vagy audiofunkció biztonságosan kimarad, a játék továbbra is teljesen használható.
+
+Indoklás: Ezek platform- és életciklus-szintű kötelező működési szabályok.
+Státusz: LOCKED DECISION — KANONIKUS FÁJLBAN RÖGZÍTVE
+
+244. AUDITJAVASLAT — Haptika és hozzáférhetőségi redundancia
+
+244.1C — Haptika csak eseményprofilt kér, intenzitása és engedélyezése játékos által állítható.
+244.2C — Gyakori input és ismételt művelet haptikus rate limitet kap.
+244.3C — Minden haptikus információnak vizuális és — ahol megfelelő — hangos megfelelője is van.
+244.4C — A haptikus minták, intenzitás és reduced-vibration profil valós Android- és iOS-eszközön tesztelendő.
+
+Indoklás: Az eszközök rezgéskaraktere jelentősen eltér, ezért a pontos érzés prototípust igényel.
+Státusz: PROTOTÍPUST VAGY MÉRÉST IGÉNYEL
+
+245. AUDITJAVASLAT — Audioasset-betöltés, budget és milestone-scope
+
+245.1C — Rövid, gyakori SFX előtöltött és tömörített; hosszabb zene vagy ambience streamelt vagy igény szerint töltött lehet.
+245.2C — Hangmemória, egyidejű voice-szám, decode-idő és háttérből resume külön budgetet kap.
+245.3C — Az első gameplay loop előbb működhet csendes fallbackkel, de a vertical slice csak az alap interakciós, craft-, restoration-, UI- és ambience-audiopass után tekinthető bemutathatóan késznek.
+245.4C — A teljes adaptív soundscape későbbi scope marad, és nem blokkolhatja az első funkcionális játékhurkot.
+
+Indoklás: A pontos codec, bitrate, memória- és voice-budget céltelefonos mérésből állapítható meg.
+Státusz: PROTOTÍPUST VAGY MÉRÉST IGÉNYEL
+
+======================================================================
+29. HOZZÁFÉRHETŐSÉG ÉS BEÁLLÍTÁSOK
+======================================================================
+
+246. AUDITJAVASLAT — Hozzáférhetőségi minimumszerződés
+
+246.1C — Fontos információ nem közölhető kizárólag színnel, hanggal, haptikával vagy mozgással.
+246.2C — A szöveg egyszerű, tömör, lokalizálható és a tutorial később is visszanézhető.
+246.3C — Minden fontos művelethez egyértelmű fókusz-, állapot-, siker- és hibajelzés tartozik.
+246.4C — Hozzáférhetőségi támogatás a komponensek alapkontraktusa, nem későbbi külön akadálymentes mód.
+
+Indoklás: Ez rendszerszintű tervezési minimum, amelyet később nehéz és költséges visszaépíteni.
+Státusz: LOCKED DECISION — KANONIKUS FÁJLBAN RÖGZÍTVE
+
+247. AUDITJAVASLAT — Vizuális hozzáférhetőség
+
+247.1C — UI scale és text scale külön állítható, a layout pedig nagy értéknél is használható marad.
+247.2C — Colorblind-safe jelzés szín mellett ikont, mintát, formát vagy szöveget is használ.
+247.3C — Reduced motion korlátozza a kamera shake-et, parallaxot, erős átmenetet és szükségtelen mozgó UI-t.
+247.4C — Villogás, kontraszt, képernyőeffekt és skálatartomány konkrét értékei készülékes és hozzáférhetőségi tesztből zárandók le.
+
+Indoklás: Az elv technikailag egyértelmű, de a használható tartomány és layout csak renderelt prototípuson mérhető.
+Státusz: PROTOTÍPUST VAGY MÉRÉST IGÉNYEL
+
+248. AUDITJAVASLAT — Input és motoros hozzáférhetőség
+
+248.1C — Joystickméret, hely, érzékenység és balkezes elrendezés állítható.
+248.2C — Hold művelethez — ahol gameplay szempontból lehetséges — tap vagy toggle alternatíva tartozik.
+248.3C — Tap duration, célpontmegtartás és automatikus interakció biztonságos tartományon belül személyre szabható.
+248.4C — Egykezes használatot, kézremegést, lassabb inputot és eltérő képernyőméretet célzott prototípusos teszt fedi.
+
+Indoklás: A pontos inputértékek erősen személy- és készülékfüggők.
+Státusz: PROTOTÍPUST VAGY MÉRÉST IGÉNYEL
+
+249. AUDITJAVASLAT — Audio, felirat, haptika és reminder
+
+249.1C — Hangerőkategóriák, mute, feliratok és haptikus intenzitás egymástól függetlenül állíthatók.
+249.2C — Voice nélküli játékban is feliratozható minden információhordozó hangjelzés.
+249.3C — Playtime reminder és minden jövőbeli OS-értesítés opcionális, kikapcsolható és nem használ FOMO-t.
+249.4C — Az értesítések pontos típusa, alapértelmezése és gyakorisága külön tulajdonosi termékdöntés.
+
+Indoklás: A reminder és notification policy a játék etikáját, platformviselkedését és felhasználói bizalmat érinti.
+Státusz: TULAJDONOSI DÖNTÉS SZÜKSÉGES
+
+250. AUDITJAVASLAT — Beállításadat, profil és migráció
+
+250.1C — Minden beállítás stabil Setting ID-t, típust, támogatott tartományt, alapértéket és schema-verziót kap.
+250.2C — Minden SettingDefinition profile vagy device hatókört deklarál; a mentés és eszközváltás az 55.2–55.4 döntések szerint történik.
+250.3C — Betöltéskor a támogatott tartomány és az eszközképesség validálódik; nem támogatott érték az 55.4C szerinti fallbacket kap, diagnosztikai bejegyzéssel.
+250.4C — Migráció ismeretlen vagy régi beállítást nem dob el csendben, és szükség esetén érthető reset- vagy helyreállítási lehetőséget ad.
+
+Indoklás: Ez a már lezárt beállításmentési szabály teljes adatkontraktusa.
+Státusz: LOCKED DECISION — KANONIKUS FÁJLBAN RÖGZÍTVE
+
+251. AUDITJAVASLAT — Privacy és értesítési policy hiánya
+
+251.1C — P0/P1-ben minden játékadat helyben marad.
+251.2C — Nincs analitika, automatikus hibajelentés, reklámkövetés vagy push értesítés.
+251.3C — Ezek később integrálhatók, de csak a külön privacy-dokumentum és önkéntes játékosi engedély után.
+251.4C — A jóváhagyásig minden hálózati adatküldés kikapcsolt vagy nem implementált.
+
+Indoklás: A teljesen helyi P0/P1 működés elkerüli a szükségtelen adatkezelési kockázatot, miközben a későbbi, átlátható és önkéntes integráció lehetőségét nem zárja ki.
+Státusz: LOCKED DECISION — KANONIKUS FÁJLBAN RÖGZÍTVE
+
+252. AUDITJAVASLAT — Teljesítményprofilok és hozzáférhetőségi QA
+
+252.1C — A játék támogat szabványos teljesítményprofilokat, például normál, battery saver és low-memory módot.
+252.2C — Automatikus eszközfelismerés biztonságos profilt ajánlhat, de a játékos felülírhatja, és látja a fő kompromisszumot.
+252.3C — Alacsony profil sem távolíthat el szükséges visszajelzést vagy hozzáférhetőségi funkciót; elsősorban effektet, felbontást és cache-t csökkent.
+252.4C — Definition of Done része a beállításkombinációk, reset, migráció, eszközváltás, low-memory, battery saver és hozzáférhetőségi regresszió tesztje.
+
+Indoklás: A profilok pontos határa és teljesítményhatása céltelefonos mérést igényel.
+Státusz: PROTOTÍPUST VAGY MÉRÉST IGÉNYEL
+
+======================================================================
+30. ADATVEZÉRELT TARTALOM ÉS KONTRAKTUSOK
+======================================================================
+
+253. AUDITJAVASLAT — Definíciós formátum és csomaghatárok
+
+253.1C — A runtime csak sémával validált, sorosítható adatdefiníciókat fogyaszt; végrehajtható gameplay-logika nem kerül tartalomfájlba. A konkrét authoring- és buildformátum implementációs részlet marad.
+253.2C — Minden definíció közös, verziózott alapburkot kap: típus, stabil ID, namespace, schema-verzió és forráscsomag.
+253.3C — Az item, resource, recipe, building, NPC, quest, region, scene, activity, weather, event, profession és perk saját típusos sémát kap.
+253.4C — A tartalom koherens, manifestben regisztrált csomagokra oszlik explicit függőségekkel; a pontos fizikai felosztás nem kanonikus, és mappaszkennelés önmagában nem aktivál tartalmat.
+
+Indoklás: Egységes adatmodell mellett a tartalom bővíthető anélkül, hogy minden új elemhez runtime-kódot kellene módosítani.
+Státusz: LOCKED DECISION — KANONIKUS FÁJLBAN RÖGZÍTVE
+
+254. AUDITJAVASLAT — Stabil azonosítók, hivatkozások és dependency graph
+
+254.1C — Minden tartós definíció namespaced, soha újra nem használt stabil ID-t kap.
+254.2C — A kereszthivatkozások ID-ra és várt típusra mutatnak, nem fájlútra, megjelenített névre vagy runtime-objektumra.
+254.3C — Az alternate requirement, prerequisite, unlock és world-state feltétel közös deklaratív all/any/min feltételmodellt használ.
+254.4C — Buildkor teljes dependency graph készül; hiányzó, rossz típusú, elérhetetlen és tiltott körkörös hivatkozás hibának számít.
+
+Indoklás: Ez teszi kiszámíthatóvá a migrációt, a progression-ellenőrzést és a hibák pontos megtalálását.
+Státusz: LOCKED DECISION — KANONIKUS FÁJLBAN RÖGZÍTVE
+
+255. AUDITJAVASLAT — Role, tag, asset, lokalizáció és UI-metaadat
+
+255.1C — Viselkedési szerepet ellenőrzött role vagy capability, keresési és csoportosítási célt kontrollált tag fejez ki.
+255.2C — A stage- és gameplay-logika role vagy tag alapján kér assetet; pontos asset-ID csak landmarknál vagy konkrét animációs állapotnál használható.
+255.3C — Minden játékosnak szánt szöveg lokalizációs kulcsot használ, fejlesztői fallbackkel és hiánylistával.
+255.4C — A UI-metaadat csak megjelenítési tanács; költség, feloldás vagy állapot igazságforrása mindig a rendszerdefiníció.
+
+Indoklás: A tartalom, a grafika és a felület így cserélhető marad anélkül, hogy egymás belső részleteire épülnének.
+Státusz: LOCKED DECISION — KANONIKUS FÁJLBAN RÖGZÍTVE
+
+256. AUDITJAVASLAT — Validáció, verziózás és szerkesztői munkafolyamat
+
+256.1C — Required, optional, default, enum és ismeretlen mező kezelése sémánként explicit; fejlesztői vagy build környezetben az ismeretlen viselkedési mező hiba.
+256.2C — A validáció strukturált kódot, csomagot, fájlt, adatútvonalat, hivatkozási láncot és javítási javaslatot ad; gépi és emberi riport is készül.
+256.3C — Kompatibilis változás, deprecáció és migráció külön kategória; eltávolított mező vagy ID nem tűnhet el csendben.
+256.4C — Hot reload csak fejlesztői módban, teljes csomagként aktiválhat; külön editor csak akkor készül, ha a valós authoringköltség ezt indokolja, és ugyanazt a sémát használja.
+
+Indoklás: A validáció kötelező, de a saját szerkesztőeszköz költségét a tartalomgyártás tényleges mennyisége alapján kell igazolni.
+Státusz: PROTOTÍPUST VAGY MÉRÉST IGÉNYEL
+
+======================================================================
+31. MENTÉS, BACKUP, MIGRÁCIÓ ÉS EXPORT/IMPORT
+======================================================================
+
+257. AUDITJAVASLAT — Mentési tárhely és atomi írás
+
+257.1C — A Save Manager platformfüggetlen storage adaptert használ. A backing store-nak teljesítenie kell az atomi vagy staged írás, méret-, kvóta- és hibajelzési követelményeket; a localStorage önmagában nem lehet az autoritatív világmentés.
+257.2C — A fő mentés verziózott gyökérből és külön validálható, szükség szerint külön verziózott adatrészekből áll.
+257.3C — Az új mentési generáció tranzakciósan vagy elkülönített stagingben készül, és csak teljes validáció után válhat aktívvá.
+257.4C — Az előző ellenőrzött főmentés csak az új generáció sikeres aktiválása után válik az egyetlen automatikus backuppá; egy írási hiba nem érvénytelenítheti egyszerre a főmentést és a backupot.
+
+Indoklás: Ez konkretizálja a már lezárt egy fő mentés és egy backup modellt adatvesztés nélkül.
+Státusz: LOCKED DECISION — KANONIKUS FÁJLBAN RÖGZÍTVE
+
+258. AUDITJAVASLAT — Mentési ütemezés, megszakítás és több tab
+
+258.1C — Kritikus tranzakció, fontos vagy tartós állapotú jelenetváltás és app-életciklus-esemény korlátozott idejű kritikus mentést vagy biztonságos checkpointot kér; kisebb változás rövid késleltetéssel összevonható.
+258.2C — Minden mentés rögzíti az okot, generációt és a legutolsó alkalmazott tranzakció vízjelét.
+258.3C — Mentési slotonként egyszerre csak egy aktív író működhet; a platformadapter tabok vagy folyamatok között is megakadályozza a kontrollálatlan last-write-wins felülírást.
+258.4C — Kvótahiánynál először eldobható cache törlődik; a játék érthetően jelez, ha új tartós mentés nem garantálható.
+
+Indoklás: A mobilmegszakítás, párhuzamos tab és tárhelyhiány nem okozhat elveszett vagy összekevert állapotot.
+Státusz: LOCKED DECISION — KANONIKUS FÁJLBAN RÖGZÍTVE
+
+259. AUDITJAVASLAT — Mentésintegritás és javítási bizonyíték
+
+259.1C — Minden befejezett mentési generáció ellenőrizhető integritásjelzőt és az alkalmazott sémaazonosítót kap.
+259.2C — A javítás determinisztikus, idempotens, adatrész-szintű és elkülönített példányon fut; az aktív mentést csak sikeres utóvalidáció után válthatja le.
+259.3C — A javítási napló rögzíti a bemeneti verziót, talált hibákat, alkalmazott műveleteket és a kimeneti validáció eredményét; a játékos rövid összefoglalót kap.
+259.4C — Fault-injection teszt igazolja, hogy korrupció vagy bármely írási megszakítás nem érvényteleníti egyszerre az utolsó ellenőrzött főmentést és backupot.
+
+Indoklás: Az integritásjelző, az elkülönített javítás és a fault-injection bizonyíthatóvá teszi, hogy a helyreállítás nem rontja tovább a mentési állapotot.
+Státusz: LOCKED DECISION — KANONIKUS FÁJLBAN RÖGZÍTVE
+
+260. AUDITJAVASLAT — Migráció, méret és eltávolított tartalom
+
+260.1C — A migráció egymást követő, determinisztikus és tesztelt verziólépésekből áll; előtte backup, utána teljes validáció készül.
+260.2C — Eltávolított tárgy, objektum vagy quest deklarált helyettesítést, visszatérítést, karantént vagy biztonságos régiobjektum-kezelést kap.
+260.3C — Tömeges természeti elemek deltával, fontos egyedi objektumok a szükséges teljes állapottal mentődnek.
+260.4C — A tömörítés és elavultadat-tisztítás szemantikailag változatlan, visszatesztelt művelet; a mentésméret és betöltési idő mérési limittel rendelkezik.
+
+Indoklás: A mentés hosszú távon sem nőhet korlátlanul, és frissítéskor nem veszhet el csendben játékosi tulajdon vagy haladás.
+Státusz: PROTOTÍPUST VAGY MÉRÉST IGÉNYEL
+
+261. AUDITJAVASLAT — Export, import és későbbi felhőmentés
+
+261.1C — P0/P1-ben nincs játékosoldali mentésexport, mentésimport, cross-device szinkron vagy cloud save.
+261.2C — A Save Manager platform- és szolgáltatófüggetlen adapterhatárt kap, hogy export, import vagy felhőmentés később a játékmag átírása nélkül integrálható legyen.
+261.3C — Későbbi import csak kompatibilitási ellenőrzés, migrációs próba, automatikus backup, teljes validáció és atomi aktiválás mellett engedélyezhető.
+261.4C — Cross-device vagy cloud save csak külön szolgáltató-, fiók-, konfliktuskezelési, titkosítási és adatkezelési döntés után nyitható meg.
+
+Indoklás: A vertical slice-nak nincs szüksége felhőszolgáltatásra, de a tiszta adapterhatár megakadályozza, hogy egy későbbi integráció miatt újra kelljen írni a mentési magot.
+Státusz: LOCKED DECISION — KANONIKUS FÁJLBAN RÖGZÍTVE
+
+======================================================================
+32. TELJESÍTMÉNY, MOBILPLATFORM ÉS CSOMAGOLÁS
+======================================================================
+
+262. AUDITJAVASLAT — Platformhatár és csomagolás
+
+262.1C — A World State és gameplay mag platformfüggetlen; storage, lifecycle, haptika, értesítés és fájlkezelés adaptereken keresztül érhető el.
+262.2C — A PWA és statikus webes build fejlesztési vagy proof cél; a GitHub Pages teszt nem határozza meg a termékarchitektúrát.
+262.3C — A natív csomagolási adapternek proof buildben kell igazolnia a platformkövetelményeket, mielőtt bármely natív platform támogatása kiadási vállalássá válik; a proof időzítése külön produkciós döntés.
+262.4C — Android- és iOS-specifikus konfiguráció, jogosultság és fallback külön platformrétegben marad.
+
+Indoklás: Egy közös játékmag mellett a csomagolás később cserélhető és külön tesztelhető.
+Státusz: LOCKED DECISION — KANONIKUS FÁJLBAN RÖGZÍTVE
+
+263. AUDITJAVASLAT — Célplatform- és eszközmátrix
+
+263.1C — P0 és az első proof GitHub Pages-en futó webapp/PWA legyen. Elsődleges valódi tesztkészülék: iPhone 16 Pro, Safari és Home Screen mód. Capacitoros iOS-csomagolás későbbi proof; Android addig halasztott, amíg nincs hozzá tesztkészülék.
+263.2C — P0-ban az iPhone 16 Pro az egyetlen hiteles fizikai referenciaeszköz. Az asztali böngésző csak fejlesztési ellenőrzés. Nyilvános kiadás előtt legalább egy régebbi vagy gyengébb iPhone-t is be kell vonni.
+263.3C — Az első támogatott eszközosztály portré módú, érintőkijelzős telefon. Safe area, különböző képarányok és pixelsűrűség kötelező; tablet és landscape egyelőre nem kiadási követelmény.
+263.4C — Nem támogatott készüléken érthető figyelmeztetés jelenjen meg; ahol lehetséges, csökkentett grafikai minőséggel még elindulhat a játék.
+
+Indoklás: A proof-kapu így a ténylegesen rendelkezésre álló fizikai készüléken ellenőrizhető, miközben a közös játékmag későbbi natív és Android-csomagolhatósága megmarad.
+Státusz: LOCKED DECISION — KANONIKUS FÁJLBAN RÖGZÍTVE
+
+264. AUDITJAVASLAT — Viewport, Canvas és adaptív megjelenítés
+
+264.1C — A portré mód elsődleges; orientációváltás biztonságosan szünetelteti és újrarendezi a felületet.
+264.2C — A CSS-viewport és a Canvas belső felbontása külön kezelendő; DPR és render scale felső korlátot kap.
+264.3C — A safe area, minimális érintési méret és szélsőséges képarány minden fő képernyő acceptance tesztjének része.
+264.4C — Minőségváltás csak renderelést érinthet; világállapotot, collisiont, jutalmat vagy időzítési eredményt nem.
+
+Indoklás: A változó telefonméret és pixelsűrűség nem módosíthatja a játékszabályokat.
+Státusz: LOCKED DECISION — KANONIKUS FÁJLBAN RÖGZÍTVE
+
+265. AUDITJAVASLAT — Teljesítmény-, memória- és energia-budget
+
+265.1C — iPhone 16 Pro készüléken 60 FPS a cél, tartós 30 FPS alatti működés sikertelen. A 350 MB folyamat- és 128 MB aktív textúrakeret kezdeti proof-budget marad.
+265.2C — Külön normál és stresszteszt készüljön. Normál: kezdő falu és átlagos forest jelenet. Stressz: kiépített falu, sok objektum, NPC, effekt és gyors kameramozgás.
+265.3C — A proof mérjen hideg és meleg indítást, legalább 30 perces játékmenetet, tíz háttérbe helyezés–visszatérés ciklust, memóriaemelkedést, melegedést és akkumulátorhasználatot.
+265.4C — A jelenlegi teljesítménybizonyíték kizárólag az iPhone 16 Pro-ra érvényes; ebből nem következtetünk automatikusan régebbi készülékek támogatására. A budget valós mérés után dokumentáltan módosítható.
+
+Indoklás: A számszerű proof-budget a rendelkezésre álló iPhone-on mérhető indulási célt ad, de nem állít bizonyíték nélkül szélesebb készüléktámogatást.
+Státusz: LOCKED DECISION — KANONIKUS FÁJLBAN RÖGZÍTVE
+
+266. AUDITJAVASLAT — Cache, lifecycle, offline és proof build
+
+266.1C — Egyszerre csak az aktuális jelenet lehet teljesen aktív. A következő jelenet előtöltése korlátozott; a korábbi jelenet nem használt assetjei felszabadítandók.
+266.2C — Háttérbe kerüléskor azonnali biztonságos mentési checkpoint készül. A játék nem feltételez rendelkezésre álló háttéridőt.
+266.3C — Visszatéréskor a mentés, idő, renderelés, input és megszakított folyamatok újraellenőrzése idempotensen történik.
+266.4C — A proof GitHub Pages URL-en, Safari böngészőben és Home Screen módban teljesítse az offline, mentés, tíz resume-ciklus, safe area, jelenetváltás, hibás asset fallback és legfeljebb 10 másodperces time-to-action tesztet.
+
+Indoklás: A lifecycle- és proof-feltételek a tényleges iPhone-os webapp/PWA útvonalon teszik ellenőrizhetővé a mobil működést; a későbbi natív csomagolás külön proof marad.
+Státusz: LOCKED DECISION — KANONIKUS FÁJLBAN RÖGZÍTVE
+
+======================================================================
+33. TESZTELÉS, DEBUG, TELEMETRIA ÉS FEJLESZTŐI ESZKÖZÖK
+======================================================================
+
+267. AUDITJAVASLAT — Kötelező tesztrétegek
+
+267.1C — Minden rendszer kap unit tesztet a tiszta szabályaira, integration tesztet a World State-kapcsolataira és rendszer- vagy looptesztet a játékosi folyamatára.
+267.2C — Normál, megszakítási, hiba-, migrációs és regressziós eset minden tartós rendszer Definition of Done-jának része.
+267.3C — Pénz-, tárgy-, jutalom- és ownership-tranzakcióknál invariáns- és duplikációs teszt kötelező.
+267.4C — Idő, RNG és külső szolgáltatások tesztelhető órát, seedet és adaptert használnak.
+
+Indoklás: A tesztelhetőségnek a rendszerhatár részeként kell megszületnie, nem utólagos kiegészítésként.
+Státusz: LOCKED DECISION — KANONIKUS FÁJLBAN RÖGZÍTVE
+
+268. AUDITJAVASLAT — Determinisztikus replay és naplók
+
+268.1C — A command-, event- és transaction log stabil ID-t, tick- vagy sorrendértéket, seedet, bemeneti hivatkozást és eredményhash-t vagy eredményazonosítót rögzít; teljes állapotmásolat nem kötelező.
+268.2C — Azonos validált snapshot, definícióverzió, releváns tuningverzió, időforrás, seed és parancssor ugyanazt a végső World State hash-t adja.
+268.3C — Replay-eltérésnél az első eltérő parancs, esemény és adatrész automatikusan kimutatható.
+268.4C — A naplók verziózottak, méretkorlátosak és érzékeny adatoktól tisztítottak.
+
+Indoklás: A ritka, időzítésfüggő hibák reprodukálhatóvá válnak anélkül, hogy korlátlan napló készülne.
+Státusz: LOCKED DECISION — KANONIKUS FÁJLBAN RÖGZÍTVE
+
+269. AUDITJAVASLAT — Inspectorok és fejlesztői vezérlők
+
+269.1C — A kanonikus 91. döntés szerinti közös inspector-kontraktushoz az adott rendszer Definition of Done-jához szükséges domainnézetek csatlakoznak; minden domainhez külön inspectoralkalmazás nem kötelező.
+269.2C — Idő-, seed-, spawn- és állapotmódosítás csak jelölt developer mode-ban, validált debug parancson keresztül történhet.
+269.3C — A dependency graph, asset report és content validation közvetlenül stabil ID-kre és forráshelyekre mutat.
+269.4C — Debug parancs által módosított mentés egyértelmű developer jelölést kap, és külön jóváhagyás nélkül nem használható normál golden save-ként vagy release-validációhoz.
+
+Indoklás: A diagnosztika láthatóvá teszi az állapotot anélkül, hogy párhuzamos, szabályt megkerülő játéklogikát hozna létre.
+Státusz: LOCKED DECISION — KANONIKUS FÁJLBAN RÖGZÍTVE
+
+270. AUDITJAVASLAT — Automatizált regresszió és szimuláció
+
+270.1C — Automatizált boot, első gameplay loop, save/load, régi save fixture, korrupció és mobile interruption suite készül.
+270.2C — A golden save és várt eredmény módosítása külön, indokolt review-t igényel; nem frissíthető vakon.
+270.3C — Headless progression- és economy-szimuláció vizsgálja az action countot, sessionidőt, resource flow-t, valamint az elérhetetlen és körkörös feloldást.
+270.4C — A szimuláció seed- és útvonalváltozatokat futtat, de nem helyettesíti a játékosi playtestet.
+
+Indoklás: A technikai blokkoló és a rossz játékérzet más bizonyítékot kíván; mindkettőre szükség van.
+Státusz: PROTOTÍPUST VAGY MÉRÉST IGÉNYEL
+
+271. AUDITJAVASLAT — Mobilteszt, crashdiagnosztika és telemetria
+
+271.1C — A touch- és lifecycle-tesztek valódi eszközön ismételt háttér- vagy resume, hívás, lock, gyors input és orientációváltás eseteket fednek le.
+271.2C — A hibareprodukciós csomag buildet, eszközprofilt, anonimizált logot, state hash-t és input-idővonalat tartalmaz.
+271.3C — A helyi crashnapló és önként exportálható diagnosztika működhet hálózati telemetria nélkül.
+271.4C — Küldött telemetria csak külön tulajdonosi vagy privacy döntés, adatjegyzék, cél, hozzájárulás, retention és opt-out után aktiválható.
+
+Indoklás: A diagnosztika technikai szükséglet, az adatküldés viszont külön termék- és adatkezelési döntés.
+Státusz: TULAJDONOSI DÖNTÉS SZÜKSÉGES
+
+======================================================================
+34. BALANSZ, ANTI-GRIND ÉS JÁTÉK-GAZDASÁGI MÉRÉS
+======================================================================
+
+272. AUDITJAVASLAT — Strukturális döntés és tuning szétválasztása
+
+272.1C — Minden konfigurációs mező jelzi, hogy strukturális szerződés, tuning default vagy kísérleti érték.
+272.2C — Strukturális változás audithoz és szükség esetén migrációhoz kötött; tuningérték mérési eljárással módosítható.
+272.3C — A tuningnak egysége, megengedett tartománya, verziója, forrása és indoklása van.
+272.4C — Mentés, replay és balanszteszt megőrzi a releváns tuningverziót.
+
+Indoklás: Így egy számmódosítás nem válik észrevétlen architektúra- vagy mentésváltozássá.
+Státusz: LOCKED DECISION — KANONIKUS FÁJLBAN RÖGZÍTVE
+
+273. AUDITJAVASLAT — Pacing és gazdasági mérés
+
+273.1C — Mérjük a mozgás-, interakció-, crafting- és növekedési időt, action- vagy sessionszámot, sessionhosszt és time-to-goal értékeket.
+273.2C — Forrás–nyelő térkép készül yieldre, receptekre, upgrade-ekre, épületekre, árakra, tárolásra és bulk sale-re.
+273.3C — Early, mid és late-game útvonalakon ellenőrizzük a blokkolót, végtelen arbitrázst és egyetlen kötelező optimális utat.
+273.4C — Pontos számérték csak first-time, visszatérő és hosszú mentéses playtest után zárható.
+
+Indoklás: A balanszszámok dokumentumból nem bizonyíthatók, csak mérhető célként és teszteredményként.
+Státusz: PROTOTÍPUST VAGY MÉRÉST IGÉNYEL
+
+274. AUDITJAVASLAT — Anti-grind, várakozás és automatizálás
+
+274.1C — Hosszú, döntés nélküli ismétlés csak látható köztes haladással, alternatív úttal és későbbi kényelmi lehetőséggel fogadható el.
+274.2C — Batch művelet a mechanika megismerése után oldható fel; nem tüntetheti el az összes érdemi döntést.
+274.3C — Nincs kötelező daily cap, FOMO, pay-to-skip vagy olyan várakozás, amely alatt nincs más értelmes tevékenység.
+274.4C — Offline termelés, queue és output véges; korlátlan önfenntartó automatizálás nem engedélyezett.
+
+Indoklás: Ez közvetlenül a nyugodt, alacsony nyomású játékígéretből következik.
+Státusz: TULAJDONOSI DÖNTÉS SZÜKSÉGES
+
+275. AUDITJAVASLAT — Ritkaság, hosszú távú relevancia és balanszrevízió
+
+275.1C — Progressziókritikus eredmény nem függhet korlátlan RNG-től; ritka drop pity-, bad-luck- vagy determinisztikus garanciát kap.
+275.2C — Reload, import, időugrás vagy gyorsutazás nem adhat új ingyenes dobást vagy többlethozamot.
+275.3C — Régi régiók és anyagok később is kapnak választható felhasználást vagy átváltási utat, kötelező visszagrind nélkül.
+275.4C — Balanszrevízió hipotézist, mérést, save-impactot, verziót és visszagörgethető konfigurációt igényel.
+
+Indoklás: A hosszú távú gazdaságot és endgame-terhelést szimulációval és playtesttel kell igazolni.
+Státusz: PROTOTÍPUST VAGY MÉRÉST IGÉNYEL
+
+======================================================================
+35. TARTALMI STRUKTÚRA ÉS VILÁGROADMAP
+======================================================================
+
+276. AUDITJAVASLAT — Tartalmi taxonómia
+
+276.1C — Régió, biome, landmark, resource-, building-, recipe-, profession-, animal- és activity family stabil definíciót kap.
+276.2C — Az ismételhető elemek családsablonból, az egyedi világfontosságú helyek authored landmarkként készülnek.
+276.3C — Minden tartalomcsomag felsorolja rendszer-, asset-, audio-, lokalizációs, mentési és progressionfüggőségeit.
+276.4C — Jövőbeli tartalom nem kényszerítheti az engine-t konkrét, még nem jóváhagyott rendszerek túltervezésére.
+
+Indoklás: A világ bővíthető marad, miközben az egyedi helyek nem szorulnak mesterségesen generikus modellbe.
+Státusz: LOCKED DECISION — KANONIKUS FÁJLBAN RÖGZÍTVE
+
+277. AUDITJAVASLAT — Első vertical slice
+
+277.1C — A slice játékosi ígérete: „Egy elhagyatott falurészben felfedezem a sérült Forester Hutot, az erdőből összegyűjtöm a helyreállításhoz szükséges alapanyagokat, elkészítem a javításhoz szükséges elemeket, majd tartósan újjáépítem az épületet.” Kezdőpont: belépés a kezdetben üres fő faluba. Végpont: a helyreállított Forester Hut és az ebből következő látható világállapot-változás. Célzott első játékidő: 20–30 perc.
+277.2C — A slice tartalmazza a fő falu egy korlátozott részét, egy forest területet, a Forester Hutot, alapmozgást és interakciót, gyűjtést, inventoryt, egy minimális crafting receptet, épület-helyreállítást, jutalmat, valamint mentés–kilépés–folytatás működést.
+277.3C — Farm, harbor, fishing, mine, teljes professionrendszer, kereskedelmi gazdaság, storage network és további helyreállítható épületek nem részei az első slice-nak. Csak bizonyított technikai függőség kerülhet be.
+277.4C — A slice lezárásához működő GitHub Pages-en elérhető webapp/PWA, iPhone 16 Pro készüléken Safari és Home Screen módban végigfuttatott end-to-end teszt, mentés/resume ellenőrzés, valamint tartalom-, asset-, lokalizáció- és tesztleltár szükséges. Ideiglenes asset használható, ha egyértelműen jelölt, manifestből cserélhető és nem képez rejtett technikai függőséget.
+
+Indoklás: Ez a legkisebb olyan teljes játékosi hurok, amely egyszerre bizonyítja a Readi World alapígéretét, a tartós világváltozást és a tényleges iPhone-os webapp/PWA működést.
+Státusz: LOCKED DECISION — KANONIKUS FÁJLBAN RÖGZÍTVE
+
+278. AUDITJAVASLAT — Korai vezetett szakasz és fő út
+
+278.1C — A korai szakasz egymásra építve tanítja a mozgást, interakciót, gyűjtést, craftingot és restaurációt.
+278.2C — Az útmutatás kevés kötelező szöveggel, látható világváltozással és alacsony nyomással működik.
+278.3C — Minden fő kapu megmutatja a hiányzó feltételt és a következő értelmes lépést; lehetetlen progression state nem maradhat.
+278.4C — A konkrét történeti beatet, specialistát, sorrendet és kötelező vagy optional arányt a tulajdonos hagyja jóvá.
+
+Indoklás: A tanítás szerkezete levezethető, a történeti és tartalmi hangsúly nem technikai alapértelmezés.
+Státusz: TULAJDONOSI DÖNTÉS SZÜKSÉGES
+
+279. AUDITJAVASLAT — Régióroadmap és elágazások
+
+279.1C — A roadmap committed, következőnek mérlegelt és távoli-kísérleti tartalmat külön jelöl.
+279.2C — Forest, farm, harbor és mine saját világ-, erőforrás-, profession- és aktivitásszerepet kap, felesleges funkcióismétlés nélkül.
+279.3C — Új régió előtt dependency-, save-, asset-, lokalizáció- és balanszhatás készül.
+279.4C — A mine utáni sorrend, elágazások és kiadási csoportok csak tulajdonosi scope-döntés után zárhatók.
+
+Indoklás: A technikai függőség feltérképezhető, de a tartalom sorrendje produkciós és kreatív prioritás.
+Státusz: TULAJDONOSI DÖNTÉS SZÜKSÉGES
+
+280. AUDITJAVASLAT — Endgame, mastery és tartalmi mennyiség
+
+280.1C — Az endgame a teljes világ restaurációját, személyre szabást, collectiont és masteryt támogatja, nem csak végtelen statnövelést.
+280.2C — Horizontal és vertical fejlődés együtt működik; több út életképes marad, és nincs egyetlen kötelező profession.
+280.3C — A régiónkénti objektum-, recept-, állat-, activity- és eventmennyiséget csak assetköltség és készítési sebesség alapján szabad lezárni.
+280.4C — Seasonal content, világesemény és pontos endgame scope külön tulajdonosi döntés; ezek miatt most nem épül online live-service architektúra.
+
+Indoklás: A végső tartalmi volumen és szezonális irány költség- és termékdöntés, nem engine-alapértelmezés.
+Státusz: TULAJDONOSI DÖNTÉS SZÜKSÉGES
+
+281. AUDITJAVASLAT — Első public demo
+
+281.1C — A tulajdonos rögzíti a demo hosszát, tartalmi végét, platformját, nyelveit és mentésének későbbi kompatibilitási ígéretét.
+281.2C — A demo csak ténylegesen működő és tesztelt rendszert kommunikálhat.
+281.3C — A demo mentése külön verziót és egyértelmű export-import vagy elengedési szabályt kap.
+281.4C — A demo scope nem bővül automatikusan minden elkészült prototípusfunkcióval.
+
+Indoklás: A public demo külső ígéret és produkciós vállalás, ezért külön tulajdonosi jóváhagyást igényel.
+Státusz: TULAJDONOSI DÖNTÉS SZÜKSÉGES
+
+======================================================================
+36. PRODUKCIÓ, IMPLEMENTÁCIÓS SORREND ÉS DEFINITION OF DONE
+======================================================================
+
+282. AUDITJAVASLAT — Munkacsomag-szerződés
+
+282.1C — Minden változtatási körnek egyetlen célja és ismert baseline-ja van.
+282.2C — Előre rögzíteni kell a módosítható és védett fájlokat.
+282.3C — Előre rögzíteni kell az elfogadási feltételeket és regressziós ellenőrzéseket.
+282.4C — Sikertelen kör esetére bizonyított visszaállítási pont szükséges.
+
+Indoklás: Ez közvetlenül az AGENTS.md kötelező munkafolyamatát teszi auditálható szerződéssé.
+Státusz: LOCKED DECISION — KANONIKUS FÁJLBAN RÖGZÍTVE
+
+283. AUDITJAVASLAT — Clean-runtime baseline — kanonikusan már lefedett
+
+283.1C — A referencia-prototípus és a külön clean runtime viszonyát a kanonikus 2. és 4. döntés már lezárta.
+283.2C — Az átvételi bizonyíték követelményét a kanonikus 4. döntés már lezárta.
+283.3C — A vékony index.html bootstrap shell követelményét a kanonikus 3. döntés már lezárta.
+283.4C — A munkacsomagok szétválasztását az AGENTS.md és a 282. pont szabályozza, ezért ez nem új runtime-döntés.
+
+Indoklás: Megőrzi a már lezárt clean-runtime irányt, és csökkenti a rejtett örökséghibákat.
+Státusz: KANONIKUSAN MÁR LEFEDETT — NEM ÚJ DÖNTÉS
+
+284. AUDITJAVASLAT — Mérföldkövek és P0–P3
+
+284.1C — P0 kizárólag az alapot tartalmazza: Git/rollback baseline, clean runtime és vékony bootstrap, PWA shell, verziózott World State, parancs–esemény–tranzakció modell, Save Manager, asset manifest/registry, validáció és automatikus alapszintű tesztek. Kész játékterület és végleges grafika nem P0-követelmény.
+284.2C — P1 a 277. pontban lezárt, belső használatra teljes vertical slice. P2 az iPhone-on végigtesztelt, külső tesztelőnek átadható webes demó. P3 a slice után bizonyítottan indokolt világ- és rendszerbővítés.
+284.3C — A rendszerek sorrendjét a függőség határozza meg: baseline → bootstrap és kontraktusok → World State → Save Manager → asset/role resolution → minimális játékosi loop → tartalom és vizuális finomítás.
+284.4C — A mérföldkövek elfogadási feltételekhez, nem önkényes dátumhoz kötöttek. Időbecslés csak a P0 lezárása után készül; új tartalom nem csúszhat észrevétlenül az aktív mérföldkőbe.
+
+Indoklás: Az elfogadási feltételekhez kötött P0–P3 felosztás védi a vertical slice scope-ját, miközben nem kényszerít bizonyíték nélküli határidővállalást.
+Státusz: LOCKED DECISION — KANONIKUS FÁJLBAN RÖGZÍTVE
+
+285. AUDITJAVASLAT — Implementációs sorrend
+
+285.1C — Az első munkacsomag a Git-baseline után a külön clean runtime, a vékony `index.html`, a modulhatárok, a konfiguráció és a validálható adatkontraktusok létrehozása.
+285.2C — Ezután készül a World State, a parancs-, esemény- és tranzakciós réteg, a Save Manager, majd az asset manifest és role-resolution alapja.
+285.3C — Következőként egyetlen end-to-end gathering → inventory → crafting → Forester Hut restoration hurok készül minimális tartalommal.
+285.4C — Farm, harbor, fishing, mine, economy, teljes professionrendszer és storage network csak a vertical slice bizonyított lezárása után nyitható meg.
+
+Indoklás: Ez a sorrend előbb a tartós és tesztelhető alapot készíti el, majd egyetlen bizonyítható játékosi hurkon keresztül integrálja a rendszereket.
+Státusz: LOCKED DECISION — KANONIKUS FÁJLBAN RÖGZÍTVE
+
+286. AUDITJAVASLAT — Egységes Definition of Done
+
+286.1C — Kész rendszerhez lezárt felelősség, adatkontraktus, dokumentáció és validáció tartozik.
+286.2C — Normál, mentés- vagy betöltés-, megszakítás-, hiba-, migrációs és regressziós tesztje sikeres.
+286.3C — Platform-, input-, render-, lifecycle- vagy teljesítményfüggő rendszerhez releváns valódi eszközteszt tartozik; tiszta logikai modulnál az automatizált teszt elegendő, de milestone-szintű mobilintegrációban annak működését is igazolni kell.
+286.4C — Nincs ismert progression blocker, részleges tranzakció vagy visszaállíthatatlan állapot; release és rollback lépés dokumentált.
+
+Indoklás: A „fut” önmagában nem kész állapot egy tartós, mobilos játékban.
+Státusz: LOCKED DECISION — KANONIKUS FÁJLBAN RÖGZÍTVE
+
+287. AUDITJAVASLAT — Scope-fegyelem, Git és rollback
+
+287.1C — Tartalmi változás, architektúra-refaktor, assetcsere és save-schema módosítás mindig külön munkacsomag és külön commit legyen.
+287.2C — Scope-on kívüli ötlet külön backlogba kerül; nem épülhet be észrevétlenül az aktív P0 vagy P1 mérföldkőbe.
+287.3C — A meglévő `czkiii/readi-world` repository lesz az új clean runtime aktív repositoryja, és a `https://czkiii.github.io/readi-world/` marad a proof webapp címe. A jelenlegi prototípus látható fájljai a helyben ellenőrzött P0 baseline elkészülte után lecserélhetők; automatikus kódátvétel nem történik.
+287.4C — A jelenlegi `5b79fb0b735ad2b04713437df59820290c066713` commit maradjon történeti visszaállítási pont, és lehetőség szerint kapjon `prototype-reference-2026-07-20` taget. Az első ellenőrzött clean-runtime állapot `p0-start` tag legyen. Minden telepítéshez rögzített commit SHA, kis célzott commitok, ellenőrzőlista és bizonyított visszaállítás tartozzon; a felhasználó külön helyi RAR-backuppal is rendelkezik.
+
+Indoklás: A repository és a Pages cím újrahasználható anélkül, hogy a régi monolitikus kód technikai alappá válna: az új runtime helyben, tisztán készül el, majd ellenőrzött commitként váltja le a látható prototípust.
+Státusz: LOCKED DECISION — KANONIKUS FÁJLBAN RÖGZÍTVE
+
+======================================================================
+37. MARKETING, IDENTITÁS ÉS KÜLSŐ KOMMUNIKÁCIÓ
+======================================================================
+
+288. AUDITJAVASLAT — Játékidentitás és célközönség
+
+288.1C — A tulajdonos jóváhagyja a végleges műfaji megfogalmazást, célközönséget, játékosi ígéretet és hat identitáspillért.
+288.2C — A különbségek csak tényleges mechanikákból vezethetők le: látható restauráció, személyes világ, több út és alacsony nyomás.
+288.3C — A céléletkor, kommunikációs hang és opcionális harc intenzitása együtt kerül meghatározásra.
+288.4C — A marketingígéret minden fontos kiadásnál összevetendő az aktuális builddel.
+
+Indoklás: Ezek kreatív és pozicionálási döntések, nem vezethetők le kizárólag az architektúrából.
+Státusz: TULAJDONOSI DÖNTÉS SZÜKSÉGES
+
+289. AUDITJAVASLAT — Név, tagline és vizuális identitás
+
+289.1C — A Readi World addig munkacím, amíg a tulajdonos jóvá nem hagyja a végleges nevet és írásmódot.
+289.2C — Nyilvános használat előtt név-, védjegy-, domain- és store-handle ellenőrzés szükséges.
+289.3C — A tagline és logo irány a meleg, cozy, storybook vizuális irányból és a valódi játékígéretből készül.
+289.4C — A pontos logo, tagline és márkacsomag külön kreatív jóváhagyást kap.
+
+Indoklás: A név jogi elérhetősége és a vizuális márka jelenleg nincs lezárva.
+Státusz: TULAJDONOSI DÖNTÉS SZÜKSÉGES
+
+290. AUDITJAVASLAT — Store page, screenshot és trailer
+
+290.1C — A store-leírás az elkészült fő loopot, világrestaurációt és tényleges platformfunkciókat mutatja be.
+290.2C — Screenshot és trailer csak valódi buildet vagy egyértelműen jelölt koncepciót használhat.
+290.3C — Scenic Mode csak akkor használható fő marketingeszközként, ha az valóban működő termékfunkció és nem rejti el a valós UI-problémákat.
+290.4C — Opcionális harc nem mutatható fő akcióígéretként, ha a játékban másodlagos.
+
+Indoklás: A külső anyag nem ígérhet többet vagy mást, mint amit a demo és a játék ténylegesen tud.
+Státusz: TULAJDONOSI DÖNTÉS SZÜKSÉGES
+
+291. AUDITJAVASLAT — Demo-, platform- és lokalizációs kommunikáció
+
+291.1C — Minden demoanyag pontosan közli a platformot, buildstátuszt, tartalmi határt és mentéskompatibilitást.
+291.2C — A launch- és demo-nyelveket a tulajdonos választja ki; a fordítás külön nyelvi QA-t kap.
+291.3C — A platformkommunikáció csak sikeres proof build után nevezhet meg Androidot vagy iOS-t vállalt kiadásként.
+291.4C — Scope-változáskor a külső állításokat és screenshotlistát is felül kell vizsgálni.
+
+Indoklás: A platform és nyelvi vállalás közvetlen produkciós költséget és felhasználói ígéretet jelent.
+Státusz: TULAJDONOSI DÖNTÉS SZÜKSÉGES
+
+292. AUDITJAVASLAT — Privacy és monetizáció
+
+292.1C — Privacy-, adatkezelési, életkori, store-policy- és monetizációs döntésekhez külön, jóváhagyott dokumentum készül a kapcsolódó funkciók megnyitása előtt.
+292.2C — A P0/P1 alapját helyi, telemetria nélkül is teljesen működő játék képezi; hálózati adatküldés nem lehet rejtett technikai függőség.
+292.3C — Kiskorú célközönség, nyilvános teszt vagy store-kiadás előtt külön jogi és platformpolicy-ellenőrzés kötelező.
+292.4C — Üzleti modell csak későbbi tulajdonosi döntéssel nyitható meg; FOMO-, pay-to-skip- és kötelező várakozásra épülő monetizáció továbbra sem egyeztethető össze a játékígérettel.
+
+Indoklás: A külön policy-dokumentum megakadályozza, hogy hiányzó jogi vagy üzleti döntéseket a technikai implementáció észrevétlenül eldöntsön.
+Státusz: LOCKED DECISION — KANONIKUS FÁJLBAN RÖGZÍTVE
+
+======================================================================
+38. KERESZTMETSZETI KÖTELEZŐ ELLENŐRZÉSEK
+======================================================================
+
+293. AUDITJAVASLAT — Identitás, verziózás, tranzakció és megszakítás
+
+293.1C — Minden tartós entitás és definíció stabil, nem újrahasznált ID-ját ellenőrizni kell.
+293.2C — Minden tartós adatváltozásnál explicit régiadat-kezelés és migráció szükséges.
+293.3C — Pénz, tárgy, jutalom, építés, vásárlás és ownership csak atomi, idempotens tranzakcióban változhat.
+293.4C — Hívás, értesítés, háttér, lock és bezárás nem okozhat adatvesztést vagy ismételt eredményt.
+
+Indoklás: Ez a négy szerződés minden rendszer kötelező belépési feltétele.
+Státusz: LOCKED DECISION — KANONIKUS FÁJLBAN RÖGZÍTVE
+
+294. AUDITJAVASLAT — Offline, exploit, grind és helyreállítás
+
+294.1C — Háttérfolyamat csak véges inputtal, queue-val, outputtal és rendszerspecifikus plafonnal működhet.
+294.2C — Időugrás, gyorsutazás, reload, duplikált input, import és megszakítás nem hozhat többletjutalmat.
+294.3C — Minden ismétlődő rendszerhez ellenőrizni kell az adott rendszerre külön jóváhagyott anti-grind követelményt; az action count, köztes fejlődés és alternatív út elfogadási küszöbe tulajdonosi vagy playtest-döntés.
+294.4C — A játékos nem maradhat helyrehozhatatlan, blokkolt vagy érvénytelen állapotban.
+
+Indoklás: Ezek a mobil, offline és cozy játék legfontosabb biztonsági invariánsai.
+Státusz: LOCKED DECISION — KANONIKUS FÁJLBAN RÖGZÍTVE
+
+295. AUDITJAVASLAT — Magyarázhatóság, teljesítmény, hozzáférhetőség és tesztelhetőség
+
+295.1C — Zárolt vagy hibás funkció megmondja, mi hiányzik, miért, hol szerezhető meg és mi a következő lépés.
+295.2C — Minden rendszer deklarálja aktív, háttér- és unload-viselkedését.
+295.3C — Fontos állapot nem közölhető kizárólag színnel vagy kizárólag hanggal.
+295.4C — Minden rendszerhez reprodukálható normál, megszakítási, hiba-, migrációs és regressziós teszt tartozik.
+
+Indoklás: A checklist minden későbbi audit- és Definition of Done bejegyzés kötelező része legyen.
+Státusz: LOCKED DECISION — KANONIKUS FÁJLBAN RÖGZÍTVE
+
+======================================================================
+39. AZ AUDIT LEZÁRÁSÁNAK VÉGSŐ KRITÉRIUMAI
+======================================================================
+
+296. AUDITJAVASLAT — Audit-evidenciamátrix
+
+296.1C — Minden scope-pont Locked Decision, TULAJDONOSI DÖNTÉS SZÜKSÉGES, PROTOTÍPUST VAGY MÉRÉST IGÉNYEL, KONFLIKTUS VAGY HIÁNY, KANONIKUSAN MÁR LEFEDETT vagy külön indokolt HALASZTOTT státuszt kap. A HALASZTOTT státuszhoz indok, felelős és újranyitási feltétel tartozik.
+296.2C — Minden rendszerhez rögzített felelősség, input vagy output, állapot- és rendszerhatár tartozik; mentés, migráció, lifecycle, teljesítmény, hozzáférhetőség és tesztelés releváns esetben szerződést, máskor indokolt N/A jelölést kap.
+296.3C — Minden konfliktus, hiány és tudatos kivétel külön listában, felelőssel és feloldási feltétellel szerepel.
+296.4C — A döntésekhez séma-, dependency graph-, teszt-, mérés- vagy prototípusbizonyíték kapcsolható.
+
+Indoklás: A lezárás nem a kérdések számát, hanem az ellenőrizhető szerződések teljességét jelenti.
+Státusz: LOCKED DECISION — KANONIKUS FÁJLBAN RÖGZÍTVE
+
+297. AUDITJAVASLAT — Architektúra- és gameplay-readiness
+
+297.1C — A World State, modulhatárok, parancsok, események, tranzakciók, idő és mentési alap ellentmondásmentes.
+297.2C — Az adatkontraktusokból validálható dependency graph készül, ismert lehetetlen vagy körkörös fő progression nélkül.
+297.3C — A fő gameplay loop minden lépése, hibája, megszakítása, jutalma és mentése definiált.
+297.4C — Az új Engine & Architecture Bible a lezárt auditból vezethető le, és nem válik eltérő párhuzamos igazságforrássá.
+
+Indoklás: Ezek nélkül a clean runtime első rendszere sem építhető stabil szerződésre.
+Státusz: LOCKED DECISION — KANONIKUS FÁJLBAN RÖGZÍTVE
+
+298. AUDITJAVASLAT — Implementációindítási kapu
+
+298.1C — A tulajdonos jóváhagyja a vertical slice pontos scope-ját, P0-elemeit és kizárt tartalmát.
+298.2C — Létezik clean-runtime baseline, tisztázott Git- vagy rollback-folyamat és egyetlen első munkacsomag.
+298.3C — A céltelefon-mátrix, proof build elfogadási feltétele és alap teljesítménybudget meghatározott.
+298.4C — Implementáció csak akkor indul, ha minden szükséges szerződés lezárt; a nem blokkoló jövőbeli kérdések külön deferred listán maradnak.
+
+Indoklás: A `20f9900ec348fa564a5f7948d612fb40e1e8735b` clean baseline, a két visszaállítási tag, a draft PR, a lezárt vertical slice és P0-scope, valamint az iPhone 16 Pro proof-szerződés mind a négy indítási feltételt bizonyíthatóan teljesíti.
+Státusz: LOCKED DECISION — KANONIKUS FÁJLBAN RÖGZÍTVE
+
+======================================================================
+40. ALAPELV
+======================================================================
+
+299. AUDITJAVASLAT — Az audit célja és korlátja
+
+299.1C — Az audit célja a bizonyítható rendszerhatár és kockázatcsökkentés, nem a dokumentum- vagy kérdésszám növelése.
+299.2C — Az első jóváhagyott mérföldkőhöz és a közös hosszú távú alaphoz szükséges szerződéseket kell teljes részletességgel lezárni. Távoli tartalmi részlet halasztható, de nem maradhat nyitva olyan jövőbeli függőség, amely a mostani alaparchitektúrát érdemben korlátozhatja.
+299.3C — Egy döntés akkor hasznos, ha csökkenti az újraírás, adatvesztés, rejtett függőség vagy kiszámíthatatlan fejlesztés esélyét.
+299.4C — A programozás egyetlen kontrollált rendszerrel indul, és új scope csak annak bizonyított lezárása után nyílik.
+
+Indoklás: Ez őrzi meg az audit gyakorlati értékét, és megakadályozza, hogy maga a tervezés váljon végtelen projektté.
+Státusz: LOCKED DECISION — KANONIKUS FÁJLBAN RÖGZÍTVE
+
+======================================================================
+LEFEDETTSÉGI INDEX
+======================================================================
+
+9. Interakciós rendszer: 106–107.
+10. Játékos, mozgás, input és kamera: 108–116.
+11. Tereprendezés, építés és elhelyezés: korábbi kanonikus döntések,
+    valamint 115., 156. és 163.; külön ismétlő auditpont nem készült.
+12. Inventory, tárgyak, erőforrások és tárolók: 117–126.
+13. Eszközök, képességek és specializáció: 127–135.
+14. Gyűjtés, kitermelés és természeti erőforrások: 136–144.
+15. Crafting, feldolgozás és termelés: 145–154.
+16. Épületek, restauráció és faluinfrastruktúra: 155–164.
+17. Farm, növények, állatok és földhasználat: 165–174.
+18. NPC-k, lakosok, specialisták és kapcsolatok: 175–184.
+19. Küldetések, World Path, történet és felfedezés: 185–190.
+20. Progression, professionök, skillek és jutalmazás: 191–196.
+21. Gazdaság, kereskedelem és pénznemek: 197–202.
+22. Idő, napszak, időjárás, évszak és offline folyamatok: 203–208.
+23. Aktivitások, expedíciók és opcionális harc: 209–214.
+24. Session design, visszatérés és alacsony nyomású játék: 215–220.
+25. Hibák, kudarc, visszaállítás és biztonság: 221–226.
+26. UI, UX, HUD, menük és Scenic Mode: 227–232.
+27. Vizuális rendszer, assetek és renderelés: 233–239.
+28. Audio, haptika és hangulati visszajelzés: 240–245.
+29. Hozzáférhetőség és beállítások: 246–252.
+30. Adatvezérelt tartalom és kontraktusok: 253–256.
+31. Mentés, backup, migráció és export/import: 257–261.
+32. Teljesítmény, mobilplatform és csomagolás: 262–266.
+33. Tesztelés, debug, telemetria és fejlesztői eszközök: 267–271.
+34. Balansz, anti-grind és játék-gazdasági mérés: 272–275.
+35. Tartalmi struktúra és világroadmap: 276–281.
+36. Produkció, implementációs sorrend és Definition of Done: 282–287.
+37. Marketing, identitás és külső kommunikáció: 288–292.
+38. Keresztmetszeti kötelező ellenőrzések: 293–295.
+39. Az audit lezárásának végső kritériumai: 296–298.
+40. Alapelv: 299.
+
+======================================================================
+STÁTUSZÖSSZESÍTÉS
+======================================================================
+
+Összes számozott auditbejegyzés: 194.
+Ebből új döntésjavaslat: 192.
+Összes C-ajánlássor: 776.
+
+- LOCKED DECISION — KANONIKUS FÁJLBAN RÖGZÍTVE: 88 pont.
+- ERŐS TECHNIKAI AJÁNLÁS: 0 pont.
+- TULAJDONOSI DÖNTÉS SZÜKSÉGES: 69 pont.
+- PROTOTÍPUST VAGY MÉRÉST IGÉNYEL: 35 pont.
+- KONFLIKTUS VAGY HIÁNY: 0 pont.
+- KANONIKUSAN MÁR LEFEDETT — NEM ÚJ DÖNTÉS: 2 pont.
+
+A 75 pontos technikai csomagot a felhasználó 2026-07-30-án egyben
+jóváhagyta; irányadó szövege bekerült a `docs/Dokumentumaudit.txt` fájlba.
+
+======================================================================
+ELFOGADOTT ÉS KANONIZÁLT TECHNIKAI CSOMAG — 75 PONT
+======================================================================
+
+A teljes kanonizálás előtti review és a felhasználói jóváhagyás megtörtént.
+A csomagból kikerültek a
+rejtett scope-, ízlés- és mérési döntések, a túl konkrét implementációk
+pedig követelményszintű szöveget kaptak.
+
+9. fejezet: 106.
+10. fejezet: 108–109, 112–113, 116.
+12. fejezet: 117–119, 122, 124, 126.
+13. fejezet: 131, 135.
+14. fejezet: 136–138, 143.
+15. fejezet: 145–146, 148, 150–151.
+16. fejezet: 155, 163.
+17. fejezet: 165–166, 170.
+18. fejezet: 175, 177, 182.
+19. fejezet: 185, 187, 190.
+20. fejezet: 191.
+21. fejezet: 197, 202.
+22. fejezet: 203, 206–208.
+23. fejezet: 209.
+24. fejezet: 220.
+25. fejezet: 225–226.
+26. fejezet: 230.
+27. fejezet: 234–237.
+28. fejezet: 240, 243.
+29. fejezet: 246, 250.
+30. fejezet: 253–255.
+31. fejezet: 257–259.
+32. fejezet: 262, 264.
+33. fejezet: 267–269.
+34. fejezet: 272.
+35. fejezet: 276.
+36. fejezet: 282, 286.
+38. fejezet: 293–295.
+39. fejezet: 296–297.
+40. fejezet: 299.
+
+Javasolt pontos felhasználói válasz:
+
+„A KANONIZÁLÁSRA KÉSZ TECHNIKAI CSOMAG mind a 75 felsorolt pontját
+elfogadom. A tulajdonosi, mérési, konfliktusos és már korábban lefedett
+pontok ettől nem válnak Locked Decisionné.”
+
+======================================================================
+TULAJDONOSI DÖNTÉSI SOR — 74 PONT, 13 KÖZÉRTHETŐ CSOMAGBAN
+======================================================================
+
+1. Irányítás és inventory
+Pontok: 111, 120–121, 123.
+Kérdés: Milyen alternatív irányítás, slotkapacitás, overflow/buyback védelem
+és helyi vagy hálózatos tárolási kényelem tartozzon az első verzióba?
+
+2. Eszközök
+Pontok: 127–130, 132–133.
+Kérdés: Mi legyen az induló eszközlista, a tier- és modulmélység, legyen-e
+általános tartósság, hogyan működjön a respec, és mi kapjon egyedi grafikát?
+
+3. Gyűjtés, crafting és automatizálás
+Pontok: 139–142, 147, 149, 152, 154, 274.
+Kérdés: Mennyi RNG, idő-/szezonfeltétel, alternatív beszerzés, batch/helper,
+gépi függőség, minőség, kockázat, automatizálás és üzletimodell-szintű
+anti-grind korlát illik a cozy ritmushoz?
+
+4. Épületek és infrastruktúra
+Pontok: 156–162, 164.
+Kérdés: Milyen mély legyen a restauráció, tier, karbantartás, faluszint,
+otthon, hálózat és párhuzamos projektkezelés, és a Forester Hut legyen-e
+az első teljes épületi vertical slice?
+
+5. Farm és állatok
+Pontok: 167–169, 171–173.
+Kérdés: Legyen-e büntetésmentes érett növény, mikor nyíljon automatizálás,
+hogyan váljon szét farm/gyümölcsös/erdészet, és mekkora gondozási vagy
+szaporítási felelősséget kapjon a játékos; milyen storage-, infrastruktúra-
+és automatikus kereskedelmi kapcsolatot használhat a farm?
+
+6. NPC-k, szolgáltatások és kapcsolatok
+Pontok: 176, 178–181, 183.
+Kérdés: Milyen részletes legyen az NPC-rutin, szolgáltatás, kapcsolat,
+párbeszéd, háttérgazdaság és tulajdonhasználat?
+
+7. Küldetések, történet és progression
+Pontok: 186, 188, 192–195.
+Kérdés: Milyen kudarc és visszatérés fér bele a küldetésekbe, mennyi legyen
+a történet, mi legyen a World Path játékosoldali neve, és hogyan épüljön fel
+a profession-, XP-, specializáció-, collection- és Village Level rendszer?
+
+8. Gazdaság, időjárás és évszak
+Pontok: 198–200, 205.
+Kérdés: Hány pénznem, milyen boltok, kikötői/régióközi kereskedelem,
+contract-nyomás, gazdasági esemény és időjárási/szezonális hatás legyen?
+
+9. Aktivitás, harc, session és kudarc
+Pontok: 211–213, 217, 219, 221–222.
+Kérdés: Legyen-e opcionális harc, milyen activityk és enyhe kudarcok
+férjenek bele, és véglegesen tiltjuk-e a FOMO-t, login streaket és
+távolléti büntetést?
+
+10. UX, art, audio és hozzáférhetőség
+Pontok: 107, 231, 233, 241, 249.
+Kérdés: Milyen interakciókat engedjen a Scenic Mode, mi legyen a
+Scenic/Photo Mode további határa, a végleges art- és zenei irány, valamint
+a reminder- és értesítési politika?
+
+11. Platform és adatküldés
+Pontok: 263, 271.
+Kérdés: Mely platformot és minimum készülékosztályt vállaljuk először,
+és engedünk-e önkéntes hálózati crashdiagnosztikát vagy telemetriát?
+
+12. Első slice, roadmap és produkció
+Pontok: 277–281, 284–285.
+Kérdés: Pontosan mi legyen az első vertical slice, a korai tanítás,
+a régiós sorrend, az endgame, a public demo és a P0–P3 mérföldkőhatár?
+
+13. Név, célközönség és külső kommunikáció
+Pontok: 288–291.
+Kérdés: Maradjon-e a Readi World név, kiknek és milyen műfaji ígérettel
+készül a játék, és mit vállaljon a store-oldal, trailer, platform- és
+lokalizációs kommunikáció?
+
+======================================================================
+PROTOTÍPUS- ÉS MÉRÉSI SOR — 37 PONT, 5 BIZONYÍTÉKCSOMAGBAN
+======================================================================
+
+1. Irányítás, mobilos UX és hozzáférhetőség
+Pontok: 110, 114–115, 125, 134, 153, 189, 215–216, 218, 224, 227–229,
+232, 247–248.
+Mérési kapu: a támogatott telefonméreteken és mindkét kézzel használható
+legyen; ne legyen félrenyomás, beragadt input, navigációs zsákutca,
+olvashatatlan szöveg vagy kizárólag szín/hang alapú fontos információ.
+
+2. Jelenet-, világ- és készülékteljesítmény
+Pontok: 144, 174, 184, 214, 238–239, 252, 265–266.
+Mérési kapu: minimum, tipikus és erős referenciaeszközön a normál és stressz
+jelenet tartsa a később jóváhagyott frame time-, memória-, hő-, energia-,
+betöltés- és lifecycle-budgetet; appkill után ne változzon az eredmény.
+
+3. Pacing, progression, gazdaság és világidő
+Pontok: 196, 201, 204, 273, 275.
+Mérési kapu: first-time, rövid visszatérő és hosszú mentéses playtest,
+valamint többseedes szimuláció bizonyítsa, hogy nincs blokkoló, domináns
+egyetlen út, elszálló gazdaság, korlátlan rossz szerencse vagy nehezen
+elérhető fontos időablak.
+
+4. Audio és haptika
+Pontok: 242, 244–245.
+Mérési kapu: ismételt valódi játék közben a visszajelzés legyen felismerhető,
+de ne fárasztó; a készülékek közötti haptika, hangmemória, decode, voice-limit
+és háttér/resume viselkedés teljesítse a célbudgetet.
+
+5. Tartalmi toolchain, mentés és automatizált bizonyíték
+Pontok: 256, 260, 270.
+Mérési kapu: egy valós tartalomcsomag, egy nagy hosszú-játék mentésfixture
+és egy determinisztikus gameplay/economy suite igazolja a validáció,
+migráció, méret, betöltés, replay és regresszió működését.
+
+======================================================================
+KONFLIKTUS- ÉS HIÁNYLISTA — 6 KONFLIKTUS- VAGY HIÁNYPONT
+======================================================================
+
+223. Undo-szabály.
+A kanonikus 19. döntés szerint az első verzióban nincs általános Undo,
+miközben a Gameplay Bible rövid Undo-lehetőséget említ.
+Feloldás: a Bible ezt csak jövőbeli, műveletspecifikus lehetőségként kezelje;
+későbbi Undo külön atomi inverse-command szerződést igényel.
+
+251. Privacy és értesítési policy.
+Nincs elfogadott telemetria-, felhőadat- vagy OS-értesítési adatkezelés.
+Feloldás: adatjegyzék, cél, hozzájárulás, megőrzés, export, törlés és
+visszavonás jóváhagyása; addig ezek a funkciók maradjanak kikapcsolva.
+
+261. Cloud és cross-device mentés.
+Nincs szolgáltató, fiókmodell, konfliktuskezelés, titkosítás és privacy-szabály.
+Feloldás: külön termék- és szinkronizációs audit; addig csak helyi,
+validált export/import készülhet.
+
+287. Git-baseline és rollback.
+A workspace-ben nincs azonosított Git repository-metaadat vagy jóváhagyott
+új repository-történet.
+Feloldás: a valódi repository kijelölése vagy új Git-történet explicit
+jóváhagyása, majd baseline és rollback-próba.
+
+292. Privacy, célkorosztály és monetizáció.
+Nincs lezárt üzleti modell, célkorosztályi vagy jogi adatkezelési szerződés.
+Feloldás: tulajdonosi üzletimodell-döntés, adatjegyzék és szükség esetén
+jogi/store-policy ellenőrzés. FOMO- és pay-to-skip modell nem fér össze
+a játék rögzített ígéretével.
+
+298. Implementációindítási kapu.
+Nincs még jóváhagyott vertical slice/P0 scope, céltelefon-mátrix,
+teljesítménybudget és Git-baseline.
+Feloldás: legalább a 263., 265–266., 277., 284–285. és 287. pont
+szükséges döntéseinek vagy mérési terveinek teljesítése.
+
+======================================================================
+KANONIKUSAN MÁR LEFEDETT — 2 KERESZTHIVATKOZÁS
+======================================================================
+
+210. Run-életciklus.
+A belépési commitot, kilépést, kényszerített megszakítást, seedet,
+tartós/ideiglenes eredményt és app-életciklust a kanonikus 67., 69. és
+104. döntés már lezárta. Új döntés csak egy később szükségessé váló
+run-lejárati policyhez kell.
+
+283. Clean-runtime baseline.
+A referencia-prototípus szerepét, az átvételi bizonyítékot és a thin
+bootstrap shellt a kanonikus 2–4. döntés már lezárta. A munkacsomagok
+szétválasztása az `AGENTS.md` szabálya és a 282. javaslat témája.
+
+E két pontot nem kell jóváhagyni és nem szabad másodszor a kanonikus
+auditba másolni.
+
+======================================================================
+FORRÁSMETA-MEGJEGYZÉS
+======================================================================
+
+A `docs/Dokumentumaudit.txt` fejlécében még „Tartomány: 1–104” szerepel,
+miközben a törzs, a záró állapot, az `AGENTS.md` és a `PROJECT_CONTEXT.md`
+már helyesen az 1–105. lezárt állapotot rögzíti.
+
+Az itt felsorolt 75 pont irányadó példánya a kanonikus
+`docs/Dokumentumaudit.txt` fájlban szerepel.
+
+======================================================================
+AJÁNLOTT KÖVETKEZŐ FELDOLGOZÁSI SORREND
+======================================================================
+
+1. A draft clean-runtime PR külön merge-döntése.
+2. Az első jóváhagyott P0 kontraktus-munkacsomag megnyitása.
+
+E fájl teljes átnézése később bármikor végigvihető a 106. ponttól ugyanabban
+a kérdés–válasz formában, amelyben az 1–105. kanonikus audit készült.
