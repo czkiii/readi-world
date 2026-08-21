@@ -1,5 +1,5 @@
 import { RUNTIME_CONFIG } from "./config/runtime-config.js";
-import { startMinimalLoopRuntime } from "./gameplay/minimal-loop/minimal-loop-runtime.js?v=i2-floating-joystick";
+import { startMinimalLoopRuntime } from "./gameplay/minimal-loop/minimal-loop-runtime.js?v=i3-vertical-slice-layout";
 
 const app = document.querySelector("#app");
 const canvas = document.querySelector("#world-canvas");
