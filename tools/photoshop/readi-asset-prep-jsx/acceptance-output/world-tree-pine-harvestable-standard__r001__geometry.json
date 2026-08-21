@@ -1,0 +1,98 @@
+{
+  "schemaVersion": 1,
+  "profileId": "profile.family.environment.harvest-tree.pine.v1",
+  "familyId": "family.environment.harvest-tree.pine",
+  "packageId": "package.p1.forest.core",
+  "outputKey": "standing",
+  "assetId": "world.tree.pine.harvestable.standard",
+  "role": "world.resource.tree.harvestable",
+  "revision": "r001",
+  "tags": [
+    "biome.forest",
+    "species.pine",
+    "material.wood",
+    "state.standing",
+    "variant.standard",
+    "milestone.p1"
+  ],
+  "state": "available",
+  "canvasPx": {
+    "width": 384,
+    "height": 448
+  },
+  "pivotPx": {
+    "x": 192,
+    "y": 416
+  },
+  "pivotNormalized": {
+    "x": 0.5,
+    "y": 0.928571
+  },
+  "drawSizeWU": {
+    "width": 6,
+    "height": 7
+  },
+  "sourceDensityPxPerWU": 64,
+  "safePaddingPx": {
+    "top": 32,
+    "right": 48,
+    "bottom": 32,
+    "left": 48
+  },
+  "decodedRgbaMiB": 0.656,
+  "logicalFootprint": {
+    "type": "circle",
+    "center": {
+      "x": 0,
+      "y": 0
+    },
+    "radius": 0.575
+  },
+  "interactionAnchor": {
+    "type": "radius",
+    "point": {
+      "x": 0,
+      "y": 0
+    },
+    "radius": 1.45
+  },
+  "occluderShape": {
+    "type": "polygon",
+    "points": [
+      {
+        "x": -0.8,
+        "y": -5.8
+      },
+      {
+        "x": 0.8,
+        "y": -5.8
+      },
+      {
+        "x": 2.2,
+        "y": -3.8
+      },
+      {
+        "x": 2,
+        "y": -1.2
+      },
+      {
+        "x": 0.8,
+        "y": -0.6
+      },
+      {
+        "x": -0.8,
+        "y": -0.6
+      },
+      {
+        "x": -2,
+        "y": -1.2
+      },
+      {
+        "x": -2.2,
+        "y": -3.8
+      }
+    ]
+  },
+  "geometrySchema": "readi.geometry-sidecar.v1",
+  "groundContactConfirmed": true
+}
