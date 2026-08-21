@@ -1,1 +1,0 @@
-Ide töltsd fel a laptopos reference/prototype/.vscode eredeti fájljait. Ideiglenes placeholder; később törölhető.
