@@ -706,7 +706,7 @@ function drawPlayer(context, { x, y }) {
     0.3 * WORLD_PIXELS_PER_UNIT
   );
   context.fill();
-  const headY = y - height + headRadius;
+  const headY = bodyTop - headRadius * 0.82;
   context.fillStyle = "#e7b886";
   context.beginPath();
   context.arc(x, headY, headRadius, 0, Math.PI * 2);
