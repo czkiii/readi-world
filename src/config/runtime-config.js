@@ -7,7 +7,7 @@ export const VISUAL_SCALE = Object.freeze({
   drawSizeWU: Object.freeze({
     character: Object.freeze({ width: 1.5, height: 2.35 }),
     workbench: Object.freeze({ width: 3.0, height: 2.3 }),
-    foresterHut: Object.freeze({ width: 10.5, height: 12.0 })
+    foresterHut: Object.freeze({ width: 9.0, height: 10.0 })
   }),
   doorWU: Object.freeze({ width: 1.1, height: 2.3 }),
   pathWidthRangesWU: Object.freeze({
@@ -17,7 +17,7 @@ export const VISUAL_SCALE = Object.freeze({
 });
 
 export const RUNTIME_CONFIG = Object.freeze({
-  runtimeVersion: "0.5.1-d4-scale-contract",
+  runtimeVersion: "0.5.2-mobile-scale-proof",
   worldStateSchemaVersion: 1,
   definitionSchemaVersion: 1,
   primaryOrientation: "portrait",
