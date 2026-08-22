@@ -3,6 +3,7 @@ import {
   drawLoadedAsset,
   loadAssetImageSet
 } from "../../core/assets/asset-image-loader.js";
+import { RUNTIME_CONFIG, VISUAL_SCALE } from "../../config/runtime-config.js";
 import { createSaveManager } from "../../core/save/save-manager.js";
 import { createWorldStateStore } from "../../core/world-state/world-state-store.js";
 import { createVirtualJoystick } from "../../input/virtual-joystick.js?v=i2-floating-joystick";
@@ -23,12 +24,12 @@ const SAVE_SLOT_ID = "local-world";
 const MOVE_SPEED = 172;
 const GATHER_DURATION = 0.85;
 const RESTORE_DURATION = 1.6;
-const WORLD_PIXELS_PER_UNIT = 32;
-const NORMAL_CAMERA_CSS_PIXELS_PER_WU = 20;
-const PLAYER_SCREEN_ANCHOR_Y = 0.6;
-const CHARACTER_DRAW_SIZE_WU = Object.freeze({ width: 1.5, height: 2.35 });
-const WORKBENCH_DRAW_SIZE_WU = Object.freeze({ width: 3, height: 2.3 });
-const HUT_DRAW_SIZE_WU = Object.freeze({ width: 10.5, height: 12 });
+const WORLD_PIXELS_PER_UNIT = VISUAL_SCALE.worldPixelsPerUnit;
+const NORMAL_CAMERA_CSS_PIXELS_PER_WU = VISUAL_SCALE.camera.normalCssPixelsPerWU;
+const PLAYER_SCREEN_ANCHOR_Y = VISUAL_SCALE.camera.playerScreenAnchorY;
+const CHARACTER_DRAW_SIZE_WU = VISUAL_SCALE.drawSizeWU.character;
+const WORKBENCH_DRAW_SIZE_WU = VISUAL_SCALE.drawSizeWU.workbench;
+const HUT_DRAW_SIZE_WU = VISUAL_SCALE.drawSizeWU.foresterHut;
 const PINE_ASSET_REQUESTS = Object.freeze({
   standing: {
     role: "world.resource.tree.harvestable",
@@ -519,7 +520,7 @@ function drawPaths(context, layout) {
 function drawPolylinePath(context, path, color) {
   if (!path?.points?.length) return;
   context.strokeStyle = color;
-  context.lineWidth = path.width;
+  context.lineWidth = path.widthWU * WORLD_PIXELS_PER_UNIT;
   context.lineCap = "round";
   context.lineJoin = "round";
   context.beginPath();
@@ -598,8 +599,8 @@ function drawHut(context, hut) {
   const wallHeight = height * 0.52;
   const roofHeight = height - wallHeight;
   const wallTop = y - wallHeight;
-  const doorWidth = 1.1 * WORLD_PIXELS_PER_UNIT;
-  const doorHeight = 2.3 * WORLD_PIXELS_PER_UNIT;
+  const doorWidth = VISUAL_SCALE.doorWU.width * WORLD_PIXELS_PER_UNIT;
+  const doorHeight = VISUAL_SCALE.doorWU.height * WORLD_PIXELS_PER_UNIT;
 
   context.fillStyle = restored ? "#9b693e" : "#675340";
   context.fillRect(x - wallWidth / 2, wallTop, wallWidth, wallHeight);
