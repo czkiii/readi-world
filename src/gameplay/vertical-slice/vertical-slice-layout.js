@@ -1,3 +1,5 @@
+import { VISUAL_SCALE } from "../../config/runtime-config.js";
+
 const LAYOUT_PATH = "./data/vertical-slice-layout.json";
 
 export async function loadVerticalSliceLayout() {
@@ -9,16 +11,17 @@ export async function loadVerticalSliceLayout() {
 }
 
 export function validateVerticalSliceLayout(layout) {
-  if (!layout || layout.schemaVersion !== 1 || typeof layout.id !== "string") {
+  if (!layout || layout.schemaVersion !== 2 || typeof layout.id !== "string") {
     throw new Error("VERTICAL_SLICE_LAYOUT_INVALID_HEADER");
   }
   if (!positive(layout.world?.width) || !positive(layout.world?.height)) {
     throw new Error("VERTICAL_SLICE_LAYOUT_INVALID_WORLD");
   }
-  for (const path of Object.values(layout.paths ?? {})) {
-    if (!positive(path.width) || !Array.isArray(path.points) || path.points.length < 2) {
+  for (const [pathId, path] of Object.entries(layout.paths ?? {})) {
+    if (!positive(path.widthWU) || !Array.isArray(path.points) || path.points.length < 2) {
       throw new Error("VERTICAL_SLICE_LAYOUT_INVALID_PATH");
     }
+    validatePathWidth(pathId, path.widthWU);
     for (const point of path.points) validatePoint(point, layout.world);
   }
   for (const pine of layout.scenery?.pines ?? []) {
@@ -29,6 +32,15 @@ export function validateVerticalSliceLayout(layout) {
   }
   validateXY(layout.landmarks?.farmGate, layout.world);
   return Object.freeze(layout);
+}
+
+function validatePathWidth(pathId, widthWU) {
+  const range = pathId === "spine"
+    ? VISUAL_SCALE.pathWidthRangesWU.main
+    : VISUAL_SCALE.pathWidthRangesWU.secondary;
+  if (widthWU < range.min || widthWU > range.max) {
+    throw new Error("VERTICAL_SLICE_LAYOUT_PATH_WIDTH_OUT_OF_D4_RANGE");
+  }
 }
 
 function validatePoint(point, world) {
