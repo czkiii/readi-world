@@ -1,5 +1,5 @@
 import { RUNTIME_CONFIG } from "./config/runtime-config.js";
-import { startMinimalLoopRuntime } from "./gameplay/minimal-loop/minimal-loop-runtime.js?v=d4-scale-contract";
+import { startMinimalLoopRuntime } from "./gameplay/minimal-loop/minimal-loop-runtime.js?v=mobile-scale-proof";
 
 const app = document.querySelector("#app");
 const canvas = document.querySelector("#world-canvas");
