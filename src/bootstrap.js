@@ -1,5 +1,5 @@
 import { RUNTIME_CONFIG } from "./config/runtime-config.js";
-import { startMinimalLoopRuntime } from "./gameplay/minimal-loop/minimal-loop-runtime.js?v=fix-player-placeholder-body";
+import { startMinimalLoopRuntime } from "./gameplay/minimal-loop/minimal-loop-runtime.js?v=d4-scale-contract";
 
 const app = document.querySelector("#app");
 const canvas = document.querySelector("#world-canvas");
